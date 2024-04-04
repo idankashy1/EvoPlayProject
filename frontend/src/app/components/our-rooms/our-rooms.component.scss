@@ -1,0 +1,134 @@
+/* our-rooms.component.scss */
+
+.room-display-container {
+  display: flex;
+  flex-direction: row; /* Stack children vertically */
+  justify-content: space-between;
+  align-items: center; /* Center align the items */
+  padding: 130px;
+  background-image: url('../../../assets/background2.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-blend-mode: multiply;
+  background-color: rgba(52, 52, 52, 0.8);
+  color: white;
+}
+
+.room-details {
+  position: relative; /* Needed for pseudo-elements */
+  width: 100%; /* Take the full width */
+  display: flex;
+  flex-direction: column; /* Stack title, text, and image vertically */
+  align-items: center; /* Center align the items */
+  text-align: center; /* Center text alignment */
+  margin-bottom: 2rem; /* Add bottom margin for spacing between entries */
+}
+
+.room-details::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: calc(100% + 40px); /* Slightly larger than the container to create a halo effect */
+  height: calc(100% + 40px);
+  background-color: rgba(0, 0, 0, 0.7); /* A darker shadow for depth */
+  z-index: -1; /* Place it below the content */
+  border-radius: 20px; /* Smooth edges */
+  filter: blur(8px); /* Soften the shadow */
+  transition: transform 0.3s ease; /* Smooth transition for a hover effect */
+}
+
+.room-details:hover::before {
+  transform: translate(-50%, -50%) scale(1.05); /* Slightly larger on hover */
+}
+
+.room-details h1 {
+  margin-bottom: 0.5rem; /* Add space between title and text */
+}
+
+.room-details p {
+  max-width: 600px; /* Limit text width and allow wrapping */
+  margin-bottom: 1rem; /* Space below the text */
+}
+
+.image-container {
+  width: 100%; /* Take the full width */
+  display: flex;
+  justify-content: center; /* Center align the image */
+  margin-bottom: 1rem; /* Space below the image */
+}
+
+.room-image {
+  max-width: 400px; /* Set a max width for the image */
+  height: auto; /* Maintain aspect ratio */
+  margin-bottom: 2rem; /* Space below the image */
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for hover effects */
+  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.5); /* Add shadow to lift the image off the page */
+  cursor: pointer;
+}
+
+.room-image:hover {
+  transform: scale(1.05); /* Slightly larger on hover */
+  box-shadow: 0 30px 40px rgba(0, 0, 0, 0.6); /* A larger shadow for a lifted effect */
+}
+
+.package-divider {
+  border: 0;
+  height: 1px; /* Horizontal divider */
+  background-color: #ffffff;
+  width: 50%; /* Slightly less than the full width for aesthetic purposes */
+  margin: 2rem auto; /* Center the divider with automatic margins */
+}
+
+.image-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Ensure it's above everything else */
+
+}
+
+.popup-content {
+  padding: 20px;
+  border-radius: 5px;
+  position: relative;
+}
+
+
+@media (max-width: 1440px) {
+  .room-details {
+    align-items: center; /* Center align items for medium screens */
+  }
+}
+
+@media (max-width: 768px) {
+  .room-display-container {
+    flex-direction: column; /* Stack items vertically on smaller screens */
+    align-items: center; /* Center align items for a stacked layout */
+    padding: 60px 20px; /* Adjust padding for smaller screens */
+  }
+
+  .room-details {
+    width: 100%; /* Take the full width */
+    align-items: center; /* Keep items centered when stacked */
+    text-align: center; /* Center text alignment */
+    margin-bottom: 2rem; /* Maintain bottom margin for spacing */
+  }
+
+  .room-image {
+    max-width: 90%; /* Make image larger for smaller screens */
+    margin-bottom: 1rem; /* Adjust space below the image */
+  }
+
+  .package-divider {
+    width: 80%; /* Adjust width of the divider for smaller screens */
+    margin: 1.5rem auto; /* Adjust the top and bottom margins */
+  }
+}

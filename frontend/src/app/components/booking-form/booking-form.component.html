@@ -1,0 +1,48 @@
+<div class="booking-form-container">
+  <mat-card class="booking-card">
+    <h2 class="booking-title">להזמנת חדר</h2>
+    <hr class="header-divider"/>
+    <div class="booking-fields">
+      <mat-form-field appearance="fill" class="date-field" (click)="picker.open()">
+        <mat-label>בחר תאריך</mat-label>
+        <input matInput [matDatepicker]="picker" (dateChange)="dateChanged($event)" [min]="today" readonly>
+        <mat-datepicker-toggle matSuffix [for]="picker" (click)="$event.stopPropagation()"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+
+      <div class="time-selectors">
+        <mat-form-field appearance="fill">
+          <mat-label>משעה</mat-label>
+          <mat-select [(ngModel)]="startHour" name="startHour" (selectionChange)="onStartTimeChange($event.value)" [disabled]="!bookingDate">
+            <mat-option *ngFor="let time of startHoursOptions" [value]="time">{{ time }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+  
+        <mat-form-field appearance="fill">
+          <mat-label>עד שעה</mat-label>
+          <mat-select [(ngModel)]="endHour" name="endHour" [disabled]="!bookingDate">
+            <mat-option *ngFor="let time of endHoursOptions" [value]="time">{{ time }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="other-selectors">
+        <mat-form-field appearance="fill">
+          <mat-label>כמות משתתפים</mat-label>
+          <mat-select [(ngModel)]="numberOfPlayers" name="players" [disabled]="!bookingDate">
+            <mat-option *ngFor="let number of playerOptions" [value]="number">{{ number }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>סוג חדר</mat-label>
+          <mat-select [(ngModel)]="roomType" name="roomType" (selectionChange)="onRoomTypeChange($event.value)" [disabled]="!bookingDate">
+            <mat-option *ngFor="let type of ['PS5', 'VR', 'Racing Simulation', 'PS5VIP']" [value]="type">{{ type }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+    <hr class="fields-divider"/>
+    <button mat-raised-button color="primary" class="submit-button" (click)="goToNextStep()">הבא</button>
+  </mat-card>
+</div>

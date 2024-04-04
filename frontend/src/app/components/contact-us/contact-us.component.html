@@ -1,0 +1,40 @@
+<div class="contact-us-container">
+  <mat-card class="contact-info-card">
+    <mat-card-title>
+      <mat-icon>phone</mat-icon> צור קשר
+    </mat-card-title>
+    <mat-card-content>
+      <p>מספר הזמנות: *1234</p>
+      <p>שעות פעילות: א'-ה' 17:00-2:00 | ו' 17:00-2:00</p>
+      <!-- Add more contact details as needed -->
+    </mat-card-content>
+  </mat-card>
+
+  <div class="contact-form-container">
+    <!-- Use only one form tag here -->
+    <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="contact-form">
+      <mat-form-field appearance="fill">
+        <mat-label>שם</mat-label>
+        <input matInput placeholder="הכנס את שמך" formControlName="name">
+      </mat-form-field>
+      
+      <mat-form-field appearance="fill">
+        <mat-label>נייד</mat-label>
+        <input matInput placeholder="הכנס את הנייד שלך" formControlName="phone">
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>אימייל</mat-label>
+        <input matInput placeholder="הכנס את האימייל שלך" type="email" formControlName="email">
+      </mat-form-field>
+
+      <!-- Add more input fields as needed -->
+      <mat-form-field appearance="fill" class="full-width-input">
+        <mat-label>הודעה</mat-label>
+        <textarea matInput placeholder="הכנס את הודעתך" formControlName="message"></textarea>
+      </mat-form-field>
+
+      <button type="submit" mat-raised-button color="primary">שלח</button>
+    </form>
+  </div>
+</div>

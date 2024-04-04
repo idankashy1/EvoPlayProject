@@ -1,0 +1,29 @@
+/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c&family=Montserrat&family=Ubuntu&display=swap');
+
+body {
+    font-family: 'Ubuntu', sans-serif !important;
+    background-image: url('assets/background2.jpg'); // Update with the correct filename
+    background-size: cover; // This will make sure the image covers the whole area
+    background-repeat: no-repeat; // This will prevent the image from repeating
+    background-attachment: fixed; // This will make the background fixed during scroll
+    background-position: center center; // This will center the image
+  }
+  
+  /* header.component.scss */
+  .header-toolbar {
+    font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  }
+
+  .booking-title {
+    font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  }
+
+  .submit-button {
+    font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  }
+
+.dialog-header{
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+}
+

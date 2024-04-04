@@ -1,0 +1,85 @@
+/* company-events.component.scss */
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 63vh;
+  background: url('../../../assets/background2.jpg') no-repeat center center;
+  background-size: cover;
+  padding: 60px;
+}
+
+.company-events-container {
+  width: 100%;
+  max-width: 1200px; // Adjust as needed
+  text-align: center;
+}
+
+.title {
+  color: #ffffff;
+  margin-bottom: 3rem;
+  font-size: 2.5rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.events-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  gap: 50px;
+}
+
+.event-card {
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+  cursor: pointer;
+
+  &:hover {
+    transform: translateY(-10px);
+  }
+}
+
+.event-image {
+  width: 100%;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: auto;
+    transition: transform 0.3s ease;
+    
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+}
+
+.event-info {
+  padding: 1rem;
+
+  .event-title {
+    margin: 0.5rem 0;
+    color: #333;
+    font-size: 1.5rem;
+  }
+
+  .event-description {
+    color: #666;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .events-grid {
+    flex-direction: column;
+  }
+
+  .event-card {
+    margin-bottom: 1rem;
+  }
+}

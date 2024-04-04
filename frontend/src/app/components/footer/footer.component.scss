@@ -1,0 +1,58 @@
+
+.site-footer {
+  background-image: url('../../../assets/background2.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-blend-mode: multiply;
+  background-color: rgba(52, 52, 52, 0.8);
+  color: #737373;
+  padding: 45px 0 20px;
+}
+
+.site-footer .container {
+  width: 100%;
+  max-width: 1200px; /* Adjust the width as necessary */
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  direction: rtl; // Set right-to-left text direction for the form
+
+}
+
+.site-footer .row {
+  display: flex;
+  flex-direction: row; /* Changed from column to row */
+  width: 100%;
+  align-items: flex-start; /* Align items to the start of the flex container */
+}
+
+.footer-about, .footer-links, .footer-location {
+  flex: 1; /* This will allow each column to take up equal space */
+  margin-right: 20px; /* Adjust the spacing as needed */
+}
+
+
+.footer-links ul {
+  list-style: none; /* Remove list bullets */
+}
+
+/* Rest of your CSS... */
+
+/* Footer bottom area with copyright and social icons */
+.site-footer .container > .row:last-child {
+  border-top: 1px solid #bbb;
+  padding-top: 20px;
+  margin-top: 20px;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.copy-right {
+  color: #fff;
+  margin-top: 5px;
+  text-align: left;
+}
+
+.social-icons {
+  text-align: right;
+}

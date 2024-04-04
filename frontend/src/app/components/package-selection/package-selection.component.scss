@@ -1,0 +1,161 @@
+.custom-dialog-background {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background-image: url('../../../assets/background2.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;  border-radius: 10px; /* Rounded corners */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5); /* Soft shadow for depth */
+  color: #fff; /* Text color */
+  max-width: 800px; /* Max width */
+  margin: auto; /* Center in viewport */
+  max-height: 80vh; /* Set a max height for the viewport */
+  overflow-y: auto; /* Enable vertical scrolling */
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+}
+
+.dialog-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding: 1rem; /* Same padding as .custom-dialog-background */
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  color: #fff;
+}
+
+.package {
+  display: flex;
+  flex-direction: column; /* Stack the image and text vertically */
+  align-items: center; /* Center-align the child elements */
+  justify-content: center; /* Center content vertically */
+  text-align: center; /* Center text alignment */
+  background-color: rgba(255, 255, 255, 0.05); /* Slight tint */
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 5px;
+  transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+.package:hover {
+  background-color: rgba(255, 255, 255, 0.1); /* Highlight on hover */
+}
+
+.package-image {
+  max-width: 80%; /* Adjust width as necessary */
+  margin-bottom: 1rem; /* Space between image and text */
+  border-radius: 5px;
+  height: auto; /* Maintain aspect ratio */
+}
+
+.package-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-height: 600px; /* Set a max-height for the package list */
+  overflow-y: auto; /* Enable scrolling for the package list */
+}
+
+.package-content {
+  padding: 1rem;
+}
+
+.package-name,
+.package-description {
+  text-align: center;
+}
+
+.select-package-btn {
+  background-color: #4caf50;
+  color: #fff;
+  margin-top: 1rem;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  text-transform: uppercase;
+  width: 100%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+}
+
+.select-package-btn:hover {
+  background-color: #43a047;
+}
+
+.booking-details-summary {
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 1rem;
+  border-radius: 5px;
+  text-align: center;
+  width: 100%;
+  margin-top: 2rem;
+}
+
+.booking-details-title {
+  font-size: 1.75rem;
+  margin-bottom: 1rem;
+}
+
+.submit-button {
+  background-color: #2196f3;
+  color: #fff;
+  margin-top: 1rem;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  text-transform: uppercase;
+  width: 100%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+}
+
+.submit-button:hover {
+  background-color: #1e88e5;
+}
+
+/* Adjust header and package-divider */
+.header-divider,
+.package-divider {
+  margin: 0.5rem auto;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+@media (max-width: 768px) {
+  .custom-dialog-background {
+    padding: 1rem;
+    border-radius: 0; /* Remove border-radius for small screens */
+  }
+  
+  .dialog-header {
+    background: rgba(0, 0, 0, 0.6); /* Softer black background */
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .package {
+    margin-bottom: 0.5rem;
+  }
+  
+  .package-content {
+    padding: 0.5rem;
+  }
+  
+  .select-package-btn {
+    padding: 8px 16px;
+    cursor: pointer;
+  }
+  
+  .booking-details-summary {
+    margin-top: 1rem;
+  }
+  
+  .submit-button {
+    padding: 8px 16px;
+    cursor: pointer;
+  }
+}

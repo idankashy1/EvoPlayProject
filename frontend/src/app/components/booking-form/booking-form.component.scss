@@ -1,0 +1,120 @@
+/* booking-form.component.scss */
+
+.booking-form-container {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+  direction: rtl; 
+}
+
+// כרטיס ההזמנה
+.booking-card {
+  --mdc-elevated-card-container-color: rgba(52, 52, 52, 0.8);
+  width: auto;
+  max-width: 800px;
+  padding: 20px;
+  background-image: url('../../../assets/background2.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  color: #fff;
+  box-shadow: 0 12px 36px 0 rgba(0, 0, 0, 0.2), 0 16px 56px 0 rgba(0, 0, 0, 0.19); /* Updated shadow effect */
+  border-radius: 8px;
+  overflow: hidden;
+
+  // כותרת הטופס
+  .booking-title {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+// מפריד כותרת ושדות הטופס
+  .header-divider,
+  .fields-divider {
+    border: 0;
+    height: 1px;
+    background-image: linear-gradient(to right, transparent, #fff, transparent);
+    margin: 1rem 0;
+  }
+}
+
+// שדות הטופס
+.booking-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 90%; 
+  margin: auto;
+  
+  // בוררי זמנים ובחירות נוספות
+  .time-selectors,
+  .other-selectors {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+
+  // שדה תאריך
+  .date-field {
+    width: 100%;
+  }
+  
+  .mat-input-element,
+  mat-label,
+  mat-select,
+  .mat-datepicker-toggle,
+  textarea {
+    text-align: right;
+  }
+}
+
+// שדה הטופס
+mat-form-field {
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 75px;
+
+  
+  mat-input-element::placeholder {
+    color: rgba(168, 66, 66, 0.6);
+  }
+
+  mat-label {
+    color: #000;
+    margin-top: -4px;
+  }
+
+  
+  .mat-datepicker-toggle {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}
+
+// כפתור המשך
+.submit-button {
+  min-width: 150px; 
+  width: auto; 
+  padding: 0.5rem 1rem; 
+  margin: 1rem auto; 
+  font-size: 1.1rem;
+  font-weight: bold;
+  border-radius: 10px;
+  display: block;
+}
+
+// תצוגה עבור מסכים קטנים יותר
+@media (max-width: 768px) {
+
+  .booking-fields {
+    .time-selectors,
+    .other-selectors {
+      grid-template-columns: 1fr;
+    }
+  }
+}
