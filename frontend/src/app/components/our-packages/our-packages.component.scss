@@ -1,0 +1,74 @@
+.packages-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    padding: 4rem;
+    background-image: url('../../../assets/background2.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+  
+    .package-item {
+      display: flex;
+      flex-direction: row-reverse; 
+      align-items: center;
+      justify-content: flex-start;
+      width: 100%;
+      max-width: 900px;
+      background-color: rgba(252, 237, 237, 0.9);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  
+      &:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+      }
+  
+      .package-image {
+        width: 40%;
+        object-fit: cover;
+        border-radius: 8px 0 0 8px;
+      }
+  
+      .package-details {
+        padding: 1rem;
+        text-align: right;
+  
+        .package-title {
+          font-size: 1.5rem;
+          margin-bottom: 0.5rem;
+        }
+  
+        .package-description {
+          font-size: 1rem;
+          margin-bottom: 1rem;
+          color: black;
+
+        }
+  
+        .package-info {
+          font-size: 0.9rem;
+          span {
+            margin-right: 1rem;
+          }
+        }
+
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    .packages-container {
+      margin-top: 2rem; /* Add space above the button */
+      margin-bottom: 1rem;
+      padding: 0.1rem; /* Adjust padding as needed */
+    }
+  
+    .package-item {
+      flex-direction: column-reverse; /* Stack details above image */
+      align-items: center; /* Center the items */
+      text-align: center; /* Center the text */
+    }
+  
+  }
+  

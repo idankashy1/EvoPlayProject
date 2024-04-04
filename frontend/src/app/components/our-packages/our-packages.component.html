@@ -1,0 +1,14 @@
+<div class="packages-container">
+    <div *ngFor="let package of packages" class="package-item">
+        <img [src]="package.imageUrl" alt="{{ package.name }}" (error)="handleImageError($event)">
+        <div class="package-details">
+        <h2 class="package-title">{{ package.name }}</h2>
+        <p class="package-description">{{ package.description }}</p>
+        <p class="package-info">
+          <span>משך: {{ package.minimumTime }} שעות</span> | 
+          <span>מינימום אנשים: {{ package.minimumPeople }}</span>
+        </p>
+      </div>
+    </div>
+  </div>
+  

@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33627.172
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EvoPlay", "EvoPlay.csproj", "{F681F6AF-5605-4E1E-84CA-D19A5154FCE5}"
+EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "EvoPlayDB", "..\EvoPlayDB\EvoPlayDB.sqlproj", "{05780730-AF24-41E9-872C-53125320D62C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F681F6AF-5605-4E1E-84CA-D19A5154FCE5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F681F6AF-5605-4E1E-84CA-D19A5154FCE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F681F6AF-5605-4E1E-84CA-D19A5154FCE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F681F6AF-5605-4E1E-84CA-D19A5154FCE5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{05780730-AF24-41E9-872C-53125320D62C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05780730-AF24-41E9-872C-53125320D62C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05780730-AF24-41E9-872C-53125320D62C}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{05780730-AF24-41E9-872C-53125320D62C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05780730-AF24-41E9-872C-53125320D62C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{05780730-AF24-41E9-872C-53125320D62C}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5A797CD0-35D6-4FDD-AD7E-FC23A195E681}
+	EndGlobalSection
+EndGlobal

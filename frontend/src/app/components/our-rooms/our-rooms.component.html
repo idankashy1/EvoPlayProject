@@ -1,0 +1,47 @@
+<div class="room-display-container">
+  <!-- Room Details for Simulator -->
+  <div class="room-details" (click)="openImagePopup('assets/simulatorForOurRooms.png')">
+    <h1>חדר סימולטור מרוצים</h1>
+    <p [innerHTML]="simulatorText"></p>
+    <div class="image-container">
+      <img src="assets/simulatorForOurRooms.png" alt="Simulator Room" class="room-image">
+    </div>
+  </div>
+  <hr class="package-divider"/> 
+
+  <!-- Room Details for PS5VIP -->
+  <div class="room-details" (click)="openImagePopup('assets/ps5VIPForOurRooms.jpg')">
+    <h1>PS5VIP חדר</h1>
+    <p [innerHTML]="ps5VIPText"></p>
+    <div class="image-container">
+      <img src="assets/ps5VIPForOurRooms.jpg" alt="PS5VIP Room" class="room-image">
+    </div>
+  </div>
+  <hr class="package-divider"/> 
+
+  <!-- Room Details for VR -->
+  <div class="room-details" (click)="openImagePopup('assets/VRForOurRooms.png')">
+    <h1>VR חדר </h1>
+    <p [innerHTML]="vrText"></p>
+    <div class="image-container">
+      <img src="assets/VRForOurRooms.png" alt="VR Room" class="room-image">
+    </div>
+  </div>
+  <hr class="package-divider"/> 
+
+  <!-- Room Details for PS5 -->
+  <div class="room-details" (click)="openImagePopup('assets/ps5ForOurRooms.jpg')">
+    <h1>PS5 מתחם </h1>
+    <p [innerHTML]="ps5Text"></p>
+    <div class="image-container">
+      <img src="assets/ps5ForOurRooms.jpg" alt="PS5 Room" class="room-image">
+    </div>
+  </div>
+</div>
+
+<!-- Image Popup Overlay -->
+<div class="image-popup" *ngIf="showImagePopup" (click)="closeImagePopup()">
+  <div class="popup-content" (click)="$event.stopPropagation()">
+    <img [src]="popupImageUrl" class="popup-image">
+  </div>
+</div>

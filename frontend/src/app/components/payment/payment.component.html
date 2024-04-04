@@ -1,0 +1,62 @@
+<main>
+  <div class="payment-layout" *ngIf="bookingDetails" dir="rtl">
+    <mat-card class="unified-card">
+
+      <!-- Order Summary -->
+      <mat-card-header>
+        <mat-card-title>סיכום הזמנה</mat-card-title>
+        
+      </mat-card-header>
+      <mat-card-content>
+        <p><strong>סוג חדר:</strong> {{ bookingDetails.roomType }}</p>
+        <p><strong>בתאריך:</strong> {{ bookingDetails.bookingDate | date:'dd/MM/yyyy' }}</p>
+        <p><strong>משעה:</strong> {{ bookingDetails.startHour }}</p>
+        <p><strong>עד שעה:</strong> {{ bookingDetails.endHour }}</p>
+        <p><strong>כמות משתתפים:</strong> {{ bookingDetails.numberOfPlayers }}</p>
+        <p><strong>שם החבילה:</strong> {{ bookingDetails.selectedPackage?.name || 'ללא' }}</p>
+        <p><strong>עלות כוללת:</strong> {{ bookingDetails.totalCost | currency:'ILS' }}</p>
+      </mat-card-content>
+      <mat-divider></mat-divider>
+
+      <!-- Personal Details -->
+      <mat-card-content>
+        <mat-card-title>פרטים אישיים</mat-card-title>
+        <form [formGroup]="userDetailsForm">
+          <mat-form-field class="full-width-input">
+            <mat-label>שם פרטי</mat-label>
+            <input matInput placeholder="הכנס את שמך הפרטי" formControlName="firstName">
+          </mat-form-field>
+          <mat-form-field class="full-width-input">
+            <mat-label>שם משפחה</mat-label>
+            <input matInput placeholder="הכנס את שם המשפחה" formControlName="lastName">
+          </mat-form-field>
+          <mat-form-field class="full-width-input">
+            <mat-label>טלפון</mat-label>
+            <input matInput type="tel" placeholder="הכנס מספר טלפון" formControlName="phoneNumber">
+          </mat-form-field>
+          <mat-form-field class="full-width-input">
+            <mat-label>דוא"ל</mat-label>
+            <input matInput type="email" placeholder="הכנס דואר אלקטרוני" formControlName="email">
+          </mat-form-field>
+          <mat-form-field class="full-width-input">
+            <mat-label>עיר</mat-label>
+            <input matInput placeholder="הכנס עיר מגורים" formControlName="city">
+          </mat-form-field>
+          <mat-form-field class="full-width-input">
+            <mat-label>כתובת</mat-label>
+            <input matInput placeholder="הכנס כתובת" formControlName="address">
+          </mat-form-field>
+        </form>
+      </mat-card-content>
+      <mat-divider></mat-divider>
+
+      <!-- Payment Details -->
+
+        <div class="submit-button-container">
+          <button mat-raised-button color="primary" (click)="onPaymentSubmit()">לתשלום</button>
+        </div>
+
+
+    </mat-card>
+  </div>
+</main>

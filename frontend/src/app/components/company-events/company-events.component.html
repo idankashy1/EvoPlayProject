@@ -1,0 +1,17 @@
+<div class="main-content">
+  <div class="company-events-container">
+    <h1 class="title">אירועים לכל מטרה</h1>
+
+    <div class="events-grid">
+      <div *ngFor="let event of events" class="event-card">
+        <div class="event-image">
+          <img src="{{ event.imageSrc }}" alt="{{ event.title }}">
+        </div>
+        <div class="event-info">
+          <h2 class="event-title">{{ event.title }}</h2>
+          <p class="event-description">{{ event.description }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,197 @@
+/* header.component.scss */
+.header-toolbar {
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  background-image: url('../../../assets/background2.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-blend-mode: multiply; 
+  background-color: rgba(52, 52, 52, 0.8); 
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-grow: 1;
+  height: 100%; 
+}
+
+.menu-list {
+  list-style-type: none; 
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: stretch; 
+  height: 100%; 
+}
+
+.menu-item {
+  position: relative;
+  padding: 0 15px; 
+  cursor: pointer;
+  display: flex;
+  align-items: center; 
+  height: 100%; 
+  
+
+  &:not(:last-of-type) {
+    border-right: 1px solid rgb(99, 91, 91); 
+  }
+
+
+  &:nth-child(5) { 
+    border-right: 1px solid rgb(99, 91, 91);
+  }
+
+  a {
+    color: white;
+    text-decoration: none;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &:hover .submenu {
+    display: block;
+    position: absolute;
+    top: 100%; 
+    left: 50%; 
+    transform: translateX(-50%); 
+    text-align: center;
+  }
+}
+
+.submenu {
+  list-style-type: none; 
+  padding-left: 0; 
+  display: none;
+  min-width: 150px;
+  background-image: url('../../../assets/background2.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  color: #fff;  box-shadow: 0 4px 8px rgba(0,0,0,.25);
+  z-index: 1000;
+
+  li {
+    a {
+      color: white;
+      padding: 10px 20px; 
+    }
+
+    &:hover {
+      background-color: darken(#343434, 5%);
+    }
+  }
+}
+
+.logo-container {
+  order: 2; 
+  cursor: pointer;
+}
+
+.logo {
+  height: 60px; 
+  width: auto;
+}
+
+.menu-button {
+  display: none;
+}
+
+.mat-menu-item {
+  color: white; // Customize menu item color
+}
+
+@media (max-width: 768px) {
+  .header-toolbar {
+    position: sticky; /* Keeps the header at the top */
+    top: 0;
+    z-index: 10; /* Adjust as needed to keep the toolbar above other content */
+    flex-direction: column; /* Stack items vertically */
+    justify-content: center; /* Align content to start */
+    width: 100%; /* Full width to cover the screen */
+    padding-top: 60px; /* Padding to avoid content overlap with the logo */
+  }
+
+  .logo-container {
+    position: absolute; /* Position logo absolutely within header */
+    top: 10px; /* Distance from top */
+    left: 50%; /* Center horizontally */
+    transform: translateX(-50%); /* Offset transform for perfect center */
+    z-index: 11; /* Above the menu icon */
+  }
+
+  .logo {
+    height: 50px; /* Adjust logo height as needed */
+  }
+
+  .menu-button {
+    display: block; /* Show the menu icon */
+    position: absolute; /* Position absolutely within header */
+    top: 10px; /* Distance from top */
+    right: 10px; /* Distance from right */
+    z-index: 12; /* Above the logo */
+  }
+
+  .header-content {
+    display: none; /* Hide initially */
+    flex-direction: column; /* Stack menu items vertically */
+    justify-content: center;
+    align-items: center; /* Center items */
+    width: 100%; /* Full width */
+    position: absolute;
+    top: 60px; /* Positioning below the logo */
+
+    background: none; /* Remove the background here */
+    box-shadow: none; /* Remove box shadow here as it should be on the menu list */
+  }
+
+  /* Show the header content when the menu is open */
+  .header-content.menu-open {
+    display: flex; /* Show menu */
+    flex-direction: column; /* Stack items vertically */
+    justify-content: center;
+    text-align: center; /* Center text */
+    background: rgba(52, 52, 52, 0.8); /* Apply background to the open menu for dim effect */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25); /* Box shadow for styling */
+  }
+
+  .menu-list {
+    width: 100%; /* Full width */
+    flex-direction: column; /* Stack items vertically */
+    text-align: center; /* Center text */
+    list-style: none;
+  }
+
+  .menu-item {
+    display: flex; /* Show menu */
+    flex-direction: column; /* Stack items vertically */
+    justify-content: center;
+    text-align: center; /* Center text */
+    width: 100%;
+    padding: 0%;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-image: url('../../../assets/background2.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-blend-mode: multiply; 
+    background-color: rgba(52, 52, 52, 0.8); 
+    }
+
+  .submenu {
+    display: none; /* Hide initially */
+    width: 100%; /* Full width */
+    position: static; /* Keep in the normal document flow */
+    background-color: transparent; /* Submenu should inherit the background */
+  }
+}
+
