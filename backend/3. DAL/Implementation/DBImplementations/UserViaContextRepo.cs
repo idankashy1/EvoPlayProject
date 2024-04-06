@@ -22,7 +22,7 @@ namespace EvoPlay._3._Repository.Implementation
         public User DeleteUser(int userId)
         {
             var user = _context.Users.FirstOrDefault(u => u.Id == userId);
-            _context.Users.Remove(user);
+            _context.Users.Remove(user!);
             return user;
         }
 

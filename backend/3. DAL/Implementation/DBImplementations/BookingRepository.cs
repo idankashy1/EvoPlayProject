@@ -97,5 +97,12 @@ namespace EvoPlay.Repository.Implementation
         {
             return await _context.Rooms.FindAsync(roomId);
         }
+        public async Task<IEnumerable<Booking>> GetBookingsByUserPhoneNumberAsync(string phoneNumber)
+        {
+            return await _context.Bookings
+                .Include(b => b.User) // Ensure you have a navigation property from Booking to User
+                .Where(b => b.User.PhoneNumber == phoneNumber)
+                .ToListAsync();
+        }
     }
 }

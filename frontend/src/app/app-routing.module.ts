@@ -8,11 +8,15 @@ import { PackageSelectionComponent } from './components/package-selection/packag
 import { OurPackagesComponent } from './components/our-packages/our-packages.component';
 import { PaymentComponent } from './components/payment/payment.component';
 import { CompanyEventsComponent } from './components/company-events/company-events.component';
+import { LoginComponent } from './components/login/login.component';
+import { OrderSearchComponent } from './components/order-search/order-search.component';
 
 
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
+  { path: 'login', component: LoginComponent },
+  { path: 'order-search', component: OrderSearchComponent },
   { path: 'our-rooms', component: OurRoomsComponent },
   { path: 'about-us', component: AboutUsComponent },
   { path: 'contact-us', component: ContactUsComponent },

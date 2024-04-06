@@ -12,5 +12,6 @@ namespace EvoPlay.BL.Contract
         Task UpdateBookingAsync(int id, Booking booking);
         Task CancelBookingAsync(int id);
         Task<(bool IsAvailable, int? RoomId)> CheckRoomAvailabilityAsync(CheckAvailabilityDto dto);
+        Task<IEnumerable<Booking>> SearchBookingsByPhoneNumberAsync(string phoneNumber);
     }
 }

@@ -8,7 +8,10 @@ using EvoPlay.DAL.Implementation;
 using EvoPlay.Entities;
 using EvoPlay.Repository.Contract;
 using EvoPlay.Repository.Implementation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,7 +34,30 @@ builder.Services.AddCors(option =>
     {
         builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
     });
-}); 
+});
+
+var secretKey = EvoPlay.Helpers.PasswordHelper.GenerateSecretKey();
+Console.WriteLine($"Generated JWT Secret Key: {secretKey}");
+
+var key = "IKASHY123"; 
+builder.Services.AddAuthentication(x =>
+{
+    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(x =>
+{
+    x.RequireHttpsMetadata = false; // Should be true in production
+    x.SaveToken = true;
+    x.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key)),
+        ValidateIssuer = false,
+        ValidateAudience = false
+    };
+});
+
 
 builder.Services.AddScoped<IContactService, ContactService>();
 builder.Services.AddScoped<IEmailRepository, EmailRepository>();
@@ -48,12 +74,14 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    app.UseDeveloperExceptionPage(); // Add this line for detailed error pages
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
 app.UseCors("MyPolicy");
+app.UseAuthentication(); // Make sure authentication is configured before authorization
 app.UseAuthorization();
 
 app.MapControllers();

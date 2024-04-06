@@ -11,6 +11,7 @@ namespace EvoPlay.BL.Implementation
     {
         private readonly IBookingRepository _bookingRepository;
 
+
         public BookingBL(IBookingRepository bookingRepository)
         {
             _bookingRepository = bookingRepository;
@@ -81,6 +82,10 @@ namespace EvoPlay.BL.Implementation
             TimeSpan endTime = endTimeOffset.TimeOfDay;
 
             return await _bookingRepository.IsRoomAvailableAsync(dto.Date, startTime, endTime, dto.RoomType, dto.NumberOfPlayers);
+        }
+        public async Task<IEnumerable<Booking>> SearchBookingsByPhoneNumberAsync(string phoneNumber)
+        {
+            return await _bookingRepository.GetBookingsByUserPhoneNumberAsync(phoneNumber);
         }
     }
 }
