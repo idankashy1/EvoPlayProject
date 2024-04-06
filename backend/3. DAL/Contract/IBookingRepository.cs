@@ -15,5 +15,6 @@ namespace EvoPlay.Repository.Contract
         Task DeleteBookingAsync(Booking booking);
         Task<(bool IsAvailable, int? RoomId)> IsRoomAvailableAsync(DateTime date, TimeSpan startTime, TimeSpan endTime, string roomTypeName, int numberOfPlayers);
         Task<Room> GetRoomByIdAsync(int roomId);
+        Task<IEnumerable<Booking>> GetBookingsByUserPhoneNumberAsync(string phoneNumber);
     }
 }

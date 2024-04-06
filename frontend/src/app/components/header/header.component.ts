@@ -21,7 +21,10 @@ export class HeaderComponent {
     });
   }
 
-  
+  get isLoggedIn(): boolean {
+    return !!localStorage.getItem('token');
+  }
+
   toggleMenu() {
     this.menuOpen = !this.menuOpen;
   }
@@ -51,6 +54,10 @@ export class HeaderComponent {
 
   navigateToCompanyEvents() {
     this.router.navigate(['/company-events']);
+  }
+
+  navigateToOrderSearch() {
+    this.router.navigate(['/order-search']); // Make sure the route matches your Angular routing configuration
   }
 }
 

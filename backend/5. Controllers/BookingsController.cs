@@ -116,5 +116,11 @@ namespace EvoPlay.Controllers
 
             return Ok(new { Message = "Room is available", IsAvailable = isAvailable, RoomId = roomId });
         }
+        [HttpGet("search/by-phone")]
+        public async Task<IActionResult> SearchBookingsByPhoneNumber(string phoneNumber)
+        {
+            var bookings = await _bookingBL.SearchBookingsByPhoneNumberAsync(phoneNumber);
+            return Ok(bookings); // Or handle empty results as you see fit
+        }
     }
 }

@@ -19,6 +19,8 @@ import { OurPackagesComponent } from './components/our-packages/our-packages.com
 import { TranslateRoomTypePipe } from './pipes/translate-room-type.pipe';
 import { PaymentComponent } from './components/payment/payment.component';
 import { MaterialModule } from './material.module';
+import { LoginComponent } from './components/login/login.component';
+import { OrderSearchComponent } from './components/order-search/order-search.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +37,8 @@ import { MaterialModule } from './material.module';
     OurPackagesComponent,
     TranslateRoomTypePipe,
     PaymentComponent,
+    LoginComponent,
+    OrderSearchComponent
   ],
   imports: [
     HttpClientModule,

@@ -31,6 +31,9 @@
       <li class="menu-item" (click)="navigateToOurRooms(); closeMenu()">
         <a>החדרים שלנו</a>
       </li>
+      <li class="menu-item" *ngIf="isLoggedIn" (click)="navigateToOrderSearch(); closeMenu()">
+        <a>חפש הזמנה</a>
+      </li>
     </ul>
   </div>
 </mat-toolbar>
