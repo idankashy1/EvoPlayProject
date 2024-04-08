@@ -8,11 +8,11 @@ namespace EvoPlay.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class UsersController : ControllerBase
     {
         private readonly IUserBL _userBL;
 
-        public UserController(IUserBL userBL)
+        public UsersController(IUserBL userBL)
         {
             _userBL = userBL;
         }
@@ -67,6 +67,21 @@ namespace EvoPlay.Controllers
             await _userBL.DeleteUserAsync(id);
 
             return NoContent();
+        }
+        [HttpGet("exists")]
+        public async Task<ActionResult> CheckUserExists([FromQuery] string email)
+        {
+            var user = await _userBL.GetUserByEmailAsync(email);
+            if (user != null)
+            {
+                // User exists, return user ID
+                return Ok(new { Exists = true, UserId = user.Id });
+            }
+            else
+            {
+                // User does not exist
+                return Ok(new { Exists = false });
+            }
         }
     }
 }

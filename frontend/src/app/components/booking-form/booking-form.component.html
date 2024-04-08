@@ -28,7 +28,7 @@
 
       <div class="other-selectors">
         <mat-form-field appearance="fill">
-          <mat-label>כמות משתתפים</mat-label>
+          <mat-label>משתתפים</mat-label>
           <mat-select [(ngModel)]="numberOfPlayers" name="players" [disabled]="!bookingDate">
             <mat-option *ngFor="let number of playerOptions" [value]="number">{{ number }}</mat-option>
           </mat-select>

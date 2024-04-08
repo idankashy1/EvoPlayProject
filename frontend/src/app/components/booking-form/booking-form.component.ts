@@ -160,7 +160,9 @@ updateEndHoursOptions(): void {
     // טיפול בחדרי PS5 ו-PS5VIP
     // אם שעת התחלה היא 23:00, הגבלת שעות הסיום ל-01:00 ו-02:00 בלבד
     if (this.startHour === '23:00') {
-      this.endHoursOptions = ['01:00', '02:00'];
+      this.endHoursOptions = ['01:00', '02:00'];}
+      else if (this.startHour === '00:00') {
+        this.endHoursOptions = ['02:00'];
     } else {
       // לשאר השעות, הוספת אפשרויות החל משני שעות לאחר שעת ההתחלה
       let endHourIndex = startIndex + 2; // התחלה ממשך של לפחות שעתיים
@@ -293,7 +295,7 @@ goToNextStep(): void {
           data: bookingDetails,
         });
       } else {
-        alert('Selected time or room is not available. Please choose another time or room type.');
+        alert('אין חדר זמין בשעות אלו, אנא נסה שעות אחרות.');
       }
     },
     error: (error) => {

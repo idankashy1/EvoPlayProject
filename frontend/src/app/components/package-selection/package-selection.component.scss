@@ -125,6 +125,22 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.25);
 }
 
+.close-dialog-btn {
+  position: absolute; /* Position it relative to the dialog */
+  top: 1rem; /* Space from the top */
+  right: 1rem; /* Space from the right */
+  border: none; /* No border */
+  background: transparent; /* Transparent background */
+  color: #fff; /* White text */
+  font-size: 1.5rem; /* Larger font size for visibility */
+  cursor: pointer; /* Pointer cursor on hover */
+}
+
+/* Add more styles for hover effect */
+.close-dialog-btn:hover {
+  color: #f00; /* Red color on hover for visibility */
+}
+
 @media (max-width: 768px) {
   .custom-dialog-background {
     padding: 1rem;

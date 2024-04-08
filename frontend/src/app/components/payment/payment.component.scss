@@ -50,6 +50,13 @@ mat-card-title {
   margin-bottom: 20px;
 }
 
+mat-form-field.full-width-input {
+  width: 100%; /* Make sure the input takes the full width */
+  margin-bottom: 16px; /* Adjust this value as needed for more or less space */
+  /* You can add more padding or margin if needed */
+}
+
+
 /* Content styles */
 mat-card-content {
   display: flex;
