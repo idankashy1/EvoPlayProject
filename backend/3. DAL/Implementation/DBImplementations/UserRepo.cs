@@ -5,12 +5,22 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EvoPlay._3._Repository.Implementation
 {
-    public class UserViaContextRepo : IUserRepo
+    public class UserRepo : IUserRepo
     {
         private readonly GameCenterContext _context;
 
-        public UserViaContextRepo(GameCenterContext context) {
+        public UserRepo(GameCenterContext context) {
             _context = context;
+        }
+
+        public async Task<bool> CheckUserExistsByEmailAsync(string email)
+        {
+            return await _context.Users.AnyAsync(u => u.Email == email);
+        }
+
+        public async Task<User> GetUserByEmailAsync(string email)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.Email.Equals(email));
         }
 
         public User AddUser(User userToAdd)

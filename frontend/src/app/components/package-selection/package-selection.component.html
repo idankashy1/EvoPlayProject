@@ -1,4 +1,6 @@
+
 <div class="custom-dialog-background">
+  <button class="close-dialog-btn" (click)="closeDialog()">X</button>
   <!-- Packages section, shown only if booking meets specific requirements -->
   <div *ngIf="qualifiesForPackage">
     <h2 class="dialog-header">רגע לפני שממשיכים לתשלום, בחר חבילת פינוק</h2>
@@ -27,3 +29,4 @@
     <button class ="submit-button" *ngIf="!qualifiesForPackage" mat-raised-button color="primary" (click)="continueToPayment()">המשך לתשלום</button>
   </div>
 </div>
+

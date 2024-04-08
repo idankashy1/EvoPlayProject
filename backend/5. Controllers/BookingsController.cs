@@ -111,7 +111,7 @@ namespace EvoPlay.Controllers
 
             if (!isAvailable)
             {
-                return BadRequest("The requested room is not available for the specified date and time.");
+                return Ok(new { Message = "The requested room is not available for the specified date and time. Please choose different hours.", IsAvailable = false });
             }
 
             return Ok(new { Message = "Room is available", IsAvailable = isAvailable, RoomId = roomId });

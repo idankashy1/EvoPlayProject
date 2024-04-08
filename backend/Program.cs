@@ -67,6 +67,8 @@ builder.Services.AddScoped<IPackageService, PackageService>();
 builder.Services.AddScoped<IPackageRepository, PackageRepository>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IUserBL, UserBL>();
+builder.Services.AddScoped<IUserRepo, UserRepo>();
+
 
 
 var app = builder.Build();
@@ -82,8 +84,13 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseCors("MyPolicy");
 app.UseAuthentication(); // Make sure authentication is configured before authorization
+app.UseRouting();
+
 app.UseAuthorization();
 
-app.MapControllers();
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+});
 
 app.Run();

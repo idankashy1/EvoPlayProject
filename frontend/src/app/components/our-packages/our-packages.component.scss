@@ -8,6 +8,12 @@
     background-size: cover;
     background-repeat: no-repeat;
   
+    .package-item:hover {
+      transform: scale(1.05); /* Increase scale for more noticeable effect */
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Larger shadow for more depth */
+      background-color: rgba(255, 250, 250, 1); /* More noticeable background color change */
+    }
+    
     .package-item {
       display: flex;
       flex-direction: row-reverse; 
@@ -19,6 +25,8 @@
       border-radius: 8px;
       overflow: hidden;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+
   
       &:hover {
         box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);

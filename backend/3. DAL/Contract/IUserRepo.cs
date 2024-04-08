@@ -15,5 +15,7 @@ namespace EvoPlay._3._Repository.Contract
         List<User> GetAllUsers();
 
         void SaveChanges();
+        Task<bool> CheckUserExistsByEmailAsync(string email);
+        Task<User> GetUserByEmailAsync(string email);
     }
 }

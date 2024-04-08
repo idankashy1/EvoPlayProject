@@ -132,4 +132,7 @@ export class PackageSelectionComponent implements OnInit {
     this.router.navigate(['/payment']);
     this.dialogRef.close();
   }
+  closeDialog(): void {
+    this.dialogRef.close(); // This will close the dialog
+  }
 }

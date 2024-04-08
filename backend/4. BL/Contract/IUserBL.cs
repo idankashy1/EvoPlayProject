@@ -15,5 +15,7 @@ namespace EvoPlay.BL.Contract
         Task<User> GetUserByIdAsync(int id);
         Task UpdateUserAsync(User user);
         Task DeleteUserAsync(int id);
+        Task<bool> CheckUserExistsByEmailAsync(string email);
+        Task<User> GetUserByEmailAsync(string email);
     }
 }
