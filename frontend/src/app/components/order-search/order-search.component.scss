@@ -1,0 +1,33 @@
+/* Add these styles to order-search.component.scss */
+
+:host {
+    display: block;
+    padding: 20px;
+  }
+  
+  mat-card {
+    margin: auto; /* Centers the card horizontally */
+    max-width: 600px; /* Adjust the width of the card */
+    padding: 20px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    border-radius: 8px; /* Card corner radius */
+  }
+  
+  mat-form-field {
+    width: 100%; /* Full width */
+    margin-bottom: 20px; /* Space between fields */
+  }
+  
+  button[mat-button] {
+    margin-top: 10px;
+    width: 100%; /* Full width */
+    background-color: #3f51b5;
+    color: white;
+    padding: 12px 0; /* Padding for better touch area */
+    border-radius: 4px; /* Button corner radius */
+  }
+  
+  button[mat-button]:hover {
+    background-color: #303f9f;
+  }
+  

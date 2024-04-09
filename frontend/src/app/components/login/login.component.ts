@@ -26,4 +26,9 @@ export class LoginComponent {
       }
     });
   }
+
+  logout() {
+    localStorage.removeItem('token'); // This removes the token from local storage
+    this.router.navigate(['/login']); // Adjust if your login route is different
+  }
 }
