@@ -27,7 +27,11 @@ body {
   font-family: 'M PLUS Rounded 1c', sans-serif !important;
 }
 
+.date-field .mat-mdc-form-field-infix {
+  right: 15px;
+  cursor: pointer;
 
+}
 
 
 
