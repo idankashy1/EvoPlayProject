@@ -46,17 +46,13 @@
   width: 90%; 
   margin: auto;
   
+  
   // בוררי זמנים ובחירות נוספות
   .time-selectors,
   .other-selectors {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 2rem;
-  }
-
-  // שדה תאריך
-  .date-field {
-    width: 100%;
   }
   
   .mat-input-element,
@@ -66,7 +62,9 @@
   textarea {
     text-align: right;
   }
+
 }
+
 
 // שדה הטופס
 mat-form-field {
@@ -76,27 +74,8 @@ mat-form-field {
   flex-direction: column;
   justify-content: center;
   height: 75px;
+  cursor: pointer;
 
-  
-  mat-input-element::placeholder {
-    color: rgba(168, 66, 66, 0.6);
-  }
-
-  mat-label {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #000;
-    margin-top: -4px;
-  }
-
-  
-  .mat-datepicker-toggle {
-    position: absolute;
-    left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-  }
 }
 
 // כפתור המשך
