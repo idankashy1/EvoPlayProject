@@ -1,6 +1,6 @@
 export interface ContactForm {
     name: string;
     email: string;
-    phoneNumber?: string; // Optional field
+    phoneNumber?: string; 
     message: string;
   }
