@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { MatSidenav } from '@angular/material/sidenav';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-
 
 @Component({
   selector: 'app-header',
@@ -9,14 +9,12 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent {
+  @ViewChild('sidenav') sidenav!: MatSidenav;
 
-  menuOpen = false;
-  isSmallScreen = false; // Set this based on the screen size
+  isSmallScreen = false;
 
   constructor(private router: Router, private breakpointObserver: BreakpointObserver) {
-    breakpointObserver.observe([
-      Breakpoints.Handset
-    ]).subscribe(result => {
+    breakpointObserver.observe([Breakpoints.Handset]).subscribe(result => {
       this.isSmallScreen = result.matches;
     });
   }
@@ -26,38 +24,61 @@ export class HeaderComponent {
   }
 
   toggleMenu() {
-    this.menuOpen = !this.menuOpen;
+    this.sidenav.toggle();
   }
 
   closeMenu() {
-    this.menuOpen = false; 
-  }
-  navigateToAboutUs() {
-    this.router.navigate(['/about-us']);
-  }
-
-  navigateToContactUs() {
-    this.router.navigate(['/contact-us']);
-  }
-
-  navigateToOurRooms() {
-    this.router.navigate(['/our-rooms']);
+    this.sidenav.close();
   }
 
   navigateToHomePage() {
     this.router.navigate(['']);
+    this.closeMenu();
+  }
+
+  navigateToContactUs() {
+    this.router.navigate(['/contact-us']);
+    this.closeMenu();
+  }
+
+  navigateToAboutUs() {
+    this.router.navigate(['/about-us']);
+    this.closeMenu();
   }
 
   navigateToOurPackages() {
     this.router.navigate(['/our-packages']);
+    this.closeMenu();
   }
 
   navigateToCompanyEvents() {
     this.router.navigate(['/company-events']);
+    this.closeMenu();
+  }
+
+  navigateToOurRooms() {
+    this.router.navigate(['/our-rooms']);
+    this.closeMenu();
   }
 
   navigateToOrderSearch() {
-    this.router.navigate(['/order-search']); // Make sure the route matches your Angular routing configuration
+    this.router.navigate(['/order-search']);
+    this.closeMenu();
+  }
+
+  // הוספת פונקציות ניווט חסרות
+  navigateToBirthdays() {
+    this.router.navigate(['/company-events']); // מפנה לאותו דף
+    this.closeMenu();
+  }
+
+  navigateToBachelorParty() {
+    this.router.navigate(['/company-events']); // מפנה לאותו דף
+    this.closeMenu();
+  }
+
+  navigateToPrivateEvents() {
+    this.router.navigate(['/company-events']); // מפנה לאותו דף
+    this.closeMenu();
   }
 }
-

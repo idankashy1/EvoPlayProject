@@ -14,17 +14,16 @@ import { OrderSearchComponent } from './components/order-search/order-search.com
 
 
 const routes: Routes = [
-  { path: '', component: HomeComponent },
-  { path: 'login', component: LoginComponent },
-  { path: 'order-search', component: OrderSearchComponent },
-  { path: 'our-rooms', component: OurRoomsComponent },
-  { path: 'about-us', component: AboutUsComponent },
-  { path: 'contact-us', component: ContactUsComponent },
-  { path: 'package-selection', component: PackageSelectionComponent },
-  { path: 'our-packages', component: OurPackagesComponent },
-  { path: 'payment', component: PaymentComponent },
-  { path: 'company-events', component: CompanyEventsComponent },
-
+  { path: '', component: HomeComponent, data: { animation: 'HomePage' } },
+  { path: 'login', component: LoginComponent, data: { animation: 'LoginPage' } },
+  { path: 'order-search', component: OrderSearchComponent, data: { animation: 'OrderSearchPage' } },
+  { path: 'our-rooms', component: OurRoomsComponent, data: { animation: 'RoomsPage' } },
+  { path: 'about-us', component: AboutUsComponent, data: { animation: 'AboutPage' } },
+  { path: 'contact-us', component: ContactUsComponent, data: { animation: 'ContactPage' } },
+  { path: 'package-selection', component: PackageSelectionComponent, data: { animation: 'PackagePage' } },
+  { path: 'our-packages', component: OurPackagesComponent, data: { animation: 'PackagesPage' } },
+  { path: 'payment', component: PaymentComponent, data: { animation: 'PaymentPage' } },
+  { path: 'company-events', component: CompanyEventsComponent, data: { animation: 'EventsPage' } },
 ];
 
 @NgModule({

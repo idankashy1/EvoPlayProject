@@ -1,37 +1,52 @@
 /* You can add global styles to this file, and also import other style files */
 @import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c&family=Montserrat&family=Ubuntu&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Secular+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Almoni+Display&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Alef:wght@400;700&family=Amatic+SC:wght@400;700&display=swap');
 
-body {
-    font-family: 'Ubuntu', sans-serif !important;
-    background-image: url('assets/background2.jpg'); // Update with the correct filename
-    background-size: cover; // This will make sure the image covers the whole area
-    background-repeat: no-repeat; // This will prevent the image from repeating
-    background-attachment: fixed; // This will make the background fixed during scroll
-    background-position: center center; // This will center the image
-  }
 
-  /* header.component.scss */
-  .header-toolbar {
-    font-family: 'M PLUS Rounded 1c', sans-serif !important;
-  }
 
-  .booking-title {
-    font-family: 'M PLUS Rounded 1c', sans-serif !important;
-  }
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden; /* Prevents horizontal scrolling */
+  background-size: cover; /* Makes sure the background covers the entire area */
+  background-repeat: no-repeat; /* Prevents the background from repeating */
+  background-attachment: fixed; /* Fixes the background during scroll */
+  background-position: center center; /* Centers the background image */
+  font-family: 'Ubuntu', sans-serif !important;
+}
 
-  .submit-button {
-    font-family: 'M PLUS Rounded 1c', sans-serif !important;
-  }
+app-root {
+  min-height: 100vh;
+  width: 100%;
+}
 
-.dialog-header{
+/* To ensure the header and footer span the full width */
+app-header, app-footer {
+  width: 100%;
+}
+
+.header-toolbar {
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+}
+
+.booking-title {
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+}
+
+.submit-button {
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+}
+
+.dialog-header {
   font-family: 'M PLUS Rounded 1c', sans-serif !important;
 }
 
 .date-field .mat-mdc-form-field-infix {
   right: 15px;
   cursor: pointer;
-
 }
-
-
-

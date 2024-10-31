@@ -1,32 +1,32 @@
+<!-- package-selection.component.html -->
 
 <div class="custom-dialog-background">
   <button class="close-dialog-btn" (click)="closeDialog()">X</button>
-  <!-- Packages section, shown only if booking meets specific requirements -->
-  <div *ngIf="qualifiesForPackage">
+
+  <!-- Packages section, shown only if there are available packages -->
+  <div *ngIf="availablePackages.length > 0">
     <h2 class="dialog-header">רגע לפני שממשיכים לתשלום, בחר חבילת פינוק</h2>
     <hr class="header-divider"/>
     <div class="package-list">
-    <div *ngFor="let package of availablePackages" class="package">
-      <img [src]="package.imageUrl" alt="{{ package.name }}" class="package-image">
-      <div class="package-content">
-        <h3 class="package-name">{{ package.name }}</h3>
-        <p class="package-description">{{ package.description }}</p>
-        <button (click)="selectPackage(package)" class="select-package-btn">בחר חבילה והמשך לתשלום</button>
-        <hr class="package-divider"/> 
+      <div *ngFor="let package of availablePackages" class="package">
+        <img [src]="package.imageUrl" alt="{{ package.name }}" class="package-image">
+        <div class="package-content">
+          <h3 class="package-name">{{ package.name }}</h3>
+          <p class="package-description">{{ package.description }}</p>
+          <button (click)="selectPackage(package)" class="select-package-btn">בחר חבילה והמשך לתשלום</button>
+          <hr class="package-divider"/> 
+        </div>
       </div>
     </div>
   </div>
-</div>
-
 
   <!-- Booking details summary, always shown -->
   <div class="booking-details-summary" dir="rtl">
     <h2 class="booking-details-title">פרטי ההזמנה</h2>
-    <p>הזמנת חדר {{ bookingDetails.roomType | translateRoomType }} בתאריך {{ bookingDetails.bookingDate | date: 'dd/MM/yyyy' }} בין השעות {{ bookingDetails.startHour }} ל-{{ bookingDetails.endHour }} לכמות של {{ bookingDetails.numberOfPlayers }} משתתפים.</p>
+    <p>הזמנת חדר {{ bookingDetails.roomType }} בתאריך {{ bookingDetails.bookingDate | date: 'dd/MM/yyyy' }} בין השעות {{ bookingDetails.startHour }} ל-{{ bookingDetails.endHour }} לכמות של {{ bookingDetails.numberOfPlayers }} משתתפים.</p>
     <p>עלות למשתתף: {{ calculatePricePerParticipant() | number:'1.0-2' }} ש"ח</p>
     <p>עלות כוללת: {{ calculateTotalCost() | number:'1.0-2' }} ש"ח</p>
-    <!-- "Continue to Payment" button shown only if booking does not qualify for a package -->
-    <button class ="submit-button" *ngIf="!qualifiesForPackage" mat-raised-button color="primary" (click)="continueToPayment()">המשך לתשלום</button>
+    <!-- "Continue to Payment" button shown if there are no packages available -->
+    <button class="submit-button" *ngIf="!qualifiesForPackage || availablePackages.length === 0" mat-raised-button color="primary" (click)="continueToPayment()">המשך לתשלום</button>
   </div>
 </div>
-

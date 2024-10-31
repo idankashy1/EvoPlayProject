@@ -14,12 +14,12 @@ export class PackageService {
     return this.http.get<any[]>(`${this.apiUrl}/all`);
   }
 
-  getAvailablePackages(numberOfPlayers: number, hours: number): Observable<any[]> { // You can replace any[] with a more specific model if you have it
+  getAvailablePackages(numberOfPlayers: number, hours: number, roomType: string): Observable<any[]> {
     const params = new HttpParams()
       .set('NumberOfPlayers', numberOfPlayers.toString())
-      .set('Duration', hours.toString());
-      console.log(`Sending request with NumberOfPlayers: ${numberOfPlayers}, Duration: ${hours}`); // Debugging line
-
+      .set('Duration', hours.toString())
+      .set('RoomType', roomType);
+  
     return this.http.get<any[]>(`${this.apiUrl}/available`, { params });
   }
 }

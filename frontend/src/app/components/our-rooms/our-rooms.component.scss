@@ -45,11 +45,13 @@
 
 .room-details h1 {
   margin-bottom: 0.5rem; /* Add space between title and text */
+  font-family: 'Amatic SC', cursive; /* כותרות עם Amatic SC */
 }
 
 .room-details p {
   max-width: 600px; /* Limit text width and allow wrapping */
-  margin-bottom: 1rem; /* Space below the text */
+  margin-bottom: 1.5rem; /* Space below the text */
+  font-family: 'Alef', sans-serif; /* טקסט רגיל עם Alef */
 }
 
 .image-container {
