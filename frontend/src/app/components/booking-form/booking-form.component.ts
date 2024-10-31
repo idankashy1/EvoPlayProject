@@ -1,307 +1,308 @@
-import { Component, OnInit } from '@angular/core';
+// booking-form.component.ts
+
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router'; 
 import { MatDialog } from '@angular/material/dialog';
 import { PackageSelectionComponent } from '../package-selection/package-selection.component';
-import { DateAdapter, MAT_DATE_LOCALE } from '@angular/material/core';
+import { DateAdapter } from '@angular/material/core';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
-import { BookingService, CheckAvailabilityRequest } from '../../services/booking.serivce'; // Update the path as necessary
+import { BookingService } from '../../services/booking.serivce';
+import { CheckAvailabilityRequest, CheckAvailabilityResponse } from '../../models/check-availability.model';
+import { PaymentService } from '../../services/payment.service';
+import { Subscription, take } from 'rxjs';
 
-
+interface BookingDetails {
+  bookingDate: Date;
+  startHour: string;
+  endHour: string;
+  numberOfPlayers: number;
+  roomType: string;
+  duration: number;
+}
 
 @Component({
   selector: 'app-booking-form',
   templateUrl: './booking-form.component.html',
   styleUrls: ['./booking-form.component.scss'],
 })
-export class BookingFormComponent implements OnInit {
- // קביעת הערכים ההתחלתיים למשתנים
- bookingDate: Date | null = null; // לא מוגדר תאריך ראשוני
- startHour: string = '17:00'; // שעת התחלה התחלתית
- endHour: string = '19:00'; // שעה סופית מוגדרת
- numberOfPlayers: number = 4; // מספר השחקנים ההתחלתי
- roomType: string = 'PS5'; // סוג החדר ההתחלתי
- startHoursOptions: string[] = []; // אופציות לבחירת שעת התחלה
- endHoursOptions: string[] = []; // אופציות לבחירת שעת סיום
- playerOptions: number[] = [2, 3, 4, 5, 6]; // ברירת מחדל לחדר PS5
- today = new Date(); // מחזיק כל פעם את היום הנוכחי
+export class BookingFormComponent implements OnInit, OnDestroy {
+  bookingDate: Date | null = null;
+  startHour: string = '17:00';
+  endHour: string = '19:00';
+  numberOfPlayers: number = 4;
+  roomType: string = 'PS5';
+  startHoursOptions: string[] = [];
+  endHoursOptions: string[] = [];
+  playerOptions: number[] = [];
+  today = new Date();
+  private subscriptions: Subscription = new Subscription();
 
- constructor(
-   private router: Router,
-   private dialog: MatDialog,
-   private dateAdapter: DateAdapter<Date>,
-   private bookingService: BookingService,
- ) {}
+  constructor(
+    private router: Router,
+    private dialog: MatDialog,
+    private dateAdapter: DateAdapter<Date>,
+    private bookingService: BookingService,
+    private paymentService: PaymentService
+  ) {}
 
- ngOnInit(): void {
-  this.today.setHours(0, 0, 0, 0); // Set today with no time for comparison
-  this.dateAdapter.setLocale('en-GB'); // פורמט תאריך DD/MM/YYYY
+  ngOnInit(): void {
+    this.today.setHours(0, 0, 0, 0);
+    this.dateAdapter.setLocale('en-GB');
+    this.updateTimeSlotsBasedOnRoomType(this.roomType);
+    this.updatePlayerOptions(this.roomType);
+  }
 
-   // קריאה לפונקציה שמעדכנת את האופציות לבחירת שעות בהתאם לסוג החדר
-   this.updateTimeSlotsBasedOnRoomType(this.roomType);
- }
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
+  }
 
+  dateChanged(event: MatDatepickerInputEvent<Date>): void {
+    this.bookingDate = event.value;
+  }
 
-// Method to check room availability
-checkRoomAvailability(): void {
-  if (this.bookingDate && this.startHour && this.endHour && this.roomType && this.numberOfPlayers) {
-    const formattedDate = this.bookingDate.toISOString().split('T')[0];
+  onRoomTypeChange(roomType: string): void {
+    this.roomType = roomType;
+    this.updateTimeSlotsBasedOnRoomType(roomType);
+    this.updatePlayerOptions(roomType);
+    this.updateEndHoursOptions();
+  }
+
+  onStartTimeChange(startHour: string): void {
+    this.startHour = startHour;
+    this.updateEndHoursOptions();
+  }
+
+  private updatePlayerOptions(roomType: string): void {
+    switch (roomType) {
+      case 'VR':
+        this.numberOfPlayers = 1;
+        this.playerOptions = [1, 2, 3, 4];
+        break;
+      case 'PC':
+        this.numberOfPlayers = 1;
+        this.playerOptions = [1, 2, 3, 4, 5];
+        break;
+      case 'PS5':
+        this.numberOfPlayers = 4;
+        this.playerOptions = [2, 3, 4, 5, 6];
+        break;
+      case 'PS5VIP':
+        this.numberOfPlayers = 4;
+        this.playerOptions = [2, 3, 4, 5, 6, 7, 8];
+        break;
+      default:
+        this.playerOptions = [];
+        break;
+    }
+  }
+
+  private updateTimeSlotsBasedOnRoomType(roomType: string): void {
+    if (['PS5', 'PS5VIP'].includes(roomType)) {
+      this.startHoursOptions = [
+        '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00'
+      ];
+    } else if (roomType === 'PC') {
+      this.startHoursOptions = [
+        '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00', '01:00'
+      ];
+    } else if (roomType === 'VR') {
+      this.startHoursOptions = this.generateQuarterHourlyTimeSlots(17 * 60, (2 + 24) * 60 - 15);
+    }
+    this.startHour = this.startHoursOptions[0];
+    this.updateEndHoursOptions();
+  }
+
+  private updateEndHoursOptions(): void {
+    if (!this.startHour) return;
+
+    const startTimeMinutes = this.convertHourToMinutes(this.startHour);
+
+    if (this.roomType === 'VR') {
+      const closingTimeMinutes = (2 + 24) * 60; // 02:00 למחרת
+      this.endHoursOptions = [];
+
+      let endTimeMinutes = startTimeMinutes + 15; // מינימום 15 דקות
+      while (endTimeMinutes <= closingTimeMinutes) {
+        this.endHoursOptions.push(this.convertMinutesToHourString(endTimeMinutes));
+        endTimeMinutes += 15; // קפיצות של 15 דקות
+      }
+
+      if (this.endHoursOptions.length === 0) {
+        alert('אין זמני סיום זמינים לתחילת זמן זה. אנא בחר זמן התחלה אחר.');
+        this.endHour = '';
+      } else {
+        this.endHour = this.endHoursOptions[0];
+      }
+      return;
+    }
+
+    // לחדרים אחרים
+    const closingTimeMinutes = (2 + 24) * 60; // 02:00 למחרת
+
+    let minDuration = 0;
+    if (this.roomType === 'PC') {
+      minDuration = 60; // שעה
+    } else if (['PS5', 'PS5VIP'].includes(this.roomType)) {
+      minDuration = 120; // שעתיים
+    }
+
+    let endTimeMinutes = startTimeMinutes + minDuration;
+    this.endHoursOptions = [];
+
+    while (endTimeMinutes <= closingTimeMinutes) {
+      this.endHoursOptions.push(this.convertMinutesToHourString(endTimeMinutes));
+      endTimeMinutes += 60; // הוספת שעה
+    }
+
+    if (this.endHoursOptions.length === 0) {
+      alert('אין זמני סיום זמינים לתחילת זמן זה. אנא בחר זמן התחלה אחר.');
+      this.endHour = '';
+    } else {
+      this.endHour = this.endHoursOptions[0];
+    }
+  }
+
+  private generateQuarterHourlyTimeSlots(startMinutes: number, endMinutes: number): string[] {
+    const slots = [];
+    const totalMinutesInDay = 24 * 60;
+    let time = startMinutes;
+    while (time <= endMinutes) {
+      const adjustedTime = time % totalMinutesInDay;
+      const hour = Math.floor(adjustedTime / 60);
+      const minute = adjustedTime % 60;
+      const displayString = `${hour < 10 ? '0' + hour : hour}:${minute < 10 ? '0' + minute : minute}`;
+      slots.push(displayString);
+      time += 15; // קפיצות של 15 דקות
+    }
+    return slots;
+  }
+
+  private convertHourToMinutes(hourString: string): number {
+    const [hoursStr, minutesStr] = hourString.split(':');
+    let hours = parseInt(hoursStr, 10);
+    const minutes = parseInt(minutesStr, 10);
+    if (hours < 17) {
+      // זמן אחרי חצות
+      hours += 24;
+    }
+    return hours * 60 + minutes;
+  }
+
+  private convertMinutesToHourString(minutes: number): string {
+    const totalMinutesInDay = 24 * 60;
+    const adjustedMinutes = minutes % totalMinutesInDay;
+    const hours = Math.floor(adjustedMinutes / 60) % 24;
+    const mins = adjustedMinutes % 60;
+    return `${hours < 10 ? '0' + hours : hours}:${mins < 10 ? '0' + mins : mins}`;
+  }
+
+  private calculateDuration(start: string, end: string): number {
+    const startTime = this.convertHourToMinutes(start);
+    let endTime = this.convertHourToMinutes(end);
+    if (endTime <= startTime) {
+      endTime += 24 * 60;
+    }
+    const durationInMinutes = endTime - startTime;
+    
+    // עבור חדר VR, חשב את הזמן ביחידות של 15 דקות ולא שעות
+    if (this.roomType === 'VR') {
+      return durationInMinutes / 15; // מחזיר את מספר הסשנים של 15 דקות
+    }
+  
+    return durationInMinutes / 60; // עבור חדרים אחרים, מחשב לפי שעות
+  }
+
+  private createDateTimeString(date: Date, time: string): string {
+    const [hours, minutes] = time.split(':').map(Number);
+    const dateTime = new Date(date);
+    if (hours < 17) {
+      // זמן אחרי חצות
+      dateTime.setDate(dateTime.getDate() + 1);
+    }
+    dateTime.setHours(hours % 24, minutes, 0, 0);
+    return dateTime.toISOString();
+  }
+
+  private getResourceTypeId(roomType: string): number {
+    const resourceTypeMap: { [key: string]: number } = {
+      'PS5': 1,
+      'PS5VIP': 2,
+      'PC': 3,
+      'VR': 4
+    };
+    return resourceTypeMap[roomType] || 0;
+  }
+
+  private calculateQuantity(roomType: string): number {
+    if (['PS5', 'PS5VIP'].includes(roomType)) {
+      return 1;
+    } else if (['VR', 'PC'].includes(roomType)) {
+      return this.numberOfPlayers;
+    } else {
+      return 0;
+    }
+  }
+
+  private checkIfQualifiesForPackage(bookingDetails: BookingDetails): boolean {
+    const { numberOfPlayers, duration } = bookingDetails;
+    return numberOfPlayers >= 4 && duration >= 2;
+  }
+
+  goToNextStep(): void {
+    if (!this.bookingDate || !this.startHour || !this.endHour || !this.numberOfPlayers || !this.roomType) {
+      alert('אנא ודא שכל פרטי ההזמנה מלאים.');
+      return;
+    }
+
+    const startTime = this.createDateTimeString(this.bookingDate, this.startHour);
+    const endTime = this.createDateTimeString(this.bookingDate, this.endHour);
+
     const request: CheckAvailabilityRequest = {
-      date: formattedDate,
-      startTime: this.createDateTimeString(this.bookingDate, this.startHour),
-      endTime: this.createDateTimeString(this.bookingDate, this.endHour),
-      roomType: this.roomType,
-      numberOfPlayers: this.numberOfPlayers,
+      resourceTypeId: this.getResourceTypeId(this.roomType),
+      quantityRequested: this.calculateQuantity(this.roomType),
+      startTime: startTime,
+      endTime: endTime,
     };
 
     console.log('Checking room availability with:', request);
-    
-    this.bookingService.checkRoomAvailability(request).subscribe({
-      next: (response) => {
-        // Your existing code
-      },
-      error: (error) => {
-        console.error('Error checking room availability:', error);
-        alert('An error occurred while checking room availability. Please try again.');
-      }
-    });
-  } else {
-    console.error('Please fill all required fields to check room availability.');
-  }
-}
 
- // מאזין לתאריך ברגע שמשתנה ושומר אותו לבווקינגדייט
- dateChanged(event: MatDatepickerInputEvent<Date>): void {
-  this.bookingDate = event.value;
-  }
+    this.bookingService.checkRoomAvailability(request).pipe(take(1)).subscribe({
+      next: (response: CheckAvailabilityResponse) => {
+        console.log('Availability response:', response);
+        if (response.isAvailable) {
+          console.log('Room is available. Proceeding to the next step.');
+          const duration = this.calculateDuration(this.startHour, this.endHour);
 
-// פונקציה המגיבה לשינוי בבחירת סוג החדר
-onRoomTypeChange(roomType: string): void {
-  this.roomType = roomType;
+          const bookingDetails: BookingDetails = {
+            bookingDate: this.bookingDate!,
+            startHour: this.startHour,
+            endHour: this.endHour,
+            numberOfPlayers: this.numberOfPlayers,
+            roomType: this.roomType,
+            duration: duration,
+          };
 
-  this.startHour = '17:00'; // מאתחל שעות בכל שינוי חדר 
-  this.endHour = '19:00';   // מאתחל שעות בכל שינוי חדר
+          const qualifiesForPackage = this.checkIfQualifiesForPackage(bookingDetails);
 
-  this.updateTimeSlotsBasedOnRoomType(roomType);
-
-  if (roomType === 'VR' || roomType === 'Racing Simulation') {
-    this.numberOfPlayers = 1;
-    this.playerOptions = roomType === 'VR' ? [1, 2, 3, 4] : [1, 2];
-  } else if (roomType === 'PS5') {
-    this.numberOfPlayers = 4;
-    this.playerOptions = [2, 3, 4, 5, 6];
-  } else {
-    this.numberOfPlayers = 4;
-    this.playerOptions = [2, 3, 4, 5, 6, 7, 8];
-  }
-
-  // Call to update end hours options with new start hour
-  this.updateEndHoursOptions();
-}
-
- // פונקציה המגיבה לשינוי בבחירת שעת ההתחלה
- onStartTimeChange(startHour: string): void {
-   this.startHour = startHour;
-   // עדכון אופציות שעת סיום בהתאם לשעת ההתחלה הנבחרת
-   this.updateEndHoursOptions();
- }
-
- // עדכון אפשרויות שעת התחלה וסיום בהתאם לסוג החדר
-// עדכון אפשרויות שעת התחלה וסיום בהתאם לסוג החדר
-updateTimeSlotsBasedOnRoomType(roomType: string): void {
-  // בדיקה אם החדר הוא PS5 או PS5VIP
-  if (roomType === 'PS5' || roomType === 'PS5VIP') {
-    // יצירת אפשרויות לשעות התחלה מ-17:00 עד 24:00
-    this.startHoursOptions = this.generateHourlyTimeSlots(17, 24);
-    // הוספת אפשרות להתחלה בשעה 00:00 אם אינה קיימת
-    if (!this.startHoursOptions.includes('00:00')) {
-      this.startHoursOptions.push('00:00');
-    }
-    // עדכון אפשרויות שעת סיום בהתאם
-    this.updateEndHoursOptions();
-  } else {
-    // עבור VR ו-Racing Simulation, יצירת אפשרויות לשעות התחלה ברבעיות שעה
-    this.startHoursOptions = this.generateQuarterHourlyTimeSlots(17, 26);
-    // הגדרת אפשרויות שעת סיום להיות זהות לאפשרויות שעת התחלה
-    this.endHoursOptions = this.startHoursOptions;
-  }
-  // הגדרת שעת ההתחלה והסיום לערכים הראשונים ברשימה
-  this.startHour = this.startHoursOptions[0];
-  this.endHour = this.endHoursOptions[0];
-}
-
-// עדכון אפשרויות לשעת סיום בהתאם לשעת התחלה שנבחרה
-updateEndHoursOptions(): void {
-  // מציאת אינדקס שעת ההתחלה שנבחרה ברשימה
-  const startIndex = this.startHoursOptions.indexOf(this.startHour);
-  // אם לא נמצאה שעת התחלה, יציאה מהפונקציה
-  if (startIndex === -1) return;
-
-  // ריקון רשימת אפשרויות שעת סיום
-  this.endHoursOptions = [];
-
-  // טיפול מיוחד לחדרי VR ו-Racing Simulation
-  if (this.roomType === 'VR' || this.roomType === 'Racing Simulation') {
-    // אם שעת התחלה היא 1:45, הגדרת שעת סיום ל-2:00 בלבד
-    if (this.startHour === '1:45') {
-      this.endHoursOptions = ['02:00'];
-    } else {
-      // לשאר השעות, הוספת אפשרויות ברבעיות שעה עד 1:45 וכוללת 2:00
-      for (let i = startIndex + 1; i < this.startHoursOptions.length; i++) {
-        if (this.startHoursOptions[i] !== '1:45') {
-          this.endHoursOptions.push(this.startHoursOptions[i]);
+          if (['PS5', 'PS5VIP', 'PC'].includes(this.roomType) && qualifiesForPackage) {
+            // פותחים את PackageSelectionComponent
+            this.dialog.open(PackageSelectionComponent, {
+              width: '600px',
+              data: bookingDetails,
+            });
+          } else {
+            // עובר ישירות לתשלום
+            this.paymentService.storePaymentData(bookingDetails);
+            this.router.navigate(['/payment']);
+          }
+        } else {
+          alert('אין משאבים זמינים בשעות אלו, אנא נסה שעות אחרות.');
         }
-      }
-      // הוספת אפשרות ל-2:00 אם אינה קיימת
-      if (!this.endHoursOptions.includes('02:00')) {
-        this.endHoursOptions.push('02:00');
-      }
-    }
-  } else if (this.roomType === 'PS5' || this.roomType === 'PS5VIP') {
-    // טיפול בחדרי PS5 ו-PS5VIP
-    // אם שעת התחלה היא 23:00, הגבלת שעות הסיום ל-01:00 ו-02:00 בלבד
-    if (this.startHour === '23:00') {
-      this.endHoursOptions = ['01:00', '02:00'];}
-      else if (this.startHour === '00:00') {
-        this.endHoursOptions = ['02:00'];
-    } else {
-      // לשאר השעות, הוספת אפשרויות החל משני שעות לאחר שעת ההתחלה
-      let endHourIndex = startIndex + 2; // התחלה ממשך של לפחות שעתיים
-      while (endHourIndex < this.startHoursOptions.length) {
-        this.endHoursOptions.push(this.startHoursOptions[endHourIndex]);
-        endHourIndex++;
-      }
-      // הבטחת כלולת אפשרויות שעת סיום שלאחר חצות
-      this.ensurePostMidnightEndOptions();
-    }
+      },
+      error: (error: any) => {
+        console.error('Error checking room availability:', error);
+        alert('אירעה שגיאה בבדיקת הזמינות. אנא נסה שוב.');
+      },
+    });
   }
-
-  // איפוס שעת סיום אם היא לא קיימת באפשרויות החדשות
-  if (!this.endHoursOptions.includes(this.endHour)) {
-    this.endHour = this.endHoursOptions[0];
-  }
-}
-
-// פונקציה להבטחת כלולת אפשרויות שעת סיום לאחר חצות
-private ensurePostMidnightEndOptions() {
-  // כולל את שעות 00:00, 01:00, ו-02:00 אם אינן קיימות
-  ['00:00', '01:00', '02:00'].forEach(time => {
-    if (!this.endHoursOptions.includes(time)) {
-      this.endHoursOptions.push(time);
-    }
-  });
-}
-
-// יצירת רשימת זמנים לשעות שלמות בכל שעה
-private generateHourlyTimeSlots(start: number, end: number): string[] {
-  // יצירת רשימה של שעות בתחום הנתון, בכל שעה
-  let slots: string[] = [];
-  for (let hour = start; hour < end; hour++) {
-    let displayHour = hour % 24; // המרה לפורמט 24 שעות
-    let displayString = `${displayHour < 10 ? '0' + displayHour : displayHour}:00`;
-    if (displayString !== "24:00") { // התעלמות מ-"24:00" אם קיים
-      slots.push(displayString);
-    }
-  }
-  // עבור PS5 ו-PS5VIP, הבטח שהאפשרות האחרונה להזמנה היא "00:00"
-  if (slots.includes('01:00')) {
-    slots = slots.filter(hour => hour !== '01:00');
-  }
-  return slots;
-}
-
-  // יצירת רשימת זמנים לרבעי שעה
-  private generateQuarterHourlyTimeSlots(start: number, end: number): string[] {
-    return this.generateTimeSlots(start, end, 15); // 15 דקות לכל רבע שעה
-  }
-
-  // יצירת רשימת זמנים בהתאם לטווח שעות והפסקה זמנית מוגדרת
-  private generateTimeSlots(start: number, end: number, interval: number): string[] {
-    let slots = [];
-    for (let hour = start; hour < end; hour++) {
-      for (let minute = 0; minute < 60; minute += interval) {
-        let displayHour = hour % 24; // מעבר לתחילת היום אם השעה היא 24 או יותר
-        let displayString = `${displayHour < 10 ? '0' + displayHour : displayHour}:${minute < 10 ? '0' + minute : minute}`;
-        slots.push(displayString);
-      }
-    }
-    return slots.filter(time => time !== "24:00"); // סינון של הזמן "24:00" אם הוא קיים
-  }
-
-  // חישוב משך הזמן של ההזמנה בשעות
-  private calculateDuration(start: string, end: string): number {
-    let  startTime = this.convertHourToMinutes(start);
-    let  endTime = this.convertHourToMinutes(end);
-      // Handle time past midnight
-  if (endTime < startTime) {
-    // Add 24 hours to the end time to account for the next day
-    endTime += 24 * 60;
-  }
-
-    // החזרת ההפרש בשעות
-    return (endTime - startTime) / 60;
-  }
-
-  // המרת מחרוזת שעה למספר דקות כוללות
-  private convertHourToMinutes(hourString: string): number {
-    const [hours, minutes] = hourString.split(':').map(Number);
-    const adjustedHours = hours < 17 ? hours + 24 : hours;
-
-    return adjustedHours * 60 + minutes; // כפל שעות ב-60 וחיבור הדקות
-  }
-
-// Method added here
-private createDateTimeString(date: Date, time: string): string {
-  const [hours, minutes] = time.split(':').map(Number);
-  const dateTime = new Date(date.getTime());
-  dateTime.setHours(hours, minutes, 0, 0);
-  return dateTime.toISOString();
-}
-
-goToNextStep(): void {
-  if (!this.bookingDate || !this.startHour || !this.endHour || !this.numberOfPlayers || !this.roomType) {
-    alert('Please ensure all booking details are filled in.');
-    return;
-  }
-
-  const offset = this.bookingDate.getTimezoneOffset();
-  const localDate = new Date(this.bookingDate.getTime() - offset * 60 * 1000);
-  const formattedDate = localDate.toISOString().split('T')[0];
-  const duration = this.calculateDuration(this.startHour, this.endHour); // Duration in hours
-
-  const request: CheckAvailabilityRequest = {
-    date: formattedDate,
-    startTime: this.startHour,
-    endTime: this.endHour,
-    roomType: this.roomType,
-    numberOfPlayers: this.numberOfPlayers,
-  };
-
-  this.bookingService.checkRoomAvailability(request).subscribe({
-    next: (response) => {
-      console.log('Availability response:', response);
-      if (response.isAvailable) {
-        console.log('Room is available. Proceeding to the next step.');
-        const bookingDetails = {
-          bookingDate: this.bookingDate,
-          startHour: this.startHour,
-          endHour: this.endHour,
-          numberOfPlayers: this.numberOfPlayers,
-          roomType: this.roomType,
-          duration: duration, // Now passing duration in hours for package selection
-          roomId: response.roomId, // Store the roomId from the availability check
-        };
-        this.dialog.open(PackageSelectionComponent, {
-          width: '600px',
-          data: bookingDetails,
-        });
-      } else {
-        alert('אין חדר זמין בשעות אלו, אנא נסה שעות אחרות.');
-      }
-    },
-    error: (error) => {
-      console.error('Error checking room availability:', error);
-      alert('An error occurred while checking room availability. Please try again.');
-    },
-  });
-}
 }

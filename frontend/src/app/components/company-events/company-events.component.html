@@ -1,17 +1,10 @@
 <div class="main-content">
   <div class="company-events-container">
-    <h1 class="title">אירועים לכל מטרה</h1>
-
-    <div class="events-grid">
-      <div *ngFor="let event of events" class="event-card">
-        <div class="event-image">
-          
-          <img src="{{ event.imageSrc }}" alt="{{ event.title }}">
-        </div>
-        <div class="event-info">
-          <h2 class="event-title">{{ event.title }}</h2>
-          <p class="event-description">{{ event.description }}</p>
-        </div>
+    <div *ngFor="let event of events; let i = index" class="event-banner" [ngClass]="{'reverse': i % 2 !== 0}">
+      <div class="event-image" [ngStyle]="{'background-image': 'url(' + event.imageSrc + ')'}"></div>
+      <div class="event-text">
+        <h2 class="event-title">{{ event.title }}</h2>
+        <p class="event-description">{{ event.description }}</p>
       </div>
     </div>
   </div>

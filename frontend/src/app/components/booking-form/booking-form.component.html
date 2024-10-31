@@ -37,7 +37,7 @@
         <mat-form-field appearance="fill">
           <mat-label>סוג חדר</mat-label>
           <mat-select [(ngModel)]="roomType" name="roomType" (selectionChange)="onRoomTypeChange($event.value)" [disabled]="!bookingDate">
-            <mat-option *ngFor="let type of ['PS5', 'VR', 'Racing Simulation', 'PS5VIP']" [value]="type">{{ type }}</mat-option>
+            <mat-option *ngFor="let type of ['PS5', 'VR', 'PC', 'PS5VIP']" [value]="type">{{ type }}</mat-option>
           </mat-select>
         </mat-form-field>
       </div>

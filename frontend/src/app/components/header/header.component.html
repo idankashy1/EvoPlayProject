@@ -1,39 +1,71 @@
-<mat-toolbar color="primary" class="header-toolbar">
-  <div class="logo-container">
-    <img src="assets/logo.png" alt="EvoPlay Logo" (click)="navigateToHomePage(); closeMenu()" class="logo">
+<mat-toolbar class="header-toolbar">
+  <div class="logo-container" (click)="navigateToHomePage()">
+    <img src="assets/web_logo.png" alt="EvoPlay Logo" class="logo">
   </div>
+  <nav class="desktop-menu">
+    <a mat-button (click)="navigateToOurRooms()">החדרים שלנו</a>
+    <a mat-button (click)="navigateToOurPackages()">החבילות שלנו</a>
+    <button mat-button [matMenuTriggerFor]="eventsMenu">אירועים</button>
+    <mat-menu #eventsMenu="matMenu">
+      <button mat-menu-item (click)="navigateToCompanyEvents()">אירועי חברה</button>
+      <button mat-menu-item (click)="navigateToCompanyEvents()">ימי הולדת</button>
+      <button mat-menu-item (click)="navigateToCompanyEvents()">מסיבת רווקים/רווקות</button>
+      <button mat-menu-item (click)="navigateToCompanyEvents()">אירוע פרטי אחר</button>
+    </mat-menu>
+    <a mat-button href="assets/evoplay_menu.pdf" download="EvoPlay_Menu.pdf">תפריט</a>
+    <a mat-button (click)="navigateToAboutUs()">קצת עלינו</a>
+    <a mat-button (click)="navigateToContactUs()">צור קשר</a>
+
+    <a mat-button *ngIf="isLoggedIn" (click)="navigateToOrderSearch()">חפש הזמנה</a>
+  </nav>
   <button mat-icon-button class="menu-button" (click)="toggleMenu()">
     <mat-icon>menu</mat-icon>
   </button>
-  <div class="header-content" [class.menu-open]="menuOpen">
-    <ul class="menu-list">
-      <li class="menu-item" (click)="navigateToContactUs(); closeMenu()">
-        <a>צור קשר</a>
-      </li>
-      <li class="menu-item" (click)="navigateToAboutUs(); closeMenu()">
-        <a>קצת עלינו</a>
-      </li>
-      <li class="menu-item" (click)="navigateToOurPackages(); closeMenu()">
-        <a>החבילות שלנו</a>
-      </li>
-      <li class="menu-item" (click)="toggleMenu()">
-        <a href="assets/evoplay_menu.pdf" download="EvoPlay_Menu.pdf">תפריט</a>
-      </li>
-      <li class="menu-item" (click)="toggleMenu()" (click)="navigateToCompanyEvents(); closeMenu()"> <!-- Adjust as needed if submenu has its own navigation logic -->
-        <a>אירועים</a>
-        <ul class="submenu">
-          <li (click)="closeMenu()"><a>אירועי חברה</a></li>
-          <li (click)="closeMenu()"><a>ימי הולדת</a></li>
-          <li (click)="closeMenu()"><a>מסיבת רווקים/רווקות</a></li>
-          <li (click)="closeMenu()"><a>אירוע פרטי אחר</a></li>
-        </ul>
-      </li>
-      <li class="menu-item" (click)="navigateToOurRooms(); closeMenu()">
-        <a>החדרים שלנו</a>
-      </li>
-      <li class="menu-item" *ngIf="isLoggedIn" (click)="navigateToOrderSearch(); closeMenu()">
-        <a>חפש הזמנה</a>
-      </li>
-    </ul>
-  </div>
 </mat-toolbar>
+
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav #sidenav class="mobile-sidenav" mode="over" [fixedInViewport]="true" [fixedTopGap]="80">
+    <mat-nav-list>
+      <mat-list-item (click)="navigateToContactUs()">
+        <span>צור קשר</span>
+      </mat-list-item>
+      <mat-list-item (click)="navigateToAboutUs()">
+        <span>קצת עלינו</span>
+      </mat-list-item>
+      <mat-list-item (click)="navigateToOurPackages()">
+        <span>החבילות שלנו</span>
+      </mat-list-item>
+      <mat-list-item (click)="closeMenu()">
+        <a href="assets/evoplay_menu.pdf" download="EvoPlay_Menu.pdf">תפריט</a>
+      </mat-list-item>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>אירועים</mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-nav-list>
+          <mat-list-item (click)="navigateToCompanyEvents()">
+            <span>אירועי חברה</span>
+          </mat-list-item>
+          <mat-list-item (click)="navigateToCompanyEvents()">
+            <span>ימי הולדת</span>
+          </mat-list-item>
+          <mat-list-item (click)="navigateToCompanyEvents()">
+            <span>מסיבת רווקים/רווקות</span>
+          </mat-list-item>
+          <mat-list-item (click)="navigateToCompanyEvents()">
+            <span>אירוע פרטי אחר</span>
+          </mat-list-item>
+        </mat-nav-list>
+      </mat-expansion-panel>
+      <mat-list-item (click)="navigateToOurRooms()">
+        <span>החדרים שלנו</span>
+      </mat-list-item>
+      <mat-list-item *ngIf="isLoggedIn" (click)="navigateToOrderSearch()">
+        <span>חפש הזמנה</span>
+      </mat-list-item>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <!-- תוכן הדף -->
+  </mat-sidenav-content>
+</mat-sidenav-container>

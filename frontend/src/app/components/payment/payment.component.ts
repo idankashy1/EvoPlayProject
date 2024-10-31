@@ -1,9 +1,24 @@
+// payment.component.ts
+
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PaymentService } from '../../services/payment.service';
-import { BookingService } from '../../services/booking.serivce'; // You need to create this service
-import { CheckUserExistsResponse } from '../../models/check-user-exists-response.model';
+import { BookingService } from '../../services/booking.serivce';
+import { BookingRequestDto } from '../../models/booking-request.dto';
+import { take } from 'rxjs/operators';
 
+type RoomType = 'PS5' | 'PS5VIP' | 'PC' | 'VR';
+
+interface BookingDetails {
+  bookingDate: Date;
+  startHour: string;
+  endHour: string;
+  numberOfPlayers: number;
+  roomType: RoomType; // שינינו מ-string ל-RoomType
+  duration: number;
+  selectedPackage?: any;
+  totalCost?: number;
+}
 
 @Component({
   selector: 'app-payment',
@@ -11,115 +26,124 @@ import { CheckUserExistsResponse } from '../../models/check-user-exists-response
   styleUrls: ['./payment.component.scss']
 })
 export class PaymentComponent implements OnInit {
-  bookingDetails: any; // Placeholder, replace with your actual booking details model
+  bookingDetails!: BookingDetails;
   userDetailsForm!: FormGroup;
+  
+
+  // מחירי החדרים
+  private pricePerHour: { [key in RoomType]: number } = {
+    'PS5': 30,
+    'PS5VIP': 35,
+    'PC': 30,
+    'VR': 40
+  };
 
   constructor(
     private paymentService: PaymentService,
-    private bookingService: BookingService, // Add this service
+    private bookingService: BookingService,
     private fb: FormBuilder
   ) {}
 
   ngOnInit(): void {
-    this.paymentService.getPaymentData().subscribe(data => {
+    this.paymentService.getPaymentData().pipe(take(1)).subscribe(data => {
       this.bookingDetails = data;
       console.log('Booking and Package Data:', this.bookingDetails);
+
+      // חישוב העלות הכוללת והגדרתה ב-bookingDetails
+      this.bookingDetails.totalCost = this.calculateTotalCost();
+      console.log('Total cost calculated in ngOnInit:', this.bookingDetails.totalCost);
     });
 
-    // Initialize the form
+    // אתחול הטופס
     this.userDetailsForm = this.fb.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       phoneNumber: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      city: '',
-      address: '',
+      city: [''],
+      address: [''],
     });
+  }
+
+  calculateTotalCost(): number {
+    const { roomType, duration, numberOfPlayers } = this.bookingDetails;
+    const rate = this.pricePerHour[roomType] * duration * numberOfPlayers;
+    console.log('Total cost:', rate);
+    return rate;
+  }
+
+  calculatePricePerParticipant(): number {
+    const totalCost = this.calculateTotalCost();
+    const { numberOfPlayers } = this.bookingDetails;
+    return totalCost / numberOfPlayers;
   }
 
   onPaymentSubmit(): void {
     if (this.userDetailsForm.valid) {
       const userDetails = this.extractUserDetails();
-      this.bookingService.checkUserExists(userDetails.email).subscribe({
-        next: (response: CheckUserExistsResponse) => {
-          console.log('Response from checkUserExists:', response);
-          if (response.exists) {
-            console.log(`User exists, user ID: ${response.userId}`);
-            // Ensure userId is defined before proceeding
-            if (response.userId) {
-              // Proceed with booking creation using the existing userId
-              this.createBooking(response.userId);
-            } else {
-              console.error('UserId is undefined for an existing user.');
-              // Handle the error scenario
-            }
-          } else {
-            console.log('User does not exist, proceeding to create a new user.');
-            // Proceed with user creation and then booking
-            this.createUserAndProceedWithBooking(userDetails);
-          }
+      const bookingDetails = this.prepareBookingDetails(userDetails);
+
+      // קריאה ליצירת ההזמנה
+      this.bookingService.createBooking(bookingDetails).subscribe({
+        next: (response: any) => {
+          console.log('הזמנה נוצרה בהצלחה:', response);
+          // נווט לעמוד אישור או הצג הודעת הצלחה
+          // this.router.navigate(['/confirmation']);
         },
-        error: (error) => {
-          console.error('Error checking user existence:', error);
-          // Handle the error
+        error: (error: any) => {
+          console.error('שגיאה ביצירת ההזמנה:', error);
+          alert('אירעה שגיאה ביצירת ההזמנה. אנא נסה שוב.');
         }
       });
     } else {
-      console.error('Form is invalid, please review and correct the details.');
+      alert('אנא מלא את כל השדות הנדרשים בטופס.');
     }
   }
-  
+
   private extractUserDetails(): any {
-    console.log('Extracting user details from form.');
+    return this.userDetailsForm.value;
+  }
+
+  private prepareBookingDetails(userDetails: any): BookingRequestDto {
+    const startTime = this.createDateTimeString(this.bookingDetails.bookingDate, this.bookingDetails.startHour);
+    const endTime = this.createDateTimeString(this.bookingDetails.bookingDate, this.bookingDetails.endHour);
+
     return {
-      firstName: this.userDetailsForm.get('firstName')?.value || '',
-      lastName: this.userDetailsForm.get('lastName')?.value || '',
-      phoneNumber: this.userDetailsForm.get('phoneNumber')?.value || '',
-      email: this.userDetailsForm.get('email')?.value || '',
-      city: this.userDetailsForm.get('city')?.value || '',
-      address: this.userDetailsForm.get('address')?.value || '',
-    };
-  }
-  
-  private createBooking(userId: string): void {
-    const bookingDetails = this.prepareBookingDetails(userId);
-    console.log('Creating booking with request:', bookingDetails);
-    this.bookingService.createBooking(bookingDetails).subscribe({
-      next: (bookingResponse) => {
-        console.log('Booking successful, response:', bookingResponse);
-        // Navigate to a confirmation page or show a success message
-      },
-      error: (error) => {
-        console.error('Booking creation failed:', error);
-        // Handle booking creation failure
-      }
-    });
-  }
-  
-  private createUserAndProceedWithBooking(userDetails: any): void {
-    console.log('Creating new user with details:', userDetails);
-    this.bookingService.createUser(userDetails).subscribe({
-      next: (userResponse) => {
-        console.log('User creation successful, proceeding to create booking with new userId:', userResponse.id);
-        this.createBooking(userResponse.id);
-      },
-      error: (error) => {
-        console.error('User creation failed:', error);
-        // Handle user creation failure
-      }
-    });
-  }
-  private prepareBookingDetails(userId: string): any {
-    // Example booking details - adjust according to your actual data structure
-    return {
-      userId: userId, // Use the provided userId
-      roomId: this.bookingDetails.roomId, // Assuming this is stored in bookingDetails
-      date: this.bookingDetails.bookingDate, // Booking date
-      startTime: this.bookingDetails.startHour, // Booking start time
-      endTime: this.bookingDetails.endHour, // Booking end time
-      numberOfPlayers: this.bookingDetails.numberOfPlayers, // Number of players/participants
-      packageId: this.bookingDetails.selectedPackage.id, // Optional: package or service ID if applicable
+      ...userDetails,
+      resourceTypeId: this.getResourceTypeId(this.bookingDetails.roomType),
+      quantity: this.calculateQuantity(this.bookingDetails.roomType),
+      startTime: startTime,
+      endTime: endTime,
+      numberOfPlayers: this.bookingDetails.numberOfPlayers,
+      packageId: this.bookingDetails.selectedPackage?.id || null,
+      totalCost: this.bookingDetails.totalCost
     };
   }
 
+  private createDateTimeString(date: Date, time: string): string {
+    const [hours, minutes] = time.split(':').map(Number);
+    const dateTime = new Date(date);
+    dateTime.setHours(hours, minutes, 0, 0);
+    return dateTime.toISOString();
+  }
+
+  private getResourceTypeId(roomType: string): number {
+    const resourceTypeMap: { [key: string]: number } = {
+      'PS5': 1,
+      'PS5VIP': 2,
+      'PC': 3,
+      'VR': 4
+    };
+    return resourceTypeMap[roomType] || 0;
+  }
+
+  private calculateQuantity(roomType: string): number {
+    if (['PS5', 'PS5VIP'].includes(roomType)) {
+      return 1;
+    } else if (['VR', 'PC'].includes(roomType)) {
+      return this.bookingDetails.numberOfPlayers;
+    } else {
+      return 0;
+    }
+  }
 }

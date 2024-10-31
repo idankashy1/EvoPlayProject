@@ -1,13 +1,10 @@
-using EvoPlay._3._Repository.Contract;
-using EvoPlay._3._Repository.Implementation;
+using EvoPlay.Repository.Contract;
+using EvoPlay.Repository.Implementation;
 using EvoPlay.BL.Contract;
 using EvoPlay.BL.Implementation;
 using EvoPlay.DAL;
 using EvoPlay.DAL.Contract;
 using EvoPlay.DAL.Implementation;
-using EvoPlay.Entities;
-using EvoPlay.Repository.Contract;
-using EvoPlay.Repository.Implementation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -67,7 +64,15 @@ builder.Services.AddScoped<IPackageService, PackageService>();
 builder.Services.AddScoped<IPackageRepository, PackageRepository>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IUserBL, UserBL>();
-builder.Services.AddScoped<IUserRepo, UserRepo>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IResourceRepository, ResourceRepository>();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+    options.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
+});
+
+
 
 
 
