@@ -21,5 +21,6 @@ namespace EvoPlay.BL.Contract
 
         // חיפוש הזמנות לפי מספר טלפון
         Task<IEnumerable<BookingGroup>> SearchBookingGroupsByPhoneNumberAsync(string phoneNumber);
+
     }
 }

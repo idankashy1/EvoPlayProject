@@ -13,9 +13,10 @@ import { MatListModule } from '@angular/material/list';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDialogModule } from '@angular/material/dialog';
-import { MatSidenavModule } from '@angular/material/sidenav'; // הוספנו את זה
-import { MatExpansionModule } from '@angular/material/expansion'; // הוספנו את זה
-import { MatSnackBarModule } from '@angular/material/snack-bar'; // הוספנו את זה
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatProgressBarModule } from '@angular/material/progress-bar'; // הוספנו את זה
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 @NgModule({
@@ -34,10 +35,11 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
         MatDividerModule,
         MatGridListModule,
         MatListModule,
-        MatSidenavModule, // הוספנו את זה
-        MatExpansionModule, // הוספנו את זה
-        MatSnackBarModule, // הוספנו את זה
+        MatSidenavModule,
+        MatExpansionModule,
+        MatSnackBarModule,
+        MatProgressBarModule, // הוספנו את זה
         BrowserAnimationsModule,
     ],
 })
-export class MaterialModule{}
+export class MaterialModule {}

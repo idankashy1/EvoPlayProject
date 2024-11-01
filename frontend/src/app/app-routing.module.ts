@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AboutUsComponent } from './components/about-us/about-us.component'; // Make sure to create this component
+import { AboutUsComponent } from './components/about-us/about-us.component'; 
 import { HomeComponent } from './components/home/home.component';
 import { ContactUsComponent } from './components/contact-us/contact-us.component';
 import { OurRoomsComponent } from './components/our-rooms/our-rooms.component';
@@ -10,12 +10,16 @@ import { PaymentComponent } from './components/payment/payment.component';
 import { CompanyEventsComponent } from './components/company-events/company-events.component';
 import { LoginComponent } from './components/login/login.component';
 import { OrderSearchComponent } from './components/order-search/order-search.component';
+import { UserProfileComponent } from './components/user-profile/user-profile.component';
+import { RegisterComponent } from './components/register/register.component'; // ייבוא רכיב ההרשמה
 
 
 
 const routes: Routes = [
   { path: '', component: HomeComponent, data: { animation: 'HomePage' } },
   { path: 'login', component: LoginComponent, data: { animation: 'LoginPage' } },
+  { path: 'register', component: RegisterComponent, data: { animation: 'RegisterPage' } }, // נתיב להרשמה
+  { path: 'user-profile', component: UserProfileComponent },
   { path: 'order-search', component: OrderSearchComponent, data: { animation: 'OrderSearchPage' } },
   { path: 'our-rooms', component: OurRoomsComponent, data: { animation: 'RoomsPage' } },
   { path: 'about-us', component: AboutUsComponent, data: { animation: 'AboutPage' } },
