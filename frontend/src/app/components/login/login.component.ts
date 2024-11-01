@@ -10,6 +10,7 @@ import { LoginService } from '../../services/login.service';
 export class LoginComponent {
   email = '';
   password = '';
+  errorMessage = '';
 
   constructor(private loginService: LoginService, private router: Router) { }
 
@@ -19,16 +20,20 @@ export class LoginComponent {
         console.log('Login successful', response);
         // Store the token as needed
         localStorage.setItem('token', response.token);
-        this.router.navigate(['/']); // Adjust as needed
+        this.router.navigate(['/']); // Navigate to home or profile
       },
       error: (error) => {
         console.error('Login failed', error);
+        this.errorMessage = 'שם משתמש או סיסמה שגויים.';
       }
     });
   }
 
-  logout() {
-    localStorage.removeItem('token'); // This removes the token from local storage
-    this.router.navigate(['/login']); // Adjust if your login route is different
+  navigateToRegister(): void {
+    this.router.navigate(['/register']);
+  }
+
+  navigateToForgotPassword(): void {
+    this.router.navigate(['/forgot-password']);
   }
 }

@@ -1,7 +1,7 @@
 ﻿using EvoPlay.BL.Contract;
 using EvoPlay.Entities;
 using EvoPlay.Helpers;
-using EvoPlay._2._DTOs;
+using EvoPlay.DTOs;
 using EvoPlay.Repository.Contract;
 
 namespace EvoPlay.BL.Implementation
@@ -91,6 +91,10 @@ namespace EvoPlay.BL.Implementation
             {
                 await _genericUserRepository.DeleteAsync(user);
             }
+        }
+        public async Task<User> GetUserByResetTokenAsync(string token)
+        {
+            return await _userRepository.GetUserByResetTokenAsync(token);
         }
     }
 }

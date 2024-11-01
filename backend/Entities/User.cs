@@ -23,5 +23,12 @@ namespace EvoPlay.Entities
         public string Address { get; set; }
 
         public string? PasswordHash { get; set; } // Nullable
+
+        public int TotalPoints { get; set; } = 0; // סך כל הנקודות שנצברו
+
+        public int AvailableRewards { get; set; } = 0; // מספר ההטבות הזמינות
+
+        public string PasswordResetToken { get; set; }
+        public DateTime? ResetTokenExpiry { get; set; }
     }
 }

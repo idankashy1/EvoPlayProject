@@ -1,0 +1,15 @@
+<div class="profile-container" *ngIf="user">
+    <h2>פרופיל משתמש</h2>
+    <p>שם פרטי: {{ user.firstName }}</p>
+    <p>שם משפחה: {{ user.lastName }}</p>
+    <p>אימייל: {{ user.email }}</p>
+    <p>טלפון: {{ user.phoneNumber }}</p>
+    <p>עיר: {{ user.city }}</p>
+    <p>כתובת: {{ user.address }}</p>
+    <p>נקודות נוכחיות: {{ user.totalPoints % 5 }}</p>
+    <p>הטבות זמינות: {{ user.availableRewards }}</p>
+  
+    <!-- סקייל הנקודות -->
+    <mat-progress-bar mode="determinate" [value]="(user.totalPoints % 5) * 20"></mat-progress-bar>
+  </div>
+  
