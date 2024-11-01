@@ -1,4 +1,4 @@
-﻿using EvoPlay._2._DTOs;
+﻿using EvoPlay.DTOs;
 using EvoPlay.Entities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -17,5 +17,7 @@ namespace EvoPlay.BL.Contract
         Task DeleteUserAsync(int id);
         Task<bool> CheckUserExistsByEmailAsync(string email);
         Task<User> GetUserByEmailAsync(string email);
+        Task<User> GetUserByResetTokenAsync(string token);
+
     }
 }

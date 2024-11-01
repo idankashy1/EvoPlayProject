@@ -1,5 +1,4 @@
-﻿using EvoPlay._2._DTOs;
-using EvoPlay.BL.Contract;
+﻿using EvoPlay.BL.Contract;
 using EvoPlay.DTOs;
 using EvoPlay.Entities;
 using Microsoft.AspNetCore.Mvc;

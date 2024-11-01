@@ -1,0 +1,48 @@
+<div class="register-container">
+    <mat-card class="register-card">
+      <mat-card-title>רישום משתמש חדש</mat-card-title>
+      <form (submit)="onRegister()" #registerForm="ngForm">
+        <!-- פרטים אישיים -->
+        <mat-form-field appearance="fill">
+          <mat-label>שם פרטי</mat-label>
+          <input matInput [(ngModel)]="firstName" name="firstName" required>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>שם משפחה</mat-label>
+          <input matInput [(ngModel)]="lastName" name="lastName" required>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>אימייל</mat-label>
+          <input matInput type="email" [(ngModel)]="email" name="email" required>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>טלפון</mat-label>
+          <input matInput [(ngModel)]="phoneNumber" name="phoneNumber" required>
+        </mat-form-field>
+        <!-- סיסמה -->
+        <mat-form-field appearance="fill">
+          <mat-label>סיסמה</mat-label>
+          <input matInput type="password" [(ngModel)]="password" name="password" required>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>אימות סיסמה</mat-label>
+          <input matInput type="password" [(ngModel)]="confirmPassword" name="confirmPassword" required>
+        </mat-form-field>
+        <!-- כתובת -->
+        <mat-form-field appearance="fill">
+          <mat-label>עיר</mat-label>
+          <input matInput [(ngModel)]="city" name="city">
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>כתובת</mat-label>
+          <input matInput [(ngModel)]="address" name="address">
+        </mat-form-field>
+        <button mat-raised-button color="primary" type="submit">הירשם</button>
+        <div class="links">
+          <a (click)="navigateToLogin()">כבר יש לך חשבון? התחבר</a>
+        </div>
+        <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+      </form>
+    </mat-card>
+  </div>
+  
