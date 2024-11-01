@@ -1,6 +1,5 @@
-﻿using EvoPlay._2._DTOs;
+﻿using EvoPlay.DTOs;
 using EvoPlay.BL.Contract;
-using EvoPlay.DTOs;
 using EvoPlay.Entities;
 using EvoPlay.Repository.Contract;
 using System;
@@ -98,6 +97,8 @@ namespace EvoPlay.BL.Implementation
 
             // שמירת BookingGroup
             await _bookingRepository.AddBookingGroupAsync(bookingGroup);
+
+            await UpdateUserPointsAsync(bookingGroup);
 
             return bookingGroup;
         }
@@ -222,5 +223,31 @@ namespace EvoPlay.BL.Implementation
                 throw new Exception("Unknown resource type.");
             }
         }
+        private async Task UpdateUserPointsAsync(BookingGroup bookingGroup)
+        {
+            var user = await _userRepository.GetUserByIdAsync(bookingGroup.UserId);
+            if (user != null)
+            {
+                // חישוב סך כל השעות בהזמנה זו
+                double totalHours = bookingGroup.Bookings.Sum(b => (b.EndTime - b.StartTime).TotalHours);
+
+                // חישוב מספר הנקודות שנצברו בהזמנה זו
+                int pointsEarned = (int)(totalHours / 2);
+
+                // עדכון סך הנקודות
+                user.TotalPoints += pointsEarned;
+
+                // בדיקה אם המשתמש זכאי להטבות חדשות
+                while (user.TotalPoints >= 5)
+                {
+                    user.TotalPoints -= 5;
+                    user.AvailableRewards += 1;
+                }
+
+                // שמירת השינויים
+                await _userRepository.UpdateUserAsync(user);
+            }
+        }
+
     }
 }

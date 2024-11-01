@@ -14,5 +14,8 @@ namespace EvoPlay.Repository.Contract
         Task<bool> CheckUserExistsByEmailAsync(string email);
         Task<User> GetUserByEmailAsync(string email);
         Task<User> GetUserByPhoneNumberAsync(string phoneNumber);
+        Task<User> GetUserByResetTokenAsync(string token);
+
+
     }
 }

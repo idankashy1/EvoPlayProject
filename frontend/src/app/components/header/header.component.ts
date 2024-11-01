@@ -66,6 +66,22 @@ export class HeaderComponent {
     this.closeMenu();
   }
 
+  navigateToLogin() {
+    this.router.navigate(['/login']);
+    this.closeMenu();
+  }
+
+  navigateToUserProfile() {
+    this.router.navigate(['/user-profile']);
+    this.closeMenu();
+  }
+
+  logout() {
+    localStorage.removeItem('token');
+    this.router.navigate(['/']);
+    this.closeMenu();
+  }
+
   // הוספת פונקציות ניווט חסרות
   navigateToBirthdays() {
     this.router.navigate(['/company-events']); // מפנה לאותו דף

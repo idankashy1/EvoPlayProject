@@ -21,6 +21,8 @@ import { PaymentComponent } from './components/payment/payment.component';
 import { MaterialModule } from './material.module';
 import { LoginComponent } from './components/login/login.component';
 import { OrderSearchComponent } from './components/order-search/order-search.component';
+import { UserProfileComponent } from './components/user-profile/user-profile.component';
+import { RegisterComponent } from './components/register/register.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +40,9 @@ import { OrderSearchComponent } from './components/order-search/order-search.com
     TranslateRoomTypePipe,
     PaymentComponent,
     LoginComponent,
-    OrderSearchComponent
+    OrderSearchComponent,
+    UserProfileComponent,
+    RegisterComponent
   ],
   imports: [
     HttpClientModule,
