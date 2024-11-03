@@ -28,6 +28,7 @@ namespace EvoPlay.Repository.Implementation
                 .Include(bg => bg.Bookings)
                     .ThenInclude(b => b.Resource)
                 .Include(bg => bg.User)
+                .Include(bg => bg.Package) // הוספת Package
                 .FirstOrDefaultAsync(bg => bg.Id == id);
         }
 
@@ -37,6 +38,7 @@ namespace EvoPlay.Repository.Implementation
                 .Include(bg => bg.Bookings)
                     .ThenInclude(b => b.Resource)
                 .Include(bg => bg.User)
+                .Include(bg => bg.Package) // הוספת Package
                 .ToListAsync();
         }
 
@@ -87,6 +89,7 @@ namespace EvoPlay.Repository.Implementation
                 .Include(bg => bg.Bookings)
                     .ThenInclude(b => b.Resource)
                 .Include(bg => bg.User)
+                .Include(bg => bg.Package) // הוספת Package
                 .Where(bg => bg.User.PhoneNumber == phoneNumber)
                 .ToListAsync();
         }
@@ -97,6 +100,7 @@ namespace EvoPlay.Repository.Implementation
                 .Include(bg => bg.Bookings)
                     .ThenInclude(b => b.Resource)
                 .Include(bg => bg.User)
+                .Include(bg => bg.Package) // הוספת Package
                 .Where(bg => bg.UserId == userId)
                 .ToListAsync();
         }
@@ -116,5 +120,17 @@ namespace EvoPlay.Repository.Implementation
             return unavailableResourceIds;
         }
 
+        // מימוש פונקציה חדשה לקבלת הזמנות של היום
+        public async Task<IEnumerable<Booking>> GetTodaysBookingsAsync(DateTime date)
+        {
+            return await _context.Bookings
+                .Include(b => b.BookingGroup)
+                    .ThenInclude(bg => bg.User)
+                .Include(b => b.BookingGroup)
+                    .ThenInclude(bg => bg.Package) // הוספת Package
+                .Include(b => b.Resource)
+                .Where(b => b.StartTime.Date == date.Date)
+                .ToListAsync();
+        }
     }
 }

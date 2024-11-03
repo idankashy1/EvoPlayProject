@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { RegisterService } from '../../services/register.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-register',
@@ -18,7 +19,11 @@ export class RegisterComponent {
   address = '';
   errorMessage = '';
 
-  constructor(private registerService: RegisterService, private router: Router) { }
+  constructor(
+    private registerService: RegisterService, 
+    private router: Router, 
+    private snackBar: MatSnackBar
+  ) {}
 
   onRegister(): void {
     if (this.password !== this.confirmPassword) {
@@ -37,14 +42,21 @@ export class RegisterComponent {
     }).subscribe({
       next: (response) => {
         console.log('Registration successful', response);
+
+        // הודעת SnackBar בעת הרשמה מוצלחת
+        this.snackBar.open('נרשמת בהצלחה! התחבר כדי להמשיך.', '', { duration: 3000 });
         this.router.navigate(['/login']);
       },
       error: (error) => {
         console.error('Registration failed', error);
         this.errorMessage = 'הרישום נכשל. אנא נסה שוב.';
+        
+        // הודעת SnackBar בעת כישלון הרשמה
+        this.snackBar.open('הרישום נכשל. אנא נסה שוב.', '', { duration: 3000 });
       }
     });
   }
+
   navigateToLogin(): void {
     this.router.navigate(['/login']);
   }
