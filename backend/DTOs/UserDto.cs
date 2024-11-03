@@ -9,6 +9,9 @@
         public string City { get; set; }
         public string Address { get; set; }
         public int TotalPoints { get; set; }
+        public int CurrentPoints { get; set; } // הוספנו את השדה
         public int AvailableRewards { get; set; }
+        public string Role { get; set; } // הוספת השדה הזה
+
     }
 }

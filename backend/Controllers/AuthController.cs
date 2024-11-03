@@ -9,17 +9,15 @@ using System.Security.Claims;
 using System.Text;
 using System.Security.Cryptography;
 
-
-namespace EvoPlay._5._Controllers
+namespace EvoPlay.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly IUserBL _userBL; // Assuming you have a business logic layer for user operations
+        private readonly IUserBL _userBL;
         private readonly IConfiguration _configuration;
         private readonly IEmailBL _emailBL;
-
 
         public AuthController(IUserBL userBL, IConfiguration configuration, IEmailBL emailBL)
         {
@@ -62,7 +60,8 @@ namespace EvoPlay._5._Controllers
                 City = registrationDto.City,
                 Address = registrationDto.Address,
                 TotalPoints = 0,
-                AvailableRewards = 0
+                AvailableRewards = 0,
+                Role = "User" // תפקיד ברירת מחדל כ-User
             };
 
             await _userBL.CreateUserAsync(user);
@@ -70,24 +69,22 @@ namespace EvoPlay._5._Controllers
             return Ok("User registered successfully.");
         }
 
-
         private string GenerateJwtToken(User user)
         {
-            // Decode the base64 string to a byte array
-            var keyBytes = Convert.FromBase64String(_configuration["Jwt:Key"]);
-            var key = new SymmetricSecurityKey(keyBytes);
-            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var key = Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]);
+            var credentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256);
 
             var claims = new[]
             {
-        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-        new Claim(ClaimTypes.Email, user.Email),
-    };
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Role, user.Role) // הוספת תפקיד ל-Claims
+            };
 
             var token = new JwtSecurityToken(
-                _configuration["Jwt:Issuer"],
-                _configuration["Jwt:Audience"],
-                claims,
+                issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
+                claims: claims,
                 expires: DateTime.Now.AddDays(1),
                 signingCredentials: credentials
             );
@@ -101,7 +98,6 @@ namespace EvoPlay._5._Controllers
             var user = await _userBL.GetUserByEmailAsync(forgotPasswordDto.Email);
             if (user == null) return NotFound("User not found");
 
-            // יצירת טוקן איפוס סיסמה
             user.PasswordResetToken = Guid.NewGuid().ToString();
             user.ResetTokenExpiry = DateTime.UtcNow.AddHours(1);
             await _userBL.UpdateUserAsync(user);
@@ -129,5 +125,4 @@ namespace EvoPlay._5._Controllers
             return Ok("Password has been reset successfully.");
         }
     }
-
 }

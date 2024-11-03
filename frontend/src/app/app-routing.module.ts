@@ -12,6 +12,8 @@ import { LoginComponent } from './components/login/login.component';
 import { OrderSearchComponent } from './components/order-search/order-search.component';
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
 import { RegisterComponent } from './components/register/register.component'; // ייבוא רכיב ההרשמה
+import { AdminDashboardComponent } from './components/admin-dashboard/admin-dashboard.component';
+import { AdminGuard } from './guards/admin.guard';
 
 
 
@@ -21,6 +23,7 @@ const routes: Routes = [
   { path: 'register', component: RegisterComponent, data: { animation: 'RegisterPage' } }, // נתיב להרשמה
   { path: 'user-profile', component: UserProfileComponent },
   { path: 'order-search', component: OrderSearchComponent, data: { animation: 'OrderSearchPage' } },
+  { path: 'admin-dashboard', component: AdminDashboardComponent, canActivate: [AdminGuard] },
   { path: 'our-rooms', component: OurRoomsComponent, data: { animation: 'RoomsPage' } },
   { path: 'about-us', component: AboutUsComponent, data: { animation: 'AboutPage' } },
   { path: 'contact-us', component: ContactUsComponent, data: { animation: 'ContactPage' } },

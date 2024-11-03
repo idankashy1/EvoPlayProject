@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using EvoPlay.DAL.Contract;
 
 namespace EvoPlay.BL.Implementation
 {
@@ -14,54 +16,76 @@ namespace EvoPlay.BL.Implementation
         private readonly IBookingRepository _bookingRepository;
         private readonly IUserRepository _userRepository;
         private readonly IResourceRepository _resourceRepository;
+        private readonly IPackageRepository _packageRepository; // הוספת תלות חדשה
 
-        public BookingBL(IBookingRepository bookingRepository, IUserRepository userRepository, IResourceRepository resourceRepository)
+        public BookingBL(
+            IBookingRepository bookingRepository,
+            IUserRepository userRepository,
+            IResourceRepository resourceRepository,
+            IPackageRepository packageRepository) // עדכון הקונסטרקטור
         {
             _bookingRepository = bookingRepository;
             _userRepository = userRepository;
             _resourceRepository = resourceRepository;
+            _packageRepository = packageRepository; // הגדרת התלות
         }
 
         // פונקציה ליצירת קבוצת הזמנה חדשה
         public async Task<BookingGroup> CreateBookingGroupAsync(BookingRequestDto bookingRequest)
         {
-            // בדיקה אם המשתמש קיים לפי דוא"ל
-            var user = await _userRepository.GetUserByEmailAsync(bookingRequest.Email);
-            if (user == null)
+            User user = null;
+
+            if (bookingRequest.UserId.HasValue)
             {
-                // יצירת משתמש חדש
-                user = new User
+                // משתמש מחובר
+                user = await _userRepository.GetUserByIdAsync(bookingRequest.UserId.Value);
+                if (user == null)
                 {
-                    FirstName = bookingRequest.FirstName,
-                    LastName = bookingRequest.LastName,
-                    PhoneNumber = bookingRequest.PhoneNumber,
-                    Email = bookingRequest.Email,
-                    City = bookingRequest.City,
-                    Address = bookingRequest.Address
-                    // PasswordHash נשאר null
-                };
-                await _userRepository.AddUserAsync(user);
+                    throw new Exception("User not found.");
+                }
+            }
+            else
+            {
+                // משתמש לא מחובר, נבדוק אם הוא קיים לפי דוא"ל
+                user = await _userRepository.GetUserByEmailAsync(bookingRequest.Email);
+                if (user == null)
+                {
+                    // יצירת משתמש חדש
+                    user = new User
+                    {
+                        FirstName = bookingRequest.FirstName,
+                        LastName = bookingRequest.LastName,
+                        PhoneNumber = bookingRequest.PhoneNumber,
+                        Email = bookingRequest.Email,
+                        City = bookingRequest.City,
+                        Address = bookingRequest.Address
+                    };
+                    await _userRepository.AddUserAsync(user);
+                }
             }
 
             // קבלת המשאבים הזמינים
-            var availableResources = await GetAvailableResourcesAsync(bookingRequest.ResourceTypeId, bookingRequest.Quantity, bookingRequest.StartTime, bookingRequest.EndTime);
+            var availableResources = await GetAvailableResourcesAsync(
+                bookingRequest.ResourceTypeId,
+                bookingRequest.Quantity,
+                bookingRequest.StartTime,
+                bookingRequest.EndTime
+            );
 
+            // לוגיקה להקצאת משאבים
             if (bookingRequest.ResourceTypeId == 1 || bookingRequest.ResourceTypeId == 2)
             {
                 // חדרי Sony ו-Sony VIP
-                // צריכים חדר אחד
                 if (availableResources.Count < 1)
                 {
                     throw new Exception("No available rooms for the requested time.");
                 }
 
-                // משתמשים בחדר אחד
                 availableResources = availableResources.Take(1).ToList();
             }
             else if (bookingRequest.ResourceTypeId == 3 || bookingRequest.ResourceTypeId == 4)
             {
                 // חדרי PC ו-VR
-                // צריכים את כמות המשאבים המבוקשת
                 if (availableResources.Count < bookingRequest.Quantity)
                 {
                     throw new Exception("Not enough resources available for the requested time.");
@@ -74,11 +98,23 @@ namespace EvoPlay.BL.Implementation
                 throw new Exception("Unknown resource type.");
             }
 
-            // יצירת BookingGroup
+            // שליפת חבילה אם היא קיימת
+            Package package = null;
+            if (bookingRequest.PackageId.HasValue)
+            {
+                package = await _packageRepository.GetPackageByIdAsync(bookingRequest.PackageId.Value);
+                if (package == null)
+                {
+                    throw new Exception("Package not found.");
+                }
+            }
+
+            // יצירת BookingGroup עם כל השדות הדרושים
             var bookingGroup = new BookingGroup
             {
                 UserId = user.Id,
                 PackageId = bookingRequest.PackageId,
+                Package = package, // הגדרת הניווט ל-Package
                 Date = bookingRequest.StartTime.Date,
                 Bookings = new List<Booking>()
             };
@@ -90,18 +126,25 @@ namespace EvoPlay.BL.Implementation
                 {
                     ResourceId = resource.Id,
                     StartTime = bookingRequest.StartTime,
-                    EndTime = bookingRequest.EndTime
+                    EndTime = bookingRequest.EndTime,
+                    NumberOfPlayers = bookingRequest.NumberOfPlayers
                 };
                 bookingGroup.Bookings.Add(booking);
             }
 
-            // שמירת BookingGroup
+            // שמירת BookingGroup ב-Repository
             await _bookingRepository.AddBookingGroupAsync(bookingGroup);
 
-            await UpdateUserPointsAsync(bookingGroup);
+            // עדכון נקודות למשתמשים מחוברים בלבד
+            if (bookingRequest.UserId.HasValue)
+            {
+                await UpdateUserPointsAsync(bookingGroup);
+            }
 
             return bookingGroup;
         }
+
+        // שאר הפונקציות נשארות ללא שינוי...
 
         // פונקציה לקבלת הזמנה בודדת לפי מזהה
         public async Task<Booking> GetBookingByIdAsync(int id)
@@ -223,6 +266,7 @@ namespace EvoPlay.BL.Implementation
                 throw new Exception("Unknown resource type.");
             }
         }
+
         private async Task UpdateUserPointsAsync(BookingGroup bookingGroup)
         {
             var user = await _userRepository.GetUserByIdAsync(bookingGroup.UserId);
@@ -231,17 +275,21 @@ namespace EvoPlay.BL.Implementation
                 // חישוב סך כל השעות בהזמנה זו
                 double totalHours = bookingGroup.Bookings.Sum(b => (b.EndTime - b.StartTime).TotalHours);
 
-                // חישוב מספר הנקודות שנצברו בהזמנה זו
-                int pointsEarned = (int)(totalHours / 2);
+                // חישוב מספר הנקודות שנצברו בהזמנה זו (נקודה אחת לכל שעה)
+                int pointsEarned = (int)Math.Floor(totalHours);
 
-                // עדכון סך הנקודות
+                // עדכון סך הנקודות הכולל
                 user.TotalPoints += pointsEarned;
 
-                // בדיקה אם המשתמש זכאי להטבות חדשות
-                while (user.TotalPoints >= 5)
+                // עדכון הנקודות הנוכחיות
+                user.CurrentPoints += pointsEarned;
+
+                // בדיקה אם המשתמש זכאי להטבה חדשה
+                int newRewards = user.CurrentPoints / 10; // כמה הטבות חדשות מגיעות לו
+                if (newRewards > 0)
                 {
-                    user.TotalPoints -= 5;
-                    user.AvailableRewards += 1;
+                    user.AvailableRewards += newRewards;
+                    user.CurrentPoints = user.CurrentPoints % 10; // עדכון הנקודות הנוכחיות
                 }
 
                 // שמירת השינויים
@@ -249,5 +297,26 @@ namespace EvoPlay.BL.Implementation
             }
         }
 
+        public async Task<IEnumerable<BookingForAdminDto>> GetTodaysBookingsAsync(DateTime date)
+        {
+            // השגת כל ההזמנות שהתחילו ביום הנתון
+            var bookings = await _bookingRepository.GetTodaysBookingsAsync(date);
+
+            // מיפוי הנתונים ל-DTO המתאים
+            var bookingsDto = bookings.Select(b => new BookingForAdminDto
+            {
+                Id = b.Id,
+                FirstName = b.BookingGroup.User.FirstName,
+                LastName = b.BookingGroup.User.LastName,
+                RoomName = b.Resource.Name,
+                NumberOfPlayers = b.NumberOfPlayers,
+                StartTime = b.StartTime,
+                EndTime = b.EndTime,
+                PhoneNumber = b.BookingGroup.User.PhoneNumber,
+                AvailableRewards = b.BookingGroup.User.AvailableRewards
+            }).ToList();
+
+            return bookingsDto;
+        }
     }
 }

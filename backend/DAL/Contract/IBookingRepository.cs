@@ -25,6 +25,7 @@ namespace EvoPlay.Repository.Contract
         // חיפוש קבוצות הזמנה לפי מספר טלפון
         Task<IEnumerable<BookingGroup>> GetBookingGroupsByUserPhoneNumberAsync(string phoneNumber);
         Task<IEnumerable<BookingGroup>> GetBookingGroupsByUserIdAsync(int userId);
+        Task<IEnumerable<Booking>> GetTodaysBookingsAsync(DateTime date); // פונקציה חדשה
 
     }
 }

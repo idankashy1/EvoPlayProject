@@ -1,5 +1,8 @@
 ﻿using EvoPlay.DTOs;
 using EvoPlay.Entities;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace EvoPlay.BL.Contract
 {
@@ -22,5 +25,7 @@ namespace EvoPlay.BL.Contract
         // חיפוש הזמנות לפי מספר טלפון
         Task<IEnumerable<BookingGroup>> SearchBookingGroupsByPhoneNumberAsync(string phoneNumber);
 
+        // הוספת פונקציה חדשה לקבלת הזמנות של היום
+        Task<IEnumerable<BookingForAdminDto>> GetTodaysBookingsAsync(DateTime date);
     }
 }

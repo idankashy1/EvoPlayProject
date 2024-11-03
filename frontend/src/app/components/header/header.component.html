@@ -15,7 +15,8 @@
     <a mat-button href="assets/evoplay_menu.pdf" download="EvoPlay_Menu.pdf">תפריט</a>
     <a mat-button (click)="navigateToAboutUs()">קצת עלינו</a>
     <a mat-button (click)="navigateToContactUs()">צור קשר</a>
-    <a mat-button *ngIf="isLoggedIn" (click)="navigateToOrderSearch()">חפש הזמנה</a>
+    <!-- ניהול מערכת למשתמשי Admin -->
+    <a mat-button *ngIf="isLoggedIn && isAdmin" (click)="navigateToAdminDashboard()">ניהול מערכת</a>
   </nav>
 
   <div class="user-icons">
@@ -76,12 +77,14 @@
       <mat-list-item (click)="navigateToOurRooms()">
         <span>החדרים שלנו</span>
       </mat-list-item>
-      <mat-list-item *ngIf="isLoggedIn" (click)="navigateToOrderSearch()">
-        <span>חפש הזמנה</span>
+      <!-- ניהול מערכת למשתמשי Admin -->
+      <mat-list-item *ngIf="isLoggedIn && isAdmin" (click)="navigateToAdminDashboard()">
+        <span>ניהול מערכת</span>
       </mat-list-item>
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>
     <!-- תוכן הדף -->
+    <router-outlet></router-outlet>
   </mat-sidenav-content>
 </mat-sidenav-container>
