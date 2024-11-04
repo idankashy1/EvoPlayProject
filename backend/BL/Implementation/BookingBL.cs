@@ -318,5 +318,29 @@ namespace EvoPlay.BL.Implementation
 
             return bookingsDto;
         }
+        // פונקציה לחיפוש הזמנות לפי טקסט חופשי (ID, שם, טלפון)
+        public async Task<IEnumerable<Booking>> SearchBookingsAsync(string searchTerm)
+        {
+            return await _bookingRepository.SearchBookingsAsync(searchTerm);
+        }
+
+        // פונקציה לקבלת הזמנות בטווח תאריכים
+        public async Task<IEnumerable<BookingForAdminDto>> GetBookingsByDateRangeAsync(DateTime from, DateTime to)
+        {
+            var bookings = await _bookingRepository.GetBookingsByDateRangeAsync(from, to);
+
+            return bookings.Select(b => new BookingForAdminDto
+            {
+                Id = b.Id,
+                FirstName = b.BookingGroup.User.FirstName,
+                LastName = b.BookingGroup.User.LastName,
+                RoomName = b.Resource.Name,
+                NumberOfPlayers = b.NumberOfPlayers,
+                StartTime = b.StartTime,
+                EndTime = b.EndTime,
+                PhoneNumber = b.BookingGroup.User.PhoneNumber,
+                AvailableRewards = b.BookingGroup.User.AvailableRewards
+            }).ToList();
+        }
     }
 }

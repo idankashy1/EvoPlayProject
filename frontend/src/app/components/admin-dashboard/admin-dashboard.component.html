@@ -3,14 +3,33 @@
     <mat-card-content>
       <div class="table-container">
         <div class="filter-container">
-            <mat-form-field appearance="fill">
-                <mat-label>חיפוש</mat-label>
-                <input matInput (keyup)="applyFilter($event)" placeholder="חפש הזמנה">
-              </mat-form-field>
-              
+          <!-- שדה חיפוש -->
+          <mat-form-field appearance="fill">
+            <mat-label>חיפוש</mat-label>
+            <input matInput placeholder="חפש לפי ID, שם או טלפון" [formControl]="searchControl">
+          </mat-form-field>
+          
+          <!-- שדות סינון תאריכים -->
+          <mat-form-field appearance="fill">
+            <mat-label>מתאריך</mat-label>
+            <input matInput [matDatepicker]="pickerFrom" [formControl]="fromDate">
+            <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
+            <mat-datepicker #pickerFrom></mat-datepicker>
+          </mat-form-field>
+          
+          <mat-form-field appearance="fill">
+            <mat-label>עד תאריך</mat-label>
+            <input matInput [matDatepicker]="pickerTo" [formControl]="toDate">
+            <mat-datepicker-toggle matSuffix [for]="pickerTo"></mat-datepicker-toggle>
+            <mat-datepicker #pickerTo></mat-datepicker>
+          </mat-form-field>
+          
+          <!-- כפתורי סינון ואיפוס -->
+          <button mat-raised-button color="primary" (click)="applyDateFilter()">סנן</button>
+          <button mat-raised-button color="warn" (click)="resetFilters()">איפוס סינונים</button>
         </div>
+        
         <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
-  
           <!-- מספר הזמנה (id) -->
           <ng-container matColumnDef="id">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> # </th>

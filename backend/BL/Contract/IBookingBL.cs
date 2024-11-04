@@ -27,5 +27,7 @@ namespace EvoPlay.BL.Contract
 
         // הוספת פונקציה חדשה לקבלת הזמנות של היום
         Task<IEnumerable<BookingForAdminDto>> GetTodaysBookingsAsync(DateTime date);
+        Task<IEnumerable<Booking>> SearchBookingsAsync(string searchTerm);
+        Task<IEnumerable<BookingForAdminDto>> GetBookingsByDateRangeAsync(DateTime from, DateTime to);
     }
 }
