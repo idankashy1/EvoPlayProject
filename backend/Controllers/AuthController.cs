@@ -47,7 +47,7 @@ namespace EvoPlay.Controllers
         {
             if (await _userBL.CheckUserExistsByEmailAsync(registrationDto.Email))
             {
-                return BadRequest("User already exists.");
+                return BadRequest(new { message = "User already exists." });
             }
 
             var user = new User
@@ -66,7 +66,7 @@ namespace EvoPlay.Controllers
 
             await _userBL.CreateUserAsync(user);
 
-            return Ok("User registered successfully.");
+            return Ok(new { message = "User registered successfully." });
         }
 
         private string GenerateJwtToken(User user)

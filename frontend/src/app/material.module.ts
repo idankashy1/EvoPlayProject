@@ -18,7 +18,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatTableModule } from '@angular/material/table'; // הוספנו את MatTableModule
+import { MatTableModule } from '@angular/material/table'; 
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { MatPaginatorModule } from "@angular/material/paginator";
 
@@ -42,7 +42,7 @@ import { MatPaginatorModule } from "@angular/material/paginator";
         MatExpansionModule,
         MatSnackBarModule,
         MatProgressBarModule,
-        MatTableModule, // הוספנו את MatTableModule
+        MatTableModule, 
         BrowserAnimationsModule,
         MatPaginatorModule,
     ],

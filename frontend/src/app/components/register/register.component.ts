@@ -49,10 +49,10 @@ export class RegisterComponent {
       },
       error: (error) => {
         console.error('Registration failed', error);
-        this.errorMessage = 'הרישום נכשל. אנא נסה שוב.';
+        this.errorMessage = error.error.message || 'הרישום נכשל. אנא נסה שוב.';
         
         // הודעת SnackBar בעת כישלון הרשמה
-        this.snackBar.open('הרישום נכשל. אנא נסה שוב.', '', { duration: 3000 });
+        this.snackBar.open(this.errorMessage, '', { duration: 3000 });
       }
     });
   }
