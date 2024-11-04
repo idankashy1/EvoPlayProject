@@ -131,5 +131,31 @@ namespace EvoPlay.Controllers
             var bookings = await _bookingBL.GetTodaysBookingsAsync(parsedDate);
             return Ok(bookings);
         }
+        [Authorize(Roles = "Admin")]
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchBookings([FromQuery] string searchTerm)
+        {
+            if (string.IsNullOrEmpty(searchTerm))
+            {
+                return BadRequest("Search term is required.");
+            }
+
+            var bookings = await _bookingBL.SearchBookingsAsync(searchTerm);
+            return Ok(bookings);
+        }
+
+        // Endpoint לקבלת הזמנות בטווח תאריכים
+        [Authorize(Roles = "Admin")]
+        [HttpGet("daterange")]
+        public async Task<IActionResult> GetBookingsByDateRange([FromQuery] string from, [FromQuery] string to)
+        {
+            if (!DateTime.TryParse(from, out DateTime fromDate) || !DateTime.TryParse(to, out DateTime toDate))
+            {
+                return BadRequest("Invalid date range.");
+            }
+
+            var bookings = await _bookingBL.GetBookingsByDateRangeAsync(fromDate, toDate);
+            return Ok(bookings);
+        }
     }
 }

@@ -1,5 +1,6 @@
 // src/app/models/booking.model.ts
 export interface Booking {
+    BookingGroup: any;
     id: number;
     firstName: string;
     lastName: string;
