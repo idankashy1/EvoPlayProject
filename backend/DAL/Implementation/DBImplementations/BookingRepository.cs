@@ -28,6 +28,7 @@ namespace EvoPlay.Repository.Implementation
                 .Include(bg => bg.Bookings)
                     .ThenInclude(b => b.Resource)
                 .Include(bg => bg.User)
+                .Include(bg => bg.Package) // הוספת Package
                 .FirstOrDefaultAsync(bg => bg.Id == id);
         }
 
@@ -37,6 +38,7 @@ namespace EvoPlay.Repository.Implementation
                 .Include(bg => bg.Bookings)
                     .ThenInclude(b => b.Resource)
                 .Include(bg => bg.User)
+                .Include(bg => bg.Package) // הוספת Package
                 .ToListAsync();
         }
 
@@ -87,6 +89,7 @@ namespace EvoPlay.Repository.Implementation
                 .Include(bg => bg.Bookings)
                     .ThenInclude(b => b.Resource)
                 .Include(bg => bg.User)
+                .Include(bg => bg.Package) // הוספת Package
                 .Where(bg => bg.User.PhoneNumber == phoneNumber)
                 .ToListAsync();
         }
@@ -97,6 +100,7 @@ namespace EvoPlay.Repository.Implementation
                 .Include(bg => bg.Bookings)
                     .ThenInclude(b => b.Resource)
                 .Include(bg => bg.User)
+                .Include(bg => bg.Package) // הוספת Package
                 .Where(bg => bg.UserId == userId)
                 .ToListAsync();
         }
@@ -116,5 +120,47 @@ namespace EvoPlay.Repository.Implementation
             return unavailableResourceIds;
         }
 
+        // מימוש פונקציה חדשה לקבלת הזמנות של היום
+        public async Task<IEnumerable<Booking>> GetTodaysBookingsAsync(DateTime date)
+        {
+            return await _context.Bookings
+                .Include(b => b.BookingGroup)
+                    .ThenInclude(bg => bg.User)
+                .Include(b => b.BookingGroup)
+                    .ThenInclude(bg => bg.Package) // הוספת Package
+                .Include(b => b.Resource)
+                .Where(b => b.StartTime.Date == date.Date)
+                .ToListAsync();
+        }
+
+        // מימוש פונקציה לחיפוש הזמנות לפי טקסט חופשי
+        public async Task<IEnumerable<Booking>> SearchBookingsAsync(string searchTerm)
+        {
+            return await _context.Bookings
+                .Include(b => b.BookingGroup)
+                    .ThenInclude(bg => bg.User)
+                .Include(b => b.Resource)
+                .Where(b =>
+                    b.Id.ToString().Contains(searchTerm) ||
+                    (b.BookingGroup != null &&
+                     b.BookingGroup.User != null &&
+                     (b.BookingGroup.User.FirstName != null && b.BookingGroup.User.FirstName.Contains(searchTerm)) ||
+                     (b.BookingGroup.User.LastName != null && b.BookingGroup.User.LastName.Contains(searchTerm)) ||
+                     (b.BookingGroup.User.PhoneNumber != null && b.BookingGroup.User.PhoneNumber.Contains(searchTerm))
+                    )
+                )
+                .ToListAsync();
+        }
+
+        // מימוש פונקציה לקבלת הזמנות בטווח תאריכים
+        public async Task<IEnumerable<Booking>> GetBookingsByDateRangeAsync(DateTime from, DateTime to)
+        {
+            return await _context.Bookings
+                .Include(b => b.BookingGroup)
+                    .ThenInclude(bg => bg.User)
+                .Include(b => b.Resource)
+                .Where(b => b.StartTime.Date >= from.Date && b.StartTime.Date <= to.Date)
+                .ToListAsync();
+        }
     }
 }

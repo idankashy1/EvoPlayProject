@@ -1,15 +1,64 @@
 <div class="profile-container" *ngIf="user">
-    <h2>פרופיל משתמש</h2>
-    <p>שם פרטי: {{ user.firstName }}</p>
-    <p>שם משפחה: {{ user.lastName }}</p>
-    <p>אימייל: {{ user.email }}</p>
-    <p>טלפון: {{ user.phoneNumber }}</p>
-    <p>עיר: {{ user.city }}</p>
-    <p>כתובת: {{ user.address }}</p>
-    <p>נקודות נוכחיות: {{ user.totalPoints % 5 }}</p>
-    <p>הטבות זמינות: {{ user.availableRewards }}</p>
+    <mat-card class="profile-card">
+      <mat-card-title>שלום, {{ user.firstName }}!</mat-card-title>
+      <mat-card-content>
+        <p>להלן פרטי הפרופיל שלך:</p>
+        <table>
+          <tr>
+            <td><strong>שם פרטי:</strong></td>
+            <td>{{ user.firstName }}</td>
+          </tr>
+          <tr>
+            <td><strong>שם משפחה:</strong></td>
+            <td>{{ user.lastName }}</td>
+          </tr>
+          <tr>
+            <td><strong>אימייל:</strong></td>
+            <td>{{ user.email }}</td>
+          </tr>
+          <tr>
+            <td><strong>טלפון:</strong></td>
+            <td>{{ user.phoneNumber }}</td>
+          </tr>
+          <tr>
+            <td><strong>עיר:</strong></td>
+            <td>{{ user.city }}</td>
+          </tr>
+          <tr>
+            <td><strong>כתובת:</strong></td>
+            <td>{{ user.address }}</td>
+          </tr>
+          <tr>
+            <td><strong>נקודות נוכחיות:</strong></td>
+            <td>{{ user.currentPoints }}</td> <!-- עדכון כאן -->
+          </tr>
+          <tr>
+            <td><strong>הטבות זמינות:</strong></td>
+            <td>{{ user.availableRewards }}</td>
+          </tr>
+        </table>
   
-    <!-- סקייל הנקודות -->
-    <mat-progress-bar mode="determinate" [value]="(user.totalPoints % 5) * 20"></mat-progress-bar>
+        <!-- סקייל הנקודות -->
+        <div class="progress-container">
+            <div class="progress-bar">
+              <div class="progress-fill" [style.width.%]="user.currentPoints * 10"></div>
+              <!-- סימני ציון -->
+              <div
+                class="progress-marker"
+                *ngFor="let marker of markers"
+                [style.left.%]="marker"
+              ></div>
+            </div>
+            <p class="progress-text">
+              התקדמות להטבה הבאה: {{ user.currentPoints }}/10
+              <mat-icon
+                class="info-icon"
+                matTooltip="לחץ למידע על מערכת ההטבות"
+                (click)="openRewardsInfo()"
+              >help_outline</mat-icon>
+            </p>
+          </div>
+      </mat-card-content>
+    </mat-card>
   </div>
   

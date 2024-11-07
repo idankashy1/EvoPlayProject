@@ -96,5 +96,24 @@ namespace EvoPlay.BL.Implementation
         {
             return await _userRepository.GetUserByResetTokenAsync(token);
         }
+        public async Task RedeemRewardAsync(int userId)
+        {
+            var user = await _userRepository.GetUserByIdAsync(userId);
+            if (user == null)
+            {
+                throw new Exception("User not found.");
+            }
+
+            if (user.AvailableRewards <= 0)
+            {
+                throw new Exception("אין לך הטבות זמינות למימוש.");
+            }
+
+            // הפחתת ההטבות הזמינות
+            user.AvailableRewards -= 1;
+
+            // שמירת השינויים במסד הנתונים
+            await _userRepository.UpdateUserAsync(user);
+        }
     }
 }

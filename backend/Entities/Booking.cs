@@ -10,6 +10,8 @@ namespace EvoPlay.Entities
         public int ResourceId { get; set; } // FK ל-Resource
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
+        public int NumberOfPlayers { get; set; }
+
 
         // קשרי גומלין
         public virtual BookingGroup BookingGroup { get; set; }
