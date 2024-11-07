@@ -14,6 +14,10 @@ namespace EvoPlay.DAL.Implementation
         {
             _context = context;
         }
+        public async Task<Package> GetPackageByIdAsync(int id)
+        {
+            return await _context.Packages.FindAsync(id);
+        }
 
         public IEnumerable<Package> GetAllPackages()
         {

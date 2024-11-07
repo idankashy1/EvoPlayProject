@@ -1,8 +1,10 @@
 ﻿using EvoPlay.BL.Contract;
 using EvoPlay.DTOs;
 using EvoPlay.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace EvoPlay.Controllers
@@ -12,19 +14,41 @@ namespace EvoPlay.Controllers
     public class BookingsController : ControllerBase
     {
         private readonly IBookingBL _bookingBL;
+        private readonly IUserBL _userBL;
 
-        public BookingsController(IBookingBL bookingBL)
+        public BookingsController(IBookingBL bookingBL, IUserBL userBL)
         {
             _bookingBL = bookingBL;
+            _userBL = userBL;
         }
 
-        [HttpPost("create-booking")]
+        [HttpPost]
         public async Task<IActionResult> CreateBooking([FromBody] BookingRequestDto bookingRequest)
         {
+            int? userId = null;
+
+            // בדיקת אם המשתמש מחובר
+            if (User.Identity.IsAuthenticated)
+            {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (userIdClaim != null)
+                {
+                    userId = int.Parse(userIdClaim);
+                }
+            }
+
+            // אם המשתמש מחובר, נשתמש ב-UserId שלו
+            if (userId.HasValue)
+            {
+                bookingRequest.UserId = userId.Value;
+            }
+
             try
             {
+                // יצירת ההזמנה
                 var bookingGroup = await _bookingBL.CreateBookingGroupAsync(bookingRequest);
-                return CreatedAtAction(nameof(GetBookingGroupById), new { id = bookingGroup.Id }, bookingGroup);
+
+                return Ok(new { message = "Booking created successfully." });
             }
             catch (Exception ex)
             {
@@ -81,7 +105,7 @@ namespace EvoPlay.Controllers
                 return NotFound();
             }
         }
-        // הוספת נקודת הקצה לבדיקת זמינות
+
         [HttpPost("check-availability")]
         public async Task<IActionResult> CheckAvailability([FromBody] CheckAvailabilityDto availabilityDto)
         {
@@ -94,6 +118,44 @@ namespace EvoPlay.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+        [Authorize(Roles = "Admin")]
+        [HttpGet("today")]
+        public async Task<IActionResult> GetTodaysBookings([FromQuery] string date)
+        {
+            if (!DateTime.TryParse(date, out DateTime parsedDate))
+            {
+                return BadRequest("Invalid date format.");
+            }
+
+            var bookings = await _bookingBL.GetTodaysBookingsAsync(parsedDate);
+            return Ok(bookings);
+        }
+        [Authorize(Roles = "Admin")]
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchBookings([FromQuery] string searchTerm)
+        {
+            if (string.IsNullOrEmpty(searchTerm))
+            {
+                return BadRequest("Search term is required.");
+            }
+
+            var bookings = await _bookingBL.SearchBookingsAsync(searchTerm);
+            return Ok(bookings);
+        }
+
+        // Endpoint לקבלת הזמנות בטווח תאריכים
+        [Authorize(Roles = "Admin")]
+        [HttpGet("daterange")]
+        public async Task<IActionResult> GetBookingsByDateRange([FromQuery] string from, [FromQuery] string to)
+        {
+            if (!DateTime.TryParse(from, out DateTime fromDate) || !DateTime.TryParse(to, out DateTime toDate))
+            {
+                return BadRequest("Invalid date range.");
+            }
+
+            var bookings = await _bookingBL.GetBookingsByDateRangeAsync(fromDate, toDate);
+            return Ok(bookings);
         }
     }
 }

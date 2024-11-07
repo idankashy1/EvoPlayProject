@@ -20,5 +20,7 @@ namespace EvoPlay.DTOs
         public DateTime EndTime { get; set; }
         public int NumberOfPlayers { get; set; }
         public int? PackageId { get; set; } // יכול להיות null
+        public int? UserId { get; set; } // אופציונלי
+
     }
 }

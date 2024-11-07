@@ -40,11 +40,16 @@ namespace EvoPlay.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("UserId1")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("PackageId");
 
                     b.HasIndex("UserId");
+
+                    b.HasIndex("UserId1");
 
                     b.ToTable("BookingGroups");
                 });
@@ -62,6 +67,9 @@ namespace EvoPlay.Migrations
 
                     b.Property<DateTime>("EndTime")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("NumberOfPlayers")
+                        .HasColumnType("int");
 
                     b.Property<int>("ResourceId")
                         .HasColumnType("int");
@@ -201,6 +209,9 @@ namespace EvoPlay.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("CurrentPoints")
+                        .HasColumnType("int");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -216,7 +227,17 @@ namespace EvoPlay.Migrations
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("PasswordResetToken")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ResetTokenExpiry")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -241,6 +262,10 @@ namespace EvoPlay.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("EvoPlay.Entities.User", null)
+                        .WithMany("BookingGroups")
+                        .HasForeignKey("UserId1");
 
                     b.Navigation("Package");
 
@@ -301,6 +326,11 @@ namespace EvoPlay.Migrations
             modelBuilder.Entity("EvoPlay.Entities.ResourceType", b =>
                 {
                     b.Navigation("Resources");
+                });
+
+            modelBuilder.Entity("EvoPlay.Entities.User", b =>
+                {
+                    b.Navigation("BookingGroups");
                 });
 #pragma warning restore 612, 618
         }

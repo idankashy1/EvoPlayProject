@@ -10,5 +10,8 @@
 
         // קשרי גומלין
         public virtual ResourceType ResourceType { get; set; }
+        public virtual ICollection<Booking> Bookings { get; set; }
+
+
     }
 }

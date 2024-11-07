@@ -18,6 +18,7 @@ namespace EvoPlay.BL.Contract
         Task<bool> CheckUserExistsByEmailAsync(string email);
         Task<User> GetUserByEmailAsync(string email);
         Task<User> GetUserByResetTokenAsync(string token);
+        Task RedeemRewardAsync(int userId);
 
     }
 }
