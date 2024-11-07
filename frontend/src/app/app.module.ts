@@ -37,6 +37,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 // HttpClient
 import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { InfoDialogComponent } from './components/info-dialog/info-dialog.component';
 
 @NgModule({
   declarations: [
@@ -58,7 +59,8 @@ import { CommonModule } from '@angular/common';
     UserProfileComponent,
     RegisterComponent,
     RewardsInfoDialogComponent,
-    AdminDashboardComponent
+    AdminDashboardComponent,
+    InfoDialogComponent
   ],
   imports: [
     BrowserModule,

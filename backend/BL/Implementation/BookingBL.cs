@@ -272,24 +272,27 @@ namespace EvoPlay.BL.Implementation
             var user = await _userRepository.GetUserByIdAsync(bookingGroup.UserId);
             if (user != null)
             {
-                // חישוב סך כל השעות בהזמנה זו
-                double totalHours = bookingGroup.Bookings.Sum(b => (b.EndTime - b.StartTime).TotalHours);
+                // חישוב סך כל השעות בהזמנה זו (מוודא ש-`totalHours` הוא ערך חיובי)
+                double totalHours = bookingGroup.Bookings.Sum(b => Math.Max(0, (b.EndTime - b.StartTime).TotalHours));
 
                 // חישוב מספר הנקודות שנצברו בהזמנה זו (נקודה אחת לכל שעה)
                 int pointsEarned = (int)Math.Floor(totalHours);
 
-                // עדכון סך הנקודות הכולל
-                user.TotalPoints += pointsEarned;
+                // עדכון `TotalPoints` רק אם `pointsEarned` הוא ערך חיובי
+                if (pointsEarned > 0)
+                {
+                    user.TotalPoints += pointsEarned;
+                }
 
-                // עדכון הנקודות הנוכחיות
+                // עדכון `CurrentPoints`
                 user.CurrentPoints += pointsEarned;
 
                 // בדיקה אם המשתמש זכאי להטבה חדשה
-                int newRewards = user.CurrentPoints / 10; // כמה הטבות חדשות מגיעות לו
-                if (newRewards > 0)
+                if (user.CurrentPoints >= 10)
                 {
+                    int newRewards = user.CurrentPoints / 10; // מספר ההטבות החדשות
                     user.AvailableRewards += newRewards;
-                    user.CurrentPoints = user.CurrentPoints % 10; // עדכון הנקודות הנוכחיות
+                    user.CurrentPoints = user.CurrentPoints % 10; // עדכון `CurrentPoints` למודולו 10
                 }
 
                 // שמירת השינויים

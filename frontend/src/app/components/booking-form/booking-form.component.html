@@ -1,48 +1,97 @@
 <div class="booking-form-container">
   <mat-card class="booking-card">
-    <h2 class="booking-title">להזמנת חדר</h2>
-    <hr class="header-divider"/>
-    <div class="booking-fields">
-      <mat-form-field appearance="fill" class="date-field" (click)="picker.open()">
-        <mat-label>בחר תאריך</mat-label>
-        <input matInput [matDatepicker]="picker" (dateChange)="dateChanged($event)" [min]="today" readonly>
-        <mat-datepicker-toggle matSuffix [for]="picker" (click)="$event.stopPropagation()"></mat-datepicker-toggle>
-        <mat-datepicker #picker></mat-datepicker>
-      </mat-form-field>
+    <h2 class="booking-title">הזמן את החוויה שלך</h2>
+    <hr class="header-divider" />
+    <form class="booking-form">
+      <!-- שורה ראשונה: תאריך -->
+      <div class="form-row full-width">
+        <mat-form-field appearance="fill" floatLabel="always">
+          <mat-icon matPrefix>event</mat-icon>
+          <mat-label>תאריך</mat-label>
+          <input
+            matInput
+            [matDatepicker]="picker"
+            [(ngModel)]="bookingDate"
+            name="bookingDate"
+            required
+            readonly
+            (click)="picker.open()"
+          />
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+      </div>
 
-      <div class="time-selectors">
-        <mat-form-field appearance="fill">
+      <!-- שורה שנייה: משעה, עד שעה -->
+      <div class="form-row">
+        <mat-form-field appearance="fill" floatLabel="always">
+          <mat-icon matPrefix>schedule</mat-icon>
           <mat-label>משעה</mat-label>
-          <mat-select [(ngModel)]="startHour" name="startHour" (selectionChange)="onStartTimeChange($event.value)" [disabled]="!bookingDate">
+          <mat-select
+            [(ngModel)]="startHour"
+            name="startHour"
+            (selectionChange)="onStartTimeChange($event.value)"
+            required
+            [disabled]="!bookingDate"
+          >
             <mat-option *ngFor="let time of startHoursOptions" [value]="time">{{ time }}</mat-option>
           </mat-select>
         </mat-form-field>
-  
-        <mat-form-field appearance="fill">
+
+        <mat-form-field appearance="fill" floatLabel="always">
+          <mat-icon matPrefix>schedule</mat-icon>
           <mat-label>עד שעה</mat-label>
-          <mat-select [(ngModel)]="endHour" name="endHour" [disabled]="!bookingDate">
+          <mat-select
+            [(ngModel)]="endHour"
+            name="endHour"
+            required
+            [disabled]="!bookingDate || !startHour"
+          >
             <mat-option *ngFor="let time of endHoursOptions" [value]="time">{{ time }}</mat-option>
           </mat-select>
         </mat-form-field>
       </div>
 
-      <div class="other-selectors">
-        <mat-form-field appearance="fill">
-          <mat-label>משתתפים</mat-label>
-          <mat-select [(ngModel)]="numberOfPlayers" name="players" [disabled]="!bookingDate">
-            <mat-option *ngFor="let number of playerOptions" [value]="number">{{ number }}</mat-option>
+      <!-- שורה שלישית: סוג חדר, מספר משתתפים -->
+      <div class="form-row">
+        <mat-form-field appearance="fill" floatLabel="always">
+          <mat-icon matPrefix>videogame_asset</mat-icon>
+          <mat-label>סוג חדר</mat-label>
+          <mat-select
+            [(ngModel)]="roomType"
+            name="roomType"
+            (selectionChange)="onRoomTypeChange($event.value)"
+            required
+            [disabled]="!bookingDate"
+          >
+            <mat-option *ngFor="let type of roomTypes" [value]="type.code">{{ type.label }}</mat-option>
           </mat-select>
         </mat-form-field>
 
-        <mat-form-field appearance="fill">
-          <mat-label>סוג חדר</mat-label>
-          <mat-select [(ngModel)]="roomType" name="roomType" (selectionChange)="onRoomTypeChange($event.value)" [disabled]="!bookingDate">
-            <mat-option *ngFor="let type of ['PS5', 'VR', 'PC', 'PS5VIP']" [value]="type">{{ type }}</mat-option>
+        <mat-form-field appearance="fill" floatLabel="always">
+          <mat-icon matPrefix>people</mat-icon>
+          <mat-label>משתתפים</mat-label>
+          <mat-select
+            [(ngModel)]="numberOfPlayers"
+            name="numberOfPlayers"
+            required
+            [disabled]="!bookingDate"
+          >
+            <mat-option *ngFor="let number of playerOptions" [value]="number">{{ number }}</mat-option>
           </mat-select>
         </mat-form-field>
       </div>
-    </div>
-    <hr class="fields-divider"/>
-    <button mat-raised-button color="primary" class="submit-button" (click)="goToNextStep()">הבא</button>
+
+      <hr class="fields-divider" />
+
+      <button
+        mat-raised-button
+        color="accent"
+        class="submit-button"
+        (click)="goToNextStep()"
+      >
+        הבא
+      </button>
+    </form>
   </mat-card>
 </div>

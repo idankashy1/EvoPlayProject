@@ -12,13 +12,13 @@ import { PaymentService } from '../../services/payment.service';
 import { Subscription, take } from 'rxjs';
 
 interface BookingDetails {
-  bookingDate: Date;
-  startHour: string;
-  endHour: string;
+  startDateTime: Date;
+  endDateTime: Date;
   numberOfPlayers: number;
   roomType: string;
   duration: number;
 }
+
 
 @Component({
   selector: 'app-booking-form',
@@ -37,6 +37,13 @@ export class BookingFormComponent implements OnInit, OnDestroy {
   today = new Date();
   private subscriptions: Subscription = new Subscription();
 
+  roomTypes = [
+    { code: 'PS5', label: 'פלייסטיישן' },
+    { code: 'PS5VIP', label: 'פלייסטיישן VIP' },
+    { code: 'PC', label: 'מחשבים' },
+    { code: 'VR', label: 'מציאות וירטואלית' },
+  ];
+  
   constructor(
     private router: Router,
     private dialog: MatDialog,
@@ -196,32 +203,30 @@ export class BookingFormComponent implements OnInit, OnDestroy {
     return `${hours < 10 ? '0' + hours : hours}:${mins < 10 ? '0' + mins : mins}`;
   }
 
-  private calculateDuration(start: string, end: string): number {
-    const startTime = this.convertHourToMinutes(start);
-    let endTime = this.convertHourToMinutes(end);
-    if (endTime <= startTime) {
-      endTime += 24 * 60;
-    }
-    const durationInMinutes = endTime - startTime;
-    
-    // עבור חדר VR, חשב את הזמן ביחידות של 15 דקות ולא שעות
+  private calculateDuration(startDateTime: Date, endDateTime: Date): number {
+    const durationInMilliseconds = endDateTime.getTime() - startDateTime.getTime();
+    const durationInHours = durationInMilliseconds / (1000 * 60 * 60);
+  
+    // עבור חדר VR, מחשבים לפי רבעי שעה
     if (this.roomType === 'VR') {
-      return durationInMinutes / 15; // מחזיר את מספר הסשנים של 15 דקות
+      return durationInMilliseconds / (1000 * 60 * 15); // מספר הסשנים של 15 דקות
     }
   
-    return durationInMinutes / 60; // עבור חדרים אחרים, מחשב לפי שעות
+    return durationInHours;
   }
 
-  private createDateTimeString(date: Date, time: string): string {
+  private createDateTime(date: Date, time: string): Date {
     const [hours, minutes] = time.split(':').map(Number);
-    const dateTime = new Date(date);
+    const dateTime = new Date(date.getFullYear(), date.getMonth(), date.getDate(), hours, minutes, 0);
+  
+    // אם השעה קטנה מ-17:00, נניח שזה אחרי חצות ונוסיף יום אחד
     if (hours < 17) {
-      // זמן אחרי חצות
       dateTime.setDate(dateTime.getDate() + 1);
     }
-    dateTime.setHours(hours % 24, minutes, 0, 0);
-    return dateTime.toISOString();
+  
+    return dateTime;
   }
+
 
   private getResourceTypeId(roomType: string): number {
     const resourceTypeMap: { [key: string]: number } = {
@@ -253,37 +258,42 @@ export class BookingFormComponent implements OnInit, OnDestroy {
       alert('אנא ודא שכל פרטי ההזמנה מלאים.');
       return;
     }
-
-    const startTime = this.createDateTimeString(this.bookingDate, this.startHour);
-    const endTime = this.createDateTimeString(this.bookingDate, this.endHour);
-
+  
+    const startDateTime = this.createDateTime(this.bookingDate, this.startHour);
+    const endDateTime = this.createDateTime(this.bookingDate, this.endHour);
+  
+    // אם endDateTime קטן או שווה ל-startDateTime, נוסיף יום אחד ל-endDateTime
+    if (endDateTime <= startDateTime) {
+      endDateTime.setDate(endDateTime.getDate() + 1);
+    }
+  
+    const duration = this.calculateDuration(startDateTime, endDateTime);
+  
+    const bookingDetails: BookingDetails = {
+      startDateTime: startDateTime,
+      endDateTime: endDateTime,
+      numberOfPlayers: this.numberOfPlayers,
+      roomType: this.roomType,
+      duration: duration,
+    };
+  
     const request: CheckAvailabilityRequest = {
       resourceTypeId: this.getResourceTypeId(this.roomType),
       quantityRequested: this.calculateQuantity(this.roomType),
-      startTime: startTime,
-      endTime: endTime,
+      startTime: startDateTime.toISOString(),
+      endTime: endDateTime.toISOString(),
     };
-
+  
     console.log('Checking room availability with:', request);
-
+  
     this.bookingService.checkRoomAvailability(request).pipe(take(1)).subscribe({
       next: (response: CheckAvailabilityResponse) => {
         console.log('Availability response:', response);
         if (response.isAvailable) {
           console.log('Room is available. Proceeding to the next step.');
-          const duration = this.calculateDuration(this.startHour, this.endHour);
-
-          const bookingDetails: BookingDetails = {
-            bookingDate: this.bookingDate!,
-            startHour: this.startHour,
-            endHour: this.endHour,
-            numberOfPlayers: this.numberOfPlayers,
-            roomType: this.roomType,
-            duration: duration,
-          };
-
+  
           const qualifiesForPackage = this.checkIfQualifiesForPackage(bookingDetails);
-
+  
           if (['PS5', 'PS5VIP', 'PC'].includes(this.roomType) && qualifiesForPackage) {
             // פותחים את PackageSelectionComponent
             this.dialog.open(PackageSelectionComponent, {

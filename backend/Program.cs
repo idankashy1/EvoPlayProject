@@ -10,8 +10,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// הגדרת זמן מקומי ישראל
+CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("he-IL");
+CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("he-IL");
+TimeZoneInfo localZone = TimeZoneInfo.FindSystemTimeZoneById("Israel Standard Time");
 
 // הוספת DbContext
 builder.Services.AddDbContext<GameCenterContext>(options =>

@@ -9,9 +9,9 @@
       </mat-card-header>
       <mat-card-content>
         <p><strong>סוג חדר:</strong> {{ bookingDetails.roomType }}</p>
-        <p><strong>בתאריך:</strong> {{ bookingDetails.bookingDate | date:'dd/MM/yyyy' }}</p>
-        <p><strong>משעה:</strong> {{ bookingDetails.startHour }}</p>
-        <p><strong>עד שעה:</strong> {{ bookingDetails.endHour }}</p>
+        <p><strong>בתאריך:</strong> {{ bookingDetails.startDateTime | date:'dd/MM/yyyy' }}</p>
+        <p><strong>משעה:</strong> {{ bookingDetails.startDateTime | date:'HH:mm' }}</p>
+        <p><strong>עד שעה:</strong> {{ bookingDetails.endDateTime | date:'HH:mm' }}</p>
         <p><strong>כמות משתתפים:</strong> {{ bookingDetails.numberOfPlayers }}</p>
         <p><strong>שם החבילה:</strong> {{ bookingDetails.selectedPackage?.name || 'ללא' }}</p>
         <p><strong>עלות כוללת:</strong> {{ bookingDetails.totalCost | currency:'ILS' }}</p>
