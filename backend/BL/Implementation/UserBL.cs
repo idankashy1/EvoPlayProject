@@ -1,7 +1,7 @@
 ﻿using EvoPlay.BL.Contract;
 using EvoPlay.Entities;
 using EvoPlay.Helpers;
-using EvoPlay._2._DTOs;
+using EvoPlay.DTOs;
 using EvoPlay.Repository.Contract;
 
 namespace EvoPlay.BL.Implementation
@@ -91,6 +91,29 @@ namespace EvoPlay.BL.Implementation
             {
                 await _genericUserRepository.DeleteAsync(user);
             }
+        }
+        public async Task<User> GetUserByResetTokenAsync(string token)
+        {
+            return await _userRepository.GetUserByResetTokenAsync(token);
+        }
+        public async Task RedeemRewardAsync(int userId)
+        {
+            var user = await _userRepository.GetUserByIdAsync(userId);
+            if (user == null)
+            {
+                throw new Exception("User not found.");
+            }
+
+            if (user.AvailableRewards <= 0)
+            {
+                throw new Exception("אין לך הטבות זמינות למימוש.");
+            }
+
+            // הפחתת ההטבות הזמינות
+            user.AvailableRewards -= 1;
+
+            // שמירת השינויים במסד הנתונים
+            await _userRepository.UpdateUserAsync(user);
         }
     }
 }

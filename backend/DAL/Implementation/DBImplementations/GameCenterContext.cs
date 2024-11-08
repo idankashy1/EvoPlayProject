@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using EvoPlay.Entities;
+using Microsoft.EntityFrameworkCore;
 using EvoPlay.Entities;
 
 namespace EvoPlay.DAL
@@ -14,26 +15,14 @@ namespace EvoPlay.DAL
         public DbSet<Resource> Resources { get; set; }
         public DbSet<BookingGroup> BookingGroups { get; set; }
         public DbSet<Booking> Bookings { get; set; }
-        public DbSet<Package> Packages { get; set; }
+        public DbSet<Resource> Resources { get; set; }
+        public DbSet<ResourceType> ResourceTypes { get; set; }
         public DbSet<User> Users { get; set; }
-        public DbSet<Payment> Payments { get; set; }
+        public DbSet<Package> Packages { get; set; } // ודא שיש את ה-DbSet הזה
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
-
-            // User ID auto-generated on add
-            modelBuilder.Entity<User>()
-                .Property(u => u.Id)
-                .ValueGeneratedOnAdd();
-
-            // ResourceType-Resource relationship
-            modelBuilder.Entity<ResourceType>()
-                .HasMany(rt => rt.Resources)
-                .WithOne(r => r.ResourceType)
-                .HasForeignKey(r => r.ResourceTypeId);
-
-            // BookingGroup-Booking relationship
+            // BookingGroup
             modelBuilder.Entity<BookingGroup>()
                 .HasMany(bg => bg.Bookings)
                 .WithOne(b => b.BookingGroup)
@@ -42,7 +31,7 @@ namespace EvoPlay.DAL
             // BookingGroup-User relationship
             modelBuilder.Entity<BookingGroup>()
                 .HasOne(bg => bg.User)
-                .WithMany()
+                .WithMany(u => u.BookingGroups)
                 .HasForeignKey(bg => bg.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
@@ -53,24 +42,60 @@ namespace EvoPlay.DAL
                 .HasForeignKey(bg => bg.PackageId)
                 .OnDelete(DeleteBehavior.SetNull);
 
-            // Booking-Resource relationship
+            // Booking
+            modelBuilder.Entity<Booking>()
+                .HasOne(b => b.BookingGroup)
+                .WithMany(bg => bg.Bookings)
+                .HasForeignKey(b => b.BookingGroupId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<Booking>()
                 .HasOne(b => b.Resource)
-                .WithMany()
-                .HasForeignKey(b => b.ResourceId);
+                .WithMany(r => r.Bookings)
+                .HasForeignKey(b => b.ResourceId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            // Payment-BookingGroup relationship
-            modelBuilder.Entity<Payment>()
-                .HasOne(p => p.BookingGroup)
-                .WithMany()
-                .HasForeignKey(p => p.BookingGroupId);
+            // Resource
+            modelBuilder.Entity<Resource>()
+                .HasOne(r => r.ResourceType)
+                .WithMany(rt => rt.Resources)
+                .HasForeignKey(r => r.ResourceTypeId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            // Payment amount type configuration
-            modelBuilder.Entity<Payment>()
-                .Property(p => p.Amount)
-                .HasColumnType("decimal(18, 2)");
+            // User
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.BookingGroups)
+                .WithOne(bg => bg.User)
+                .HasForeignKey(bg => bg.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            // הגדרות נוספות לפי הצורך
+            // Package
+            modelBuilder.Entity<Package>()
+                .HasMany(p => p.BookingGroups)
+                .WithOne(bg => bg.Package)
+                .HasForeignKey(bg => bg.PackageId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            // ResourceType
+            modelBuilder.Entity<ResourceType>()
+                .HasMany(rt => rt.Resources)
+                .WithOne(r => r.ResourceType)
+                .HasForeignKey(r => r.ResourceTypeId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // BookingGroup
+            modelBuilder.Entity<BookingGroup>()
+                .HasMany(bg => bg.Bookings)
+                .WithOne(b => b.BookingGroup)
+                .HasForeignKey(b => b.BookingGroupId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Booking
+            modelBuilder.Entity<Booking>()
+                .HasOne(b => b.Resource)
+                .WithMany(r => r.Bookings)
+                .HasForeignKey(b => b.ResourceId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

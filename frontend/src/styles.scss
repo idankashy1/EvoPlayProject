@@ -1,32 +1,34 @@
-/* You can add global styles to this file, and also import other style files */
-@import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c&family=Montserrat&family=Ubuntu&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Secular+One&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Almoni+Display&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Alef:wght@400;700&family=Amatic+SC:wght@400;700&display=swap');
-
-
-
+﻿/* הגדרות כלליות */
 html, body {
   margin: 0;
   padding: 0;
   width: 100%;
   height: 100%;
-  overflow-x: hidden; /* Prevents horizontal scrolling */
-  background-size: cover; /* Makes sure the background covers the entire area */
-  background-repeat: no-repeat; /* Prevents the background from repeating */
-  background-attachment: fixed; /* Fixes the background during scroll */
-  background-position: center center; /* Centers the background image */
+  overflow-x: hidden;
   font-family: 'Ubuntu', sans-serif !important;
 }
 
 app-root {
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
   width: 100%;
 }
 
-/* To ensure the header and footer span the full width */
-app-header, app-footer {
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+app-footer {
+  width: 100%;
+  margin-top: auto; /* וידוא שה-footer תמיד בתחתית הדף */
+  color: #fff;
+  text-align: center;
+}
+
+app-header {
   width: 100%;
 }
 
@@ -34,15 +36,8 @@ app-header, app-footer {
   font-family: 'M PLUS Rounded 1c', sans-serif !important;
 }
 
-.booking-title {
-  font-family: 'M PLUS Rounded 1c', sans-serif !important;
-}
-
-.submit-button {
-  font-family: 'M PLUS Rounded 1c', sans-serif !important;
-}
-
-.dialog-header {
+/* הגדרות נוספות לסטיילים */
+.booking-title, .submit-button, .dialog-header {
   font-family: 'M PLUS Rounded 1c', sans-serif !important;
 }
 

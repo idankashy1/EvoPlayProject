@@ -6,6 +6,9 @@ import { PaymentService } from '../../services/payment.service';
 import { BookingService } from '../../services/booking.serivce';
 import { BookingRequestDto } from '../../models/booking-request.dto';
 import { take } from 'rxjs/operators';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
+import { UserService } from '../../services/user.service'; // הוספת UserService
 
 type RoomType = 'PS5' | 'PS5VIP' | 'PC' | 'VR';
 
@@ -14,7 +17,7 @@ interface BookingDetails {
   startHour: string;
   endHour: string;
   numberOfPlayers: number;
-  roomType: RoomType; // שינינו מ-string ל-RoomType
+  roomType: RoomType;
   duration: number;
   selectedPackage?: any;
   totalCost?: number;
@@ -28,7 +31,7 @@ interface BookingDetails {
 export class PaymentComponent implements OnInit {
   bookingDetails!: BookingDetails;
   userDetailsForm!: FormGroup;
-  
+
 
   // מחירי החדרים
   private pricePerHour: { [key in RoomType]: number } = {
@@ -41,7 +44,10 @@ export class PaymentComponent implements OnInit {
   constructor(
     private paymentService: PaymentService,
     private bookingService: BookingService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private snackBar: MatSnackBar,
+    private router: Router,
+    private userService: UserService // הוספת UserService לקונסטרקטור
   ) {}
 
   ngOnInit(): void {
@@ -63,13 +69,42 @@ export class PaymentComponent implements OnInit {
       city: [''],
       address: [''],
     });
+
+    const token = localStorage.getItem('token');
+    if (token) {
+      // אם המשתמש מחובר, נטען את הפרטים שלו ונמלא את הטופס
+      this.userService.getMyDetails().subscribe({
+        next: (userData) => {
+          this.userDetailsForm.patchValue({
+            firstName: userData.firstName,
+            lastName: userData.lastName,
+            phoneNumber: userData.phoneNumber,
+            email: userData.email,
+            city: userData.city,
+            address: userData.address,
+          });
+        },
+        error: (error) => {
+          console.error('Failed to fetch user details', error);
+        }
+      });
+    }
   }
 
   calculateTotalCost(): number {
     const { roomType, duration, numberOfPlayers } = this.bookingDetails;
-    const rate = this.pricePerHour[roomType] * duration * numberOfPlayers;
-    console.log('Total cost:', rate);
-    return rate;
+    let totalCost = 0;
+  
+    if (roomType === 'VR') {
+      const sessions = duration; // duration הוא כבר מספר הסשנים של 15 דקות
+      totalCost = sessions * 40 * numberOfPlayers;
+    } else {
+      const ratePerHour = this.pricePerHour[roomType];
+      totalCost = ratePerHour * duration * numberOfPlayers;
+    }
+  
+    console.log('Total cost:', totalCost);
+    return totalCost;
   }
 
   calculatePricePerParticipant(): number {
@@ -82,21 +117,9 @@ export class PaymentComponent implements OnInit {
     if (this.userDetailsForm.valid) {
       const userDetails = this.extractUserDetails();
       const bookingDetails = this.prepareBookingDetails(userDetails);
-
-      // קריאה ליצירת ההזמנה
-      this.bookingService.createBooking(bookingDetails).subscribe({
-        next: (response: any) => {
-          console.log('הזמנה נוצרה בהצלחה:', response);
-          // נווט לעמוד אישור או הצג הודעת הצלחה
-          // this.router.navigate(['/confirmation']);
-        },
-        error: (error: any) => {
-          console.error('שגיאה ביצירת ההזמנה:', error);
-          alert('אירעה שגיאה ביצירת ההזמנה. אנא נסה שוב.');
-        }
-      });
+      this.createBooking(bookingDetails);
     } else {
-      alert('אנא מלא את כל השדות הנדרשים בטופס.');
+      alert('אנא מלא את כל השדות הנדרשים.');
     }
   }
 
@@ -116,8 +139,22 @@ export class PaymentComponent implements OnInit {
       endTime: endTime,
       numberOfPlayers: this.bookingDetails.numberOfPlayers,
       packageId: this.bookingDetails.selectedPackage?.id || null,
-      totalCost: this.bookingDetails.totalCost
+      totalCost: this.bookingDetails.totalCost || 0
     };
+  }
+
+  private createBooking(bookingDetails: BookingRequestDto): void {
+    this.bookingService.createBooking(bookingDetails).subscribe({
+      next: (response: any) => {
+        console.log('הזמנה נוצרה בהצלחה:', response);
+        this.snackBar.open('הזמנה נוצרה בהצלחה!', '', { duration: 3000 });
+        this.router.navigate(['/']); // החזרה לדף הבית
+      },
+      error: (error: any) => {
+        console.error('שגיאה ביצירת ההזמנה:', error);
+        alert('אירעה שגיאה ביצירת ההזמנה. אנא נסה שוב.');
+      }
+    });
   }
 
   private createDateTimeString(date: Date, time: string): string {

@@ -1,9 +1,12 @@
+﻿// src/app/app.module.ts
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms'; 
 import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+
+// ×§×•×ž×¤×•× × ×˜×•×ª
 import { HeaderComponent } from './components/header/header.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AboutUsComponent } from './components/about-us/about-us.component';
@@ -21,6 +24,24 @@ import { PaymentComponent } from './components/payment/payment.component';
 import { MaterialModule } from './material.module';
 import { LoginComponent } from './components/login/login.component';
 import { OrderSearchComponent } from './components/order-search/order-search.component';
+import { UserProfileComponent } from './components/user-profile/user-profile.component';
+import { RegisterComponent } from './components/register/register.component';
+import { RewardsInfoDialogComponent } from './components/rewards-info-dialog/rewards-info-dialog.component';
+import { AdminDashboardComponent } from './components/admin-dashboard/admin-dashboard.component';
+
+// ×ž×•×“×•×œ×™× ×©×œ Angular Material
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MaterialModule } from './material.module'; // ×•×“× ×©×”× ×ª×™×‘ × ×›×•×Ÿ
+
+// Guard
+import { AdminGuard } from './guards/admin.guard';
+
+// ×˜×¤×¡×™×
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+// HttpClient
+import { HttpClientModule } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -38,7 +59,11 @@ import { OrderSearchComponent } from './components/order-search/order-search.com
     TranslateRoomTypePipe,
     PaymentComponent,
     LoginComponent,
-    OrderSearchComponent
+    OrderSearchComponent,
+    UserProfileComponent,
+    RegisterComponent,
+    RewardsInfoDialogComponent,
+    AdminDashboardComponent
   ],
   imports: [
     HttpClientModule,
@@ -48,7 +73,15 @@ import { OrderSearchComponent } from './components/order-search/order-search.com
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    MaterialModule
+    MaterialModule, // כולל MatTableModule
+    HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule,
+    CommonModule
+  ],
+  providers: [
+    AdminGuard,
+    // ספקים נוספים אם יש...
   ],
   providers: [],
   bootstrap: [AppComponent]

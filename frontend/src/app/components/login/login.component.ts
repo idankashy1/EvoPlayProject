@@ -1,6 +1,9 @@
-import { Component } from '@angular/core';
+﻿import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoginService } from '../../services/login.service';
+import { UserService } from '../../services/user.service'; // ×™×™×‘×•× UserService
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { User } from '../../models/user.model';
 
 @Component({
   selector: 'app-login',
@@ -10,8 +13,14 @@ import { LoginService } from '../../services/login.service';
 export class LoginComponent {
   email = '';
   password = '';
+  errorMessage = '';
 
-  constructor(private loginService: LoginService, private router: Router) { }
+  constructor(
+    private loginService: LoginService, 
+    private router: Router, 
+    private snackBar: MatSnackBar,
+    private userService: UserService // הזרקת UserService
+  ) {}
 
   onLogin(): void {
     this.loginService.login(this.email, this.password).subscribe({
@@ -19,16 +28,37 @@ export class LoginComponent {
         console.log('Login successful', response);
         // Store the token as needed
         localStorage.setItem('token', response.token);
-        this.router.navigate(['/']); // Adjust as needed
+        // Fetch user details and set in UserService
+        this.userService.getMyDetails().subscribe({
+          next: (user: User) => {
+            this.userService.setCurrentUser(user);
+            this.router.navigate(['/']); 
+
+            // הודעת SnackBar בעת התחברות מוצלחת
+            this.snackBar.open('התחברת בהצלחה!', '', { duration: 3000 });
+          },
+          error: (error) => {
+            console.error('Failed to fetch user details after login', error);
+            this.errorMessage = 'התחברות נכשלה. אנא נסה שוב.';
+            this.snackBar.open('התחברות נכשלה. אנא נסה שוב.', '', { duration: 3000 });
+          }
+        });
       },
       error: (error) => {
         console.error('Login failed', error);
+        this.errorMessage = '×©× ×ž×©×ª×ž×© ××• ×¡×™×¡×ž×” ×©×’×•×™×™×.';
+        
+        // ×”×•×“×¢×ª SnackBar ×‘×¢×ª ×›×™×©×œ×•×Ÿ ×”×ª×—×‘×¨×•×ª
+        this.snackBar.open('×”×ª×—×‘×¨×•×ª × ×›×©×œ×”. ×× × ×‘×“×•×§ ××ª ×”×¤×¨×˜×™×.', '', { duration: 3000 });
       }
     });
   }
 
-  logout() {
-    localStorage.removeItem('token'); // This removes the token from local storage
-    this.router.navigate(['/login']); // Adjust if your login route is different
+  navigateToRegister(): void {
+    this.router.navigate(['/register']);
+  }
+
+  navigateToForgotPassword(): void {
+    this.router.navigate(['/forgot-password']);
   }
 }

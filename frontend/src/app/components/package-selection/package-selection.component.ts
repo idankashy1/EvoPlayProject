@@ -109,8 +109,7 @@ export class PackageSelectionComponent implements OnInit {
     let totalCost = 0;
   
     if (roomType === 'VR') {
-      // VR: 40 ש"ח לכל 15 דקות
-      const sessions = Math.ceil(duration * 4); // מחשב כמה סשנים של 15 דקות יש
+      const sessions = duration; // duration הוא כבר מספר הסשנים של 15 דקות
       totalCost = sessions * 40 * numberOfPlayers;
     } else {
       // חדרים אחרים: חישוב לפי שעה

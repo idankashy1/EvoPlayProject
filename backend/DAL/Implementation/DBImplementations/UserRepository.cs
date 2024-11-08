@@ -64,5 +64,10 @@ namespace EvoPlay.Repository.Implementation
         {
             return await _context.Users.FirstOrDefaultAsync(u => u.PhoneNumber == phoneNumber);
         }
+        public async Task<User> GetUserByResetTokenAsync(string token)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.PasswordResetToken == token);
+        }
+
     }
 }

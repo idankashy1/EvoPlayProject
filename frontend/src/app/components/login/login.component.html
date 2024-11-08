@@ -1,8 +1,22 @@
+﻿<!-- login.component.html -->
 <div class="login-container">
-    <form (submit)="onLogin()">
-      <input type="email" [(ngModel)]="email" name="email" placeholder="Email" required>
-      <input type="password" [(ngModel)]="password" name="password" placeholder="Password" required>
-      <button type="submit">Login</button>
-      <button (click)="logout()">Logout</button>
+  <mat-card class="login-card">
+    <mat-card-title>התחברות</mat-card-title>
+    <form (submit)="onLogin()" #loginForm="ngForm">
+      <mat-form-field appearance="fill">
+        <mat-label>אימייל</mat-label>
+        <input matInput type="email" [(ngModel)]="email" name="email" required>
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>סיסמה</mat-label>
+        <input matInput type="password" [(ngModel)]="password" name="password" required>
+      </mat-form-field>
+      <button mat-raised-button color="primary" type="submit">התחבר</button>
+      <div class="links">
+        <a (click)="navigateToRegister()">אין לך חשבון? הירשם</a>
+        <a (click)="navigateToForgotPassword()">שכחת סיסמה?</a>
+      </div>
+      <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
     </form>
-  </div>
+  </mat-card>
+</div>

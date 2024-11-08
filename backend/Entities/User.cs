@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
+
 
 namespace EvoPlay.Entities
 {
@@ -23,5 +25,17 @@ namespace EvoPlay.Entities
         public string Address { get; set; }
 
         public string? PasswordHash { get; set; } // Nullable
+
+        public int TotalPoints { get; set; } = 0; // סך כל הנקודות שנצברו
+
+        public int CurrentPoints { get; set; } = 0; // נקודות נוכחיות (מ-0 עד 9)
+
+        public int AvailableRewards { get; set; } = 0; // מספר ההטבות הזמינות
+
+        public string? PasswordResetToken { get; set; }
+        public DateTime? ResetTokenExpiry { get; set; }
+        public string Role { get; set; } = "User"; // ערך ברירת מחדל הוא 'User'
+        public ICollection<BookingGroup> BookingGroups { get; set; }
+
     }
 }
