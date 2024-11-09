@@ -1,91 +1,95 @@
 <mat-card>
-    <mat-card-title>ניהול מערכת - הזמנות היום</mat-card-title>
-    <mat-card-content>
-      <div class="table-container">
-        <div class="filter-container">
-          <!-- שדה חיפוש -->
-          <mat-form-field appearance="fill">
-            <mat-label>חיפוש</mat-label>
-            <input matInput placeholder="חפש לפי ID, שם או טלפון" [formControl]="searchControl">
-          </mat-form-field>
-          
-          <!-- שדות סינון תאריכים -->
-          <mat-form-field appearance="fill">
-            <mat-label>מתאריך</mat-label>
-            <input matInput [matDatepicker]="pickerFrom" [formControl]="fromDate">
-            <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
-            <mat-datepicker #pickerFrom></mat-datepicker>
-          </mat-form-field>
-          
-          <mat-form-field appearance="fill">
-            <mat-label>עד תאריך</mat-label>
-            <input matInput [matDatepicker]="pickerTo" [formControl]="toDate">
-            <mat-datepicker-toggle matSuffix [for]="pickerTo"></mat-datepicker-toggle>
-            <mat-datepicker #pickerTo></mat-datepicker>
-          </mat-form-field>
-          
-          <!-- כפתורי סינון ואיפוס -->
-          <button mat-raised-button color="primary" (click)="applyDateFilter()">סנן</button>
-          <button mat-raised-button color="warn" (click)="resetFilters()">איפוס סינונים</button>
-        </div>
+  <mat-card-title class="main-title">ניהול מערכת - הזמנות היום</mat-card-title>
+  <mat-card-content>
+    <div class="table-container">
+      <div class="filter-container">
+        <!-- שדה חיפוש -->
+        <mat-form-field appearance="fill">
+          <mat-label>חיפוש</mat-label>
+          <input matInput placeholder="חפש לפי ID, שם או טלפון" [formControl]="searchControl">
+        </mat-form-field>
         
-        <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
-          <!-- מספר הזמנה (id) -->
-          <ng-container matColumnDef="id">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> # </th>
-            <td mat-cell *matCellDef="let booking"> {{ booking.id }} </td>
-          </ng-container>
-  
-          <!-- שם פרטי ושם משפחה המשתמש -->
-          <ng-container matColumnDef="fullName">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> שם </th>
-            <td mat-cell *matCellDef="let booking"> {{ booking.firstName }} {{ booking.lastName }} </td>
-          </ng-container>
-  
-          <!-- איזה חדר בדיוק הוזמן -->
-          <ng-container matColumnDef="roomName">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> חדר </th>
-            <td mat-cell *matCellDef="let booking"> {{ booking.roomName }} </td>
-          </ng-container>
-  
-          <!-- כמה אנשים הם יהיו -->
-          <ng-container matColumnDef="numberOfPlayers">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> מספר אנשים </th>
-            <td mat-cell *matCellDef="let booking"> {{ booking.numberOfPlayers }} </td>
-          </ng-container>
-  
-          <!-- מאיזה שעה -->
-          <ng-container matColumnDef="startTime">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> מ- </th>
-            <td mat-cell *matCellDef="let booking"> {{ booking.startTime | date:'shortTime':'Asia/Jerusalem' }} </td>
-          </ng-container>
-  
-          <!-- עד איזה שעה -->
-          <ng-container matColumnDef="endTime">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> עד- </th>
-           <td mat-cell *matCellDef="let booking"> {{ booking.endTime | date:'shortTime':'Asia/Jerusalem' }} </td>
-          </ng-container>
-  
-  
-          <!-- טלפון של המשתמש -->
-          <ng-container matColumnDef="phoneNumber">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> טלפון </th>
-            <td mat-cell *matCellDef="let booking"> {{ booking.phoneNumber }} </td>
-          </ng-container>
-  
-          <!-- כמה הטבות יש למשתמש -->
-          <ng-container matColumnDef="availableRewards">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> הטבות זמינות </th>
-            <td mat-cell *matCellDef="let booking"> {{ booking.availableRewards }} </td>
-          </ng-container>
-  
-          <!-- הכותרות -->
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        </table>
-  
-        <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+        <!-- שדות סינון תאריכים -->
+        <mat-form-field appearance="fill">
+          <mat-label>מתאריך</mat-label>
+          <input matInput [matDatepicker]="pickerFrom" [formControl]="fromDate">
+          <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
+          <mat-datepicker #pickerFrom></mat-datepicker>
+        </mat-form-field>
+        
+        <mat-form-field appearance="fill">
+          <mat-label>עד תאריך</mat-label>
+          <input matInput [matDatepicker]="pickerTo" [formControl]="toDate">
+          <mat-datepicker-toggle matSuffix [for]="pickerTo"></mat-datepicker-toggle>
+          <mat-datepicker #pickerTo></mat-datepicker>
+        </mat-form-field>
+        
+        <!-- כפתורי סינון ואיפוס -->
+        <button mat-raised-button color="primary" (click)="applyDateFilter()">סנן</button>
+        <button mat-raised-button color="warn" (click)="resetFilters()">איפוס סינונים</button>
       </div>
-    </mat-card-content>
-  </mat-card>
-  
+      
+      <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+        <!-- מספר הזמנה (id) -->
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> # </th>
+          <td mat-cell *matCellDef="let booking"> {{ booking.id }} </td>
+        </ng-container>
+
+        <!-- שם פרטי ושם משפחה המשתמש -->
+        <ng-container matColumnDef="fullName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> שם </th>
+          <td mat-cell *matCellDef="let booking"> {{ booking.firstName }} {{ booking.lastName }} </td>
+        </ng-container>
+
+        <!-- איזה חדר בדיוק הוזמן -->
+        <ng-container matColumnDef="roomName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> חדר </th>
+          <td mat-cell *matCellDef="let booking"> {{ booking.roomName }} </td>
+        </ng-container>
+
+        <!-- כמה אנשים הם יהיו -->
+        <ng-container matColumnDef="numberOfPlayers">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> מספר אנשים </th>
+          <td mat-cell *matCellDef="let booking"> {{ booking.numberOfPlayers }} </td>
+        </ng-container>
+
+        <!-- תאריך ההזמנה -->
+        <ng-container matColumnDef="date">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> תאריך </th>
+          <td mat-cell *matCellDef="let booking"> {{ booking.startTime | date:'dd/MM/yyyy':'Asia/Jerusalem' }} </td>
+        </ng-container>
+
+        <!-- מאיזה שעה -->
+        <ng-container matColumnDef="startTime">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> מ- </th>
+          <td mat-cell *matCellDef="let booking"> {{ booking.startTime | date:'HH:mm':'Asia/Jerusalem' }} </td>
+        </ng-container>
+
+        <!-- עד איזה שעה -->
+        <ng-container matColumnDef="endTime">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> עד- </th>
+          <td mat-cell *matCellDef="let booking"> {{ booking.endTime | date:'HH:mm':'Asia/Jerusalem' }} </td>
+        </ng-container>
+
+        <!-- טלפון של המשתמש -->
+        <ng-container matColumnDef="phoneNumber">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> טלפון </th>
+          <td mat-cell *matCellDef="let booking"> {{ booking.phoneNumber }} </td>
+        </ng-container>
+
+        <!-- כמה הטבות יש למשתמש -->
+        <ng-container matColumnDef="availableRewards">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> הטבות זמינות </th>
+          <td mat-cell *matCellDef="let booking"> {{ booking.availableRewards }} </td>
+        </ng-container>
+
+        <!-- הכותרות -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+
+      <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+    </div>
+  </mat-card-content>
+</mat-card>

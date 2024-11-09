@@ -19,8 +19,10 @@
         (mouseover)="hoveredPackage = package"
         (mouseout)="hoveredPackage = null"
       >
-        <h3 class="package-name">
-          <mat-icon class="rank-icon">{{ getRankIcon(package) }}</mat-icon>
+        <h3 class="package-name" [ngClass]="getRankClass(package)">
+          <span class="rank-badge">
+            {{ getRankLabel(package) }}
+          </span>
           {{ package.name }}
         </h3>
         <img mat-card-image [src]="package.imageUrl" alt="{{ package.name }}" />

@@ -1,24 +1,30 @@
 .table-container {
-    width: 100%;
-    overflow: auto;
-  }
-  
-  mat-card-title {
-    text-align: center;
-  }
-  
-  .filter-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    margin-bottom: 16px;
-  }
-  
-  mat-form-field {
-    flex: 1 1 200px;
-  }
-  
-  button {
-    align-self: center;
-  }
-  
+  width: 100%;
+  overflow: auto;
+}
+
+mat-card-title {
+  text-align: center;
+}
+
+.main-title {
+  text-align: center;
+  font-size: 1.5rem;
+  margin: 16px 0;
+  font-weight: bold;
+}
+
+.filter-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+mat-form-field {
+  flex: 1 1 200px;
+}
+
+button {
+  align-self: center;
+}

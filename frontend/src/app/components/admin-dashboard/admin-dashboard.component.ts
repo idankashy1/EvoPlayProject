@@ -7,22 +7,24 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { DateAdapter } from '@angular/material/core'; // ייבוא DateAdapter
 
 @Component({
   selector: 'app-admin-dashboard',
   templateUrl: './admin-dashboard.component.html',
-  styleUrls: ['./admin-dashboard.component.scss']
+  styleUrls: ['./admin-dashboard.component.scss'],
 })
 export class AdminDashboardComponent implements OnInit {
   displayedColumns: string[] = [
-    'id', 
-    'fullName', 
-    'roomName', 
-    'numberOfPlayers', 
-    'startTime', 
-    'endTime', 
-    'phoneNumber', 
-    'availableRewards'
+    'id',
+    'fullName',
+    'roomName',
+    'numberOfPlayers',
+    'date',
+    'startTime',
+    'endTime',
+    'phoneNumber',
+    'availableRewards',
   ];
   dataSource = new MatTableDataSource<Booking>();
 
@@ -33,17 +35,21 @@ export class AdminDashboardComponent implements OnInit {
   fromDate = new FormControl<Date | null>(null);
   toDate = new FormControl<Date | null>(null);
 
-  constructor(private bookingService: BookingService) {}
+  constructor(
+    private bookingService: BookingService,
+    private dateAdapter: DateAdapter<Date> // הוספת DateAdapter לקונסטרקטור
+  ) {
+    this.dateAdapter.setLocale('en-GB'); // הגדרת הלוקאל לפורמט dd/MM/yyyy
+  }
 
   ngOnInit(): void {
     this.loadTodaysBookings();
 
-    this.searchControl.valueChanges.pipe(
-      debounceTime(300),
-      distinctUntilChanged()
-    ).subscribe(searchTerm => {
-      this.applyFilter(searchTerm || '');
-    });
+    this.searchControl.valueChanges
+      .pipe(debounceTime(300), distinctUntilChanged())
+      .subscribe((searchTerm) => {
+        this.applyFilter(searchTerm || '');
+      });
   }
 
   loadTodaysBookings(): void {
@@ -56,7 +62,7 @@ export class AdminDashboardComponent implements OnInit {
       },
       error: (error: any) => {
         console.error("Failed to load today's bookings", error);
-      }
+      },
     });
   }
 
@@ -89,7 +95,7 @@ export class AdminDashboardComponent implements OnInit {
       },
       error: (error: any) => {
         console.error('Failed to load bookings by date range', error);
-      }
+      },
     });
   }
 

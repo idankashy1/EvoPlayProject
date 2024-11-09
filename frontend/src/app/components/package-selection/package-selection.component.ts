@@ -62,7 +62,6 @@ export class PackageSelectionComponent implements OnInit {
       this.continueToPayment();
     }
   }
-  
 
   checkQualificationForPackage(): void {
     const { roomType, numberOfPlayers, duration } = this.bookingDetails;
@@ -117,22 +116,37 @@ export class PackageSelectionComponent implements OnInit {
     return pkg ? pkg.rank : 0;
   }
 
-  getRankIcon(pkg: any): string {
+  getRankLabel(pkg: any): string {
     const rank = this.getPackageRank(pkg.name);
-    // ניתן להשתמש באייקונים שונים בהתאם לרמה
     switch (rank) {
-        case 1:
-            return 'looks_one';
-        case 2:
-            return 'looks_two';
-        case 3:
-            return 'looks_3';
-        case 4:
-            return 'star';
-        default:
-            return 'star_border';
+      case 1:
+        return 'בסיסי';
+      case 2:
+        return 'מתקדם';
+      case 3:
+        return 'פרימיום';
+      case 4:
+        return 'יוקרתי';
+      default:
+        return '';
     }
-}
+  }
+
+  getRankClass(pkg: any): string {
+    const rank = this.getPackageRank(pkg.name);
+    switch (rank) {
+      case 1:
+        return 'basic';
+      case 2:
+        return 'advanced';
+      case 3:
+        return 'premium';
+      case 4:
+        return 'luxury';
+      default:
+        return '';
+    }
+  }
 
   calculateTotalCost(): number {
     const { roomType, duration, numberOfPlayers } = this.bookingDetails;
