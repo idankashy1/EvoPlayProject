@@ -1,102 +1,131 @@
-/* booking-form.component.scss */
 
 .booking-form-container {
   display: flex;
   justify-content: center;
-  padding: 2rem;
-  direction: rtl; 
-}
-
-// כרטיס ההזמנה
-.booking-card {
-  --mdc-elevated-card-container-color: rgba(52, 52, 52, 0.8);
-  width: auto;
-  max-width: 800px;
-  padding: 20px;
-  background-image: url('../../../assets/background2.jpg');
+  align-items: center;
+  min-height: 70vh;
   background-size: cover;
-  background-repeat: no-repeat;
-  color: #fff;
-  box-shadow: 0 12px 36px 0 rgba(0, 0, 0, 0.2), 0 16px 56px 0 rgba(0, 0, 0, 0.19); /* Updated shadow effect */
-  border-radius: 8px;
-  overflow: hidden;
+  position: relative;
+  direction: rtl;
 
-  // כותרת הטופס
-  .booking-title {
-    text-align: center;
-    font-size: 2rem;
-    margin-bottom: 0.5rem;
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
   }
 
-// מפריד כותרת ושדות הטופס
-  .header-divider,
-  .fields-divider {
-    border: 0;
-    height: 1px;
-    background-image: linear-gradient(to right, transparent, #fff, transparent);
-    margin: 1rem 0;
-  }
-}
+  .booking-card {
+    position: relative;
+    padding: 2rem;
+    max-width: 500px;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.2);
+    z-index: 1;
 
-// שדות הטופס
-.booking-fields {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  width: 90%; 
-  margin: auto;
-  
-  
-  // בוררי זמנים ובחירות נוספות
-  .time-selectors,
-  .other-selectors {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-  }
-  
-  .mat-input-element,
-  mat-label,
-  mat-select,
-  .mat-datepicker-toggle,
-  textarea {
-    text-align: right;
-  }
+    .booking-title {
+      text-align: center;
+      margin-bottom: 1rem;
+      color: #1e3c72;
+      font-weight: bold;
+    }
 
-}
+    .header-divider,
+    .fields-divider {
+      border: 0;
+      height: 1px;
+      background-image: linear-gradient(to left, transparent, #1e3c72, transparent);
+      margin: 1rem 0;
+    }
 
+    .booking-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
 
-// שדה הטופס
-mat-form-field {
-  background: rgba(255, 255, 255, 0.8);
-  border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  height: 75px;
-  cursor: pointer;
+      .form-row {
+        display: flex;
+        gap: 1rem;
 
-}
+        &.full-width {
+          mat-form-field {
+            flex: 1;
+          }
+        }
 
-// כפתור המשך
-.submit-button {
-  min-width: 150px; 
-  width: auto; 
-  padding: 0.5rem 1rem; 
-  margin: 1rem auto; 
-  font-size: 1.1rem;
-  font-weight: bold;
-  border-radius: 10px;
-  display: block;
-}
+        mat-form-field {
+          flex: 1;
+        }
 
-// תצוגה עבור מסכים קטנים יותר
-@media (max-width: 768px) {
+        @media (max-width: 600px) {
+          flex-direction: column;
+        }
+      }
 
-  .booking-fields {
-    .time-selectors,
-    .other-selectors {
-      grid-template-columns: 1fr;
+      mat-form-field {
+        direction: rtl;
+
+        input[matInput][readonly] {
+          cursor: pointer; // הוספת סמן מצביע כשמרחפים מעל שדה התאריך
+        }
+        
+        .mat-form-field-flex {
+          background: #fff;
+          flex-direction: row-reverse; // להפוך את הסדר ב-RTL
+        }
+
+        .mat-form-field-infix {
+          text-align: right;
+        }
+
+        .mat-select-trigger {
+          display: flex;
+          align-items: center;
+          margin-left: 75px; // הוספת מרווח כדי להזיז את הערך הנבחר
+
+          .mat-select-value {
+            margin-left: 0; // איפוס מרווח פנימי
+          }
+        }
+
+        .mat-form-field-label {
+          right: 0;
+          left: auto;
+        }
+
+        .mat-icon {
+          margin-right: 0;
+          margin-left: 8px;
+        }
+
+        .mat-form-field-prefix {
+          margin-right: 0;
+          margin-left: 8px;
+        }
+
+        .mat-select-arrow {
+          transform: rotate(180deg); // לסובב את החץ כדי להתאים ל-RTL
+        }
+      }
+
+      .submit-button {
+        align-self: center;
+        padding: 0.75rem 2rem;
+        font-size: 1.1rem;
+        font-weight: bold;
+        border-radius: 8px;
+        margin-top: 1rem;
+        transition: background-color 0.3s, transform 0.3s;
+
+        &:hover {
+          background-color: #1565c0;
+          transform: translateY(-2px);
+        }
+      }
     }
   }
 }

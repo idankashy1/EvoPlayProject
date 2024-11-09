@@ -10,25 +10,22 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// הגדרת זמן מקומי ישראל
+CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("he-IL");
+CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("he-IL");
+TimeZoneInfo localZone = TimeZoneInfo.FindSystemTimeZoneById("Israel Standard Time");
+
 // הוספת DbContext
-// Add services to the container.
 builder.Services.AddDbContext<GameCenterContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
            .EnableSensitiveDataLogging()
-           .EnableSensitiveDataLogging() // Add this line for more detailed errors
            .EnableDetailedErrors());
 
 // הגדרת CORS
-
-builder.Services.AddControllers();
-builder.Logging.ClearProviders();
-builder.Logging.AddConsole(); 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
 builder.Services.AddCors(option =>
 {
     option.AddPolicy("MyPolicy", builder =>
@@ -40,11 +37,8 @@ builder.Services.AddCors(option =>
 // קריאת מפתח ה-JWT מתוך הקונפיגורציה
 var key = Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]);
 var keySymmetric = new SymmetricSecurityKey(key);
-var secretKey = EvoPlay.Helpers.PasswordHelper.GenerateSecretKey();
-Console.WriteLine($"Generated JWT Secret Key: {secretKey}");
 
 // הגדרת אימות JWT
-var key = "IKASHY123"; 
 builder.Services.AddAuthentication(x =>
 {
     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -53,7 +47,6 @@ builder.Services.AddAuthentication(x =>
 .AddJwtBearer(x =>
 {
     x.RequireHttpsMetadata = false;
-    x.RequireHttpsMetadata = false; // Should be true in production
     x.SaveToken = true;
     x.TokenValidationParameters = new TokenValidationParameters
     {
@@ -63,14 +56,10 @@ builder.Services.AddAuthentication(x =>
         ValidateAudience = false, // בטל את האימות אם אינך זקוק לו כרגע
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"]
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key)),
-        ValidateIssuer = false,
-        ValidateAudience = false
     };
 });
 
 // רישום שירותים ב-Dependency Injection
-
 builder.Services.AddScoped<IContactService, ContactService>();
 builder.Services.AddScoped<IEmailRepository, EmailRepository>();
 builder.Services.AddScoped<IBookingRepository, BookingRepository>();
@@ -101,8 +90,6 @@ builder.Services.AddSwaggerGen(c =>
         Scheme = "Bearer"
     });
 
-
-
     c.AddSecurityRequirement(new OpenApiSecurityRequirement()
     {
         {
@@ -125,21 +112,17 @@ builder.Services.AddSwaggerGen(c =>
 var app = builder.Build();
 
 // הגדרת ה-Pipeline
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
-    app.UseDeveloperExceptionPage(); // Add this line for detailed error pages
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
 app.UseCors("MyPolicy");
-app.UseAuthentication(); // Make sure authentication is configured before authorization
 app.UseRouting();
 app.UseAuthentication();
-
 app.UseAuthorization();
 
 app.UseEndpoints(endpoints =>

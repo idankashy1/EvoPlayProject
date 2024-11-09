@@ -1,6 +1,5 @@
 ﻿using EvoPlay.DTOs;
 using EvoPlay.BL.Contract;
-using EvoPlay.DTOs;
 using EvoPlay.Entities;
 using EvoPlay.Repository.Contract;
 using System;
@@ -60,7 +59,6 @@ namespace EvoPlay.BL.Implementation
                         Email = bookingRequest.Email,
                         City = bookingRequest.City,
                         Address = bookingRequest.Address
-                    // PasswordHash נשאר null
                     };
                     await _userRepository.AddUserAsync(user);
                 }
@@ -78,19 +76,16 @@ namespace EvoPlay.BL.Implementation
             if (bookingRequest.ResourceTypeId == 1 || bookingRequest.ResourceTypeId == 2)
             {
                 // חדרי Sony ו-Sony VIP
-                // צריכים חדר אחד
                 if (availableResources.Count < 1)
                 {
                     throw new Exception("No available rooms for the requested time.");
                 }
 
-                // משתמשים בחדר אחד
                 availableResources = availableResources.Take(1).ToList();
             }
             else if (bookingRequest.ResourceTypeId == 3 || bookingRequest.ResourceTypeId == 4)
             {
                 // חדרי PC ו-VR
-                // צריכים את כמות המשאבים המבוקשת
                 if (availableResources.Count < bookingRequest.Quantity)
                 {
                     throw new Exception("Not enough resources available for the requested time.");
@@ -277,24 +272,27 @@ namespace EvoPlay.BL.Implementation
             var user = await _userRepository.GetUserByIdAsync(bookingGroup.UserId);
             if (user != null)
             {
-                // חישוב סך כל השעות בהזמנה זו
-                double totalHours = bookingGroup.Bookings.Sum(b => (b.EndTime - b.StartTime).TotalHours);
+                // חישוב סך כל השעות בהזמנה זו (מוודא ש-`totalHours` הוא ערך חיובי)
+                double totalHours = bookingGroup.Bookings.Sum(b => Math.Max(0, (b.EndTime - b.StartTime).TotalHours));
 
                 // חישוב מספר הנקודות שנצברו בהזמנה זו (נקודה אחת לכל שעה)
                 int pointsEarned = (int)Math.Floor(totalHours);
 
-                // עדכון סך הנקודות הכולל
-                user.TotalPoints += pointsEarned;
+                // עדכון `TotalPoints` רק אם `pointsEarned` הוא ערך חיובי
+                if (pointsEarned > 0)
+                {
+                    user.TotalPoints += pointsEarned;
+                }
 
-                // עדכון הנקודות הנוכחיות
+                // עדכון `CurrentPoints`
                 user.CurrentPoints += pointsEarned;
 
                 // בדיקה אם המשתמש זכאי להטבה חדשה
-                int newRewards = user.CurrentPoints / 10; // כמה הטבות חדשות מגיעות לו
-                if (newRewards > 0)
+                if (user.CurrentPoints >= 10)
                 {
+                    int newRewards = user.CurrentPoints / 10; // מספר ההטבות החדשות
                     user.AvailableRewards += newRewards;
-                    user.CurrentPoints = user.CurrentPoints % 10; // עדכון הנקודות הנוכחיות
+                    user.CurrentPoints = user.CurrentPoints % 10; // עדכון `CurrentPoints` למודולו 10
                 }
 
                 // שמירת השינויים

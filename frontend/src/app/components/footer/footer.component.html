@@ -1,32 +1,54 @@
 <footer class="site-footer">
   <div class="container">
     <div class="footer-columns">
-      <div class="footer-column">
+      <!-- About Us Column -->
+      <div class="footer-column about-us">
         <h6>קצת עלינו</h6>
-        <p>איבופליי הוא מרכז גיימינג גדול, מפואר ויוקרתי...</p>
+        <p>איבופליי הוא מרכז גיימינג גדול, מפואר ויוקרתי המציע מגוון חוויות משחק מתקדמות.</p>
       </div>
 
-      <div class="footer-column">
+      <!-- Links Column -->
+      <div class="footer-column links">
         <h6>קישורים</h6>
         <ul>
-          <li><a href="/our-rooms">החדרים שלנו</a></li>
-          <li><a href="/company-events">אירועים</a></li>
-          <li><a href="/our-packages">החבילות שלנו</a></li>
-          <li><a href="/contact-us">צור קשר</a></li>
+          <li><a (click)="navigateTo('/our-rooms')">החדרים שלנו</a></li>
+          <li><a (click)="navigateTo('/company-events')">אירועים</a></li>
+          <li><a (click)="navigateTo('/our-packages')">החבילות שלנו</a></li>
+          <li><a (click)="navigateTo('/contact-us')">צור קשר</a></li>
         </ul>
       </div>
 
-      <div class="footer-column">
-        <h6>מיקום</h6>
-        <!-- ניתן להטמיע מפה של גוגל כאן -->
+      <!-- Social Media Column -->
+      <div class="footer-column social-media">
+        <h6>עקבו אחרינו</h6>
+        <div class="social-icons">
+          <a href="https://www.facebook.com" target="_blank" aria-label="Facebook">
+            <mat-icon fontSet="mdi" fontIcon="mdi-facebook"></mat-icon>
+          </a>
+          <a href="https://www.instagram.com" target="_blank" aria-label="Instagram">
+            <mat-icon fontSet="mdi" fontIcon="mdi-instagram"></mat-icon>
+          </a>
+          <a href="https://www.twitter.com" target="_blank" aria-label="Twitter">
+            <mat-icon fontSet="mdi" fontIcon="mdi-twitter"></mat-icon>
+          </a>
+        </div>
+      </div>
+
+      <!-- Newsletter Column -->
+      <div class="footer-column newsletter">
+        <h6>הצטרפו לניוזלטר שלנו</h6>
+        <form (submit)="subscribeNewsletter()" #newsletterForm="ngForm">
+          <mat-form-field appearance="fill">
+            <mat-label>הכנס את כתובת המייל שלך</mat-label>
+            <input matInput type="email" [(ngModel)]="newsletterEmail" name="email" required email>
+          </mat-form-field>
+          <button mat-raised-button color="accent" type="submit" [disabled]="!newsletterForm.form.valid">הרשמה</button>
+        </form>
       </div>
     </div>
 
     <div class="footer-bottom">
       <p>© 2024 Evo Play | פותח על ידי עידן קאשי</p>
-      <div class="social-icons">
-        <!-- קישורים לרשתות חברתיות -->
-      </div>
     </div>
   </div>
 </footer>

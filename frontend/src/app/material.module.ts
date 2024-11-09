@@ -21,6 +21,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTableModule } from '@angular/material/table'; 
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { MatPaginatorModule } from "@angular/material/paginator";
+import { MatTooltipModule } from "@angular/material/tooltip";
 
 @NgModule({
     exports:[
@@ -45,6 +46,7 @@ import { MatPaginatorModule } from "@angular/material/paginator";
         MatTableModule, 
         BrowserAnimationsModule,
         MatPaginatorModule,
+        MatTooltipModule,
     ],
 })
 export class MaterialModule {}

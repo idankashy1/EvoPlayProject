@@ -57,14 +57,15 @@
           <!-- מאיזה שעה -->
           <ng-container matColumnDef="startTime">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> מ- </th>
-            <td mat-cell *matCellDef="let booking"> {{ booking.startTime | date:'shortTime' }} </td>
+            <td mat-cell *matCellDef="let booking"> {{ booking.startTime | date:'shortTime':'Asia/Jerusalem' }} </td>
           </ng-container>
   
           <!-- עד איזה שעה -->
           <ng-container matColumnDef="endTime">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> עד- </th>
-            <td mat-cell *matCellDef="let booking"> {{ booking.endTime | date:'shortTime' }} </td>
+           <td mat-cell *matCellDef="let booking"> {{ booking.endTime | date:'shortTime':'Asia/Jerusalem' }} </td>
           </ng-container>
+  
   
           <!-- טלפון של המשתמש -->
           <ng-container matColumnDef="phoneNumber">

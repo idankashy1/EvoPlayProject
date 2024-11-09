@@ -1,4 +1,7 @@
-﻿/* הגדרות כלליות */
+﻿
+@import '~@mdi/font/css/materialdesignicons.min.css';
+
+/* הגדרות כלליות */
 html, body {
   margin: 0;
   padding: 0;
@@ -12,7 +15,6 @@ app-root {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  width: 100%;
 }
 
 main {
@@ -28,6 +30,8 @@ app-footer {
   text-align: center;
 }
 
+
+
 app-header {
   width: 100%;
 }
@@ -39,9 +43,4 @@ app-header {
 /* הגדרות נוספות לסטיילים */
 .booking-title, .submit-button, .dialog-header {
   font-family: 'M PLUS Rounded 1c', sans-serif !important;
-}
-
-.date-field .mat-mdc-form-field-infix {
-  right: 15px;
-  cursor: pointer;
 }

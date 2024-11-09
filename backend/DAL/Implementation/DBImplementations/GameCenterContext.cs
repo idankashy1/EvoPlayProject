@@ -1,6 +1,5 @@
 ﻿using EvoPlay.Entities;
 using Microsoft.EntityFrameworkCore;
-using EvoPlay.Entities;
 
 namespace EvoPlay.DAL
 {
@@ -11,8 +10,6 @@ namespace EvoPlay.DAL
         {
         }
 
-        public DbSet<ResourceType> ResourceTypes { get; set; }
-        public DbSet<Resource> Resources { get; set; }
         public DbSet<BookingGroup> BookingGroups { get; set; }
         public DbSet<Booking> Bookings { get; set; }
         public DbSet<Resource> Resources { get; set; }
@@ -24,18 +21,11 @@ namespace EvoPlay.DAL
         {
             // BookingGroup
             modelBuilder.Entity<BookingGroup>()
-                .HasMany(bg => bg.Bookings)
-                .WithOne(b => b.BookingGroup)
-                .HasForeignKey(b => b.BookingGroupId);
-
-            // BookingGroup-User relationship
-            modelBuilder.Entity<BookingGroup>()
                 .HasOne(bg => bg.User)
                 .WithMany(u => u.BookingGroups)
                 .HasForeignKey(bg => bg.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // BookingGroup-Package relationship
             modelBuilder.Entity<BookingGroup>()
                 .HasOne(bg => bg.Package)
                 .WithMany(p => p.BookingGroups)

@@ -1,19 +1,15 @@
 ﻿// src/app/app.module.ts
 import { NgModule } from '@angular/core';
-import { ReactiveFormsModule, FormsModule } from '@angular/forms'; 
-import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
-// ×§×•×ž×¤×•× × ×˜×•×ª
+// קומפוננטות
 import { HeaderComponent } from './components/header/header.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AboutUsComponent } from './components/about-us/about-us.component';
 import { CompanyEventsComponent } from './components/company-events/company-events.component';
 import { HomeComponent } from './components/home/home.component';
 import { ContactUsComponent } from './components/contact-us/contact-us.component';
-import { HttpClientModule } from '@angular/common/http';
 import { FooterComponent } from './components/footer/footer.component';
 import { BookingFormComponent } from './components/booking-form/booking-form.component';
 import { OurRoomsComponent } from './components/our-rooms/our-rooms.component';
@@ -21,7 +17,6 @@ import { PackageSelectionComponent } from './components/package-selection/packag
 import { OurPackagesComponent } from './components/our-packages/our-packages.component';
 import { TranslateRoomTypePipe } from './pipes/translate-room-type.pipe';
 import { PaymentComponent } from './components/payment/payment.component';
-import { MaterialModule } from './material.module';
 import { LoginComponent } from './components/login/login.component';
 import { OrderSearchComponent } from './components/order-search/order-search.component';
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
@@ -29,19 +24,20 @@ import { RegisterComponent } from './components/register/register.component';
 import { RewardsInfoDialogComponent } from './components/rewards-info-dialog/rewards-info-dialog.component';
 import { AdminDashboardComponent } from './components/admin-dashboard/admin-dashboard.component';
 
-// ×ž×•×“×•×œ×™× ×©×œ Angular Material
+// מודולים של Angular Material
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MaterialModule } from './material.module'; // ×•×“× ×©×”× ×ª×™×‘ × ×›×•×Ÿ
+import { MaterialModule } from './material.module'; // ודא שהנתיב נכון
 
 // Guard
 import { AdminGuard } from './guards/admin.guard';
 
-// ×˜×¤×¡×™×
+// טפסים
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // HttpClient
 import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { InfoDialogComponent } from './components/info-dialog/info-dialog.component';
 
 @NgModule({
   declarations: [
@@ -63,13 +59,10 @@ import { CommonModule } from '@angular/common';
     UserProfileComponent,
     RegisterComponent,
     RewardsInfoDialogComponent,
-    AdminDashboardComponent
+    AdminDashboardComponent,
+    InfoDialogComponent
   ],
   imports: [
-    HttpClientModule,
-    FormsModule,
-    CommonModule,
-    ReactiveFormsModule,
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
@@ -83,7 +76,6 @@ import { CommonModule } from '@angular/common';
     AdminGuard,
     // ספקים נוספים אם יש...
   ],
-  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

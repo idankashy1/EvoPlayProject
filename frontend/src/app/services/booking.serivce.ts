@@ -5,7 +5,6 @@ import { Observable } from 'rxjs';
 import { Booking } from '../models/booking.model';
 import { CheckAvailabilityRequest, CheckAvailabilityResponse } from '../models/check-availability.model';
 import { BookingRequestDto } from '../models/booking-request.dto';
-import { CheckAvailabilityRequest, CheckAvailabilityResponse } from '../models/check-availability.model';
 
 @Injectable({
   providedIn: 'root'

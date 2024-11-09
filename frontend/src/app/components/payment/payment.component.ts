@@ -13,9 +13,8 @@ import { UserService } from '../../services/user.service'; // הוספת UserSer
 type RoomType = 'PS5' | 'PS5VIP' | 'PC' | 'VR';
 
 interface BookingDetails {
-  bookingDate: Date;
-  startHour: string;
-  endHour: string;
+  startDateTime: Date;  
+  endDateTime: Date;    
   numberOfPlayers: number;
   roomType: RoomType;
   duration: number;
@@ -32,8 +31,6 @@ export class PaymentComponent implements OnInit {
   bookingDetails!: BookingDetails;
   userDetailsForm!: FormGroup;
 
-
-  // מחירי החדרים
   private pricePerHour: { [key in RoomType]: number } = {
     'PS5': 30,
     'PS5VIP': 35,
@@ -126,22 +123,23 @@ export class PaymentComponent implements OnInit {
   private extractUserDetails(): any {
     return this.userDetailsForm.value;
   }
-
+  
   private prepareBookingDetails(userDetails: any): BookingRequestDto {
-    const startTime = this.createDateTimeString(this.bookingDetails.bookingDate, this.bookingDetails.startHour);
-    const endTime = this.createDateTimeString(this.bookingDetails.bookingDate, this.bookingDetails.endHour);
+    const startTime = `${this.bookingDetails.startDateTime.getFullYear()}-${(this.bookingDetails.startDateTime.getMonth() + 1).toString().padStart(2, '0')}-${this.bookingDetails.startDateTime.getDate().toString().padStart(2, '0')}T${this.bookingDetails.startDateTime.getHours().toString().padStart(2, '0')}:${this.bookingDetails.startDateTime.getMinutes().toString().padStart(2, '0')}:00`;
+    
+    const endTime = `${this.bookingDetails.endDateTime.getFullYear()}-${(this.bookingDetails.endDateTime.getMonth() + 1).toString().padStart(2, '0')}-${this.bookingDetails.endDateTime.getDate().toString().padStart(2, '0')}T${this.bookingDetails.endDateTime.getHours().toString().padStart(2, '0')}:${this.bookingDetails.endDateTime.getMinutes().toString().padStart(2, '0')}:00`;
 
     return {
       ...userDetails,
       resourceTypeId: this.getResourceTypeId(this.bookingDetails.roomType),
       quantity: this.calculateQuantity(this.bookingDetails.roomType),
-      startTime: startTime,
-      endTime: endTime,
+      startTime: startTime, // שמירה על זמן ישראל
+      endTime: endTime,     // שמירה על זמן ישראל
       numberOfPlayers: this.bookingDetails.numberOfPlayers,
       packageId: this.bookingDetails.selectedPackage?.id || null,
       totalCost: this.bookingDetails.totalCost || 0
     };
-  }
+}
 
   private createBooking(bookingDetails: BookingRequestDto): void {
     this.bookingService.createBooking(bookingDetails).subscribe({
@@ -155,13 +153,6 @@ export class PaymentComponent implements OnInit {
         alert('אירעה שגיאה ביצירת ההזמנה. אנא נסה שוב.');
       }
     });
-  }
-
-  private createDateTimeString(date: Date, time: string): string {
-    const [hours, minutes] = time.split(':').map(Number);
-    const dateTime = new Date(date);
-    dateTime.setHours(hours, minutes, 0, 0);
-    return dateTime.toISOString();
   }
 
   private getResourceTypeId(roomType: string): number {

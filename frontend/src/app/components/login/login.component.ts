@@ -1,7 +1,7 @@
 ﻿import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoginService } from '../../services/login.service';
-import { UserService } from '../../services/user.service'; // ×™×™×‘×•× UserService
+import { UserService } from '../../services/user.service'; // ייבוא UserService
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { User } from '../../models/user.model';
 
@@ -26,7 +26,6 @@ export class LoginComponent {
     this.loginService.login(this.email, this.password).subscribe({
       next: (response) => {
         console.log('Login successful', response);
-        // Store the token as needed
         localStorage.setItem('token', response.token);
         // Fetch user details and set in UserService
         this.userService.getMyDetails().subscribe({
@@ -46,10 +45,10 @@ export class LoginComponent {
       },
       error: (error) => {
         console.error('Login failed', error);
-        this.errorMessage = '×©× ×ž×©×ª×ž×© ××• ×¡×™×¡×ž×” ×©×’×•×™×™×.';
+        this.errorMessage = 'שם משתמש או סיסמה שגויים.';
         
-        // ×”×•×“×¢×ª SnackBar ×‘×¢×ª ×›×™×©×œ×•×Ÿ ×”×ª×—×‘×¨×•×ª
-        this.snackBar.open('×”×ª×—×‘×¨×•×ª × ×›×©×œ×”. ×× × ×‘×“×•×§ ××ª ×”×¤×¨×˜×™×.', '', { duration: 3000 });
+        // הודעת SnackBar בעת כישלון התחברות
+        this.snackBar.open('התחברות נכשלה. אנא בדוק את הפרטים.', '', { duration: 3000 });
       }
     });
   }

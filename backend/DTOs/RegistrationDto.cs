@@ -1,6 +1,4 @@
-﻿namespace EvoPlay._2._DTOs
-{
-public class RegistrationDto
+﻿public class RegistrationDto
 {
     public string FirstName { get; set; }
     public string LastName { get; set; }
