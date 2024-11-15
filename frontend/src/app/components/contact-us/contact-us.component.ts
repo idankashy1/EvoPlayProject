@@ -16,8 +16,8 @@ export class ContactUsComponent {
   ) {
     this.contactForm = this.formBuilder.group({
       name: ['', Validators.required],
+      phone: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      phone: [''],
       message: ['', Validators.required],
     });
   }
@@ -26,10 +26,12 @@ export class ContactUsComponent {
     if (this.contactForm.valid) {
       this.contactService.sendContactForm(this.contactForm.value).subscribe(
         response => {
-          console.log('Email sent successfully!', response);
+          console.log('הודעה נשלחה בהצלחה!', response);
+          // ניתן להוסיף הודעת הצלחה למשתמש
         },
         error => {
-          console.error('Error sending email!', error);
+          console.error('שגיאה בשליחת ההודעה!', error);
+          // ניתן להוסיף הודעת שגיאה למשתמש
         }
       );
     }

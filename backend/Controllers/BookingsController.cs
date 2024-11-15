@@ -109,6 +109,10 @@ namespace EvoPlay.Controllers
         [HttpPost("check-availability")]
         public async Task<IActionResult> CheckAvailability([FromBody] CheckAvailabilityDto availabilityDto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             try
             {
                 var isAvailable = await _bookingBL.CheckAvailabilityAsync(availabilityDto);
@@ -119,6 +123,7 @@ namespace EvoPlay.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
         [Authorize(Roles = "Admin")]
         [HttpGet("today")]
         public async Task<IActionResult> GetTodaysBookings([FromQuery] string date)

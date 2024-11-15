@@ -69,7 +69,7 @@ export class PackageSelectionComponent implements OnInit {
     if (['PS5', 'PS5VIP', 'PC'].includes(roomType)) {
       const packagesConditions: PackageCondition[] = [
         { name: 'סיבוב ראשון', minPlayers: 4, minHours: 2, rank: 1 },
-        { name: 'סיום מתוק', minPlayers: 4, minHours: 2, rank: 1 },
+        { name: 'פינוק קטן', minPlayers: 4, minHours: 2, rank: 1 },
         { name: 'התחלה חזקה', minPlayers: 4, minHours: 3, rank: 2 },
         { name: 'לילה כולל', minPlayers: 4, minHours: 4, rank: 3 },
         { name: 'יום הולדת גיימר', minPlayers: 4, minHours: 5, rank: 4 }

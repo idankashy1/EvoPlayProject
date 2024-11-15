@@ -242,23 +242,23 @@ namespace EvoPlay.BL.Implementation
             var unavailableResourceIds = await _bookingRepository.GetUnavailableResourcesAsync(resourceIds, availabilityDto.StartTime, availabilityDto.EndTime);
 
             // המשאבים הזמינים
-            var availableResourceIds = resourceIds.Except(unavailableResourceIds).ToList();
+            var availableResources = resources.Where(r => !unavailableResourceIds.Contains(r.Id)).ToList();
 
-            // כמות המשאבים הזמינים
-            var availableResourcesCount = availableResourceIds.Count;
+            // חישוב הקיבולת הכוללת של המשאבים הזמינים
+            var totalAvailableCapacity = availableResources.Sum(r => r.Capacity);
 
             // לוגיקה בהתאם לסוג המשאב
             if (availabilityDto.ResourceTypeId == 1 || availabilityDto.ResourceTypeId == 2)
             {
                 // חדרי Sony ו-Sony VIP
                 // צריכים חדר אחד פנוי
-                return availableResourcesCount >= 1;
+                return availableResources.Count >= 1;
             }
             else if (availabilityDto.ResourceTypeId == 3 || availabilityDto.ResourceTypeId == 4)
             {
                 // חדרי PC ו-VR
                 // צריכים מספיק מכשירים זמינים
-                return availableResourcesCount >= availabilityDto.QuantityRequested;
+                return totalAvailableCapacity >= availabilityDto.QuantityRequested;
             }
             else
             {
@@ -272,31 +272,37 @@ namespace EvoPlay.BL.Implementation
             var user = await _userRepository.GetUserByIdAsync(bookingGroup.UserId);
             if (user != null)
             {
-                // חישוב סך כל השעות בהזמנה זו (מוודא ש-`totalHours` הוא ערך חיובי)
-                double totalHours = bookingGroup.Bookings.Sum(b => Math.Max(0, (b.EndTime - b.StartTime).TotalHours));
-
-                // חישוב מספר הנקודות שנצברו בהזמנה זו (נקודה אחת לכל שעה)
-                int pointsEarned = (int)Math.Floor(totalHours);
-
-                // עדכון `TotalPoints` רק אם `pointsEarned` הוא ערך חיובי
-                if (pointsEarned > 0)
+                // נניח שכל ההזמנות ב-BookingGroup הן עבור אותו פרק זמן
+                var firstBooking = bookingGroup.Bookings.FirstOrDefault();
+                if (firstBooking != null)
                 {
+                    // המרת הזמנים ל-Local Time, אם נדרש
+                    DateTime startTime = firstBooking.StartTime.ToLocalTime();
+                    DateTime endTime = firstBooking.EndTime.ToLocalTime();
+
+                    // חישוב ההפרש בשעות
+                    double totalHours = Math.Max(0, (endTime - startTime).TotalHours);
+
+                    // חישוב מספר הנקודות שנצברו בהזמנה זו (נקודה אחת לכל שעה)
+                    int pointsEarned = (int)Math.Floor(totalHours);
+
+                    // וידוא שהנקודות החדשות מתווספות ל-`CurrentPoints` בצורה נכונה
+                    user.CurrentPoints += pointsEarned;
+
+                    // בדיקה אם המשתמש זכאי להטבה חדשה
+                    if (user.CurrentPoints >= 10)
+                    {
+                        int newRewards = user.CurrentPoints / 10; // מספר ההטבות החדשות
+                        user.AvailableRewards += newRewards;
+                        user.CurrentPoints = user.CurrentPoints % 10; // עדכון `CurrentPoints` למודולו 10
+                    }
+
+                    // עדכון `TotalPoints` אם נדרש
                     user.TotalPoints += pointsEarned;
+
+                    // שמירת השינויים
+                    await _userRepository.UpdateUserAsync(user);
                 }
-
-                // עדכון `CurrentPoints`
-                user.CurrentPoints += pointsEarned;
-
-                // בדיקה אם המשתמש זכאי להטבה חדשה
-                if (user.CurrentPoints >= 10)
-                {
-                    int newRewards = user.CurrentPoints / 10; // מספר ההטבות החדשות
-                    user.AvailableRewards += newRewards;
-                    user.CurrentPoints = user.CurrentPoints % 10; // עדכון `CurrentPoints` למודולו 10
-                }
-
-                // שמירת השינויים
-                await _userRepository.UpdateUserAsync(user);
             }
         }
 

@@ -1,9 +1,75 @@
 <div class="video-background">
-    <video autoplay muted loop id="myVideo">
-      <source src="assets/video.mp4" type="video/mp4">
-      Your browser does not support HTML5 video.
-    </video>
-    <div class="home-container">
-      <app-booking-form></app-booking-form>
+  <video #myVideo autoplay muted loop playsinline id="myVideo">
+    <source src="assets/video.mp4" type="video/mp4" />
+    הדפדפן שלך אינו תומך בוידאו.
+  </video>
+  <div class="overlay">
+    <app-booking-form id="booking-form"></app-booking-form>
+  </div>
+</div>
+
+<div class="content">
+  <div class="counters-section">
+    <div class="counter" *ngFor="let item of counters">
+      <h2 [countUp]="item.value" [options]="countUpOptions"></h2>
+      <p>{{ item.label }}</p>
     </div>
   </div>
+
+  <div class="reviews-section" id="reviews">
+    <h2>כותבים עלינו</h2>
+    
+    <!-- תמיד מציג את הביקורות הראשונות -->
+    <div class="reviews-container">
+      <div class="review" *ngFor="let review of reviews.slice(0, reviewsToShow)" (click)="openReviewPopup(review)">
+        <p class="author">{{ review.name }}</p>
+        <p class="date">{{ review.date | date: 'dd/MM/yyyy, HH:mm' }}</p>
+        <p class="quote">
+          "{{ review.text.length > 150 ? review.text.slice(0, 150) + '...' : review.text }}"
+        </p>
+      </div>
+    </div>
+  
+    <!-- עטיפת הביקורות הנוספות עם האנימציה -->
+    <div class="reviews-container" [@expandCollapse]="isExpanded ? 'expanded' : 'collapsed'">
+      <div class="review" *ngFor="let review of reviews.slice(reviewsToShow)" (click)="openReviewPopup(review)">
+        <p class="author">{{ review.name }}</p>
+        <p class="date">{{ review.date | date: 'dd/MM/yyyy, HH:mm' }}</p>
+        <p class="quote">
+          "{{ review.text.length > 150 ? review.text.slice(0, 150) + '...' : review.text }}"
+        </p>
+      </div>
+    </div>
+    
+    <!-- החץ לפתיחה וסגירה -->
+    <mat-icon class="down-arrow" (click)="loadMoreReviews()">
+      {{ isExpanded ? 'expand_less' : 'expand_more' }}
+    </mat-icon>
+  </div>
+  
+  <!-- פופ-אפ לקריאת ביקורת מלאה -->
+  <div
+    class="review-popup"
+    *ngIf="selectedReview"
+    (click)="closeReviewPopup()"
+  >
+    <div class="popup-content" (click)="$event.stopPropagation()">
+      <p class="author">{{ selectedReview.name }}</p>
+      <p class="date">
+        {{ selectedReview.date | date: 'dd/MM/yyyy, HH:mm' }}
+      </p>
+      <p class="full-quote">{{ selectedReview.text }}</p>
+      <button class="close-btn" (click)="closeReviewPopup()">סגור</button>
+    </div>
+  </div>
+  
+
+
+  <div class="gallery-section">
+    <h2>גלריה</h2>
+    <ng-image-slider [images]="slides" modalClass="custom-modal"></ng-image-slider>
+  </div>
+
+<button mat-fab color="primary" class="fixed-fab" (click)="scrollToBookingForm()">
+  <mat-icon>event</mat-icon>
+</button>

@@ -1,5 +1,3 @@
-// booking-form.component.ts
-
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router'; 
 import { MatDialog } from '@angular/material/dialog';
@@ -10,6 +8,7 @@ import { BookingService } from '../../services/booking.serivce';
 import { CheckAvailabilityRequest, CheckAvailabilityResponse } from '../../models/check-availability.model';
 import { PaymentService } from '../../services/payment.service';
 import { Subscription, take } from 'rxjs';
+import { trigger, state, style, animate, transition } from '@angular/animations';
 
 interface BookingDetails {
   startDateTime: Date;
@@ -19,14 +18,29 @@ interface BookingDetails {
   duration: number;
 }
 
-
 @Component({
   selector: 'app-booking-form',
   templateUrl: './booking-form.component.html',
   styleUrls: ['./booking-form.component.scss'],
+  animations: [
+    trigger('expandCollapse', [
+      state('collapsed', style({
+        height: '0px',
+        overflow: 'hidden',
+        opacity: 0
+      })),
+      state('expanded', style({
+        height: '*',
+        overflow: 'visible',
+        opacity: 1
+      })),
+      transition('collapsed <=> expanded', animate('300ms ease-in-out'))
+    ])
+  ]
 })
 export class BookingFormComponent implements OnInit, OnDestroy {
   bookingDate: Date | null = null;
+  dateSelected: boolean = false;
   startHour: string = '17:00';
   endHour: string = '19:00';
   numberOfPlayers: number = 4;
@@ -54,7 +68,7 @@ export class BookingFormComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.today.setHours(0, 0, 0, 0);
-    this.dateAdapter.setLocale('en-GB');
+    this.dateAdapter.setLocale('he-IL'); 
     this.updateTimeSlotsBasedOnRoomType(this.roomType);
     this.updatePlayerOptions(this.roomType);
   }
@@ -65,6 +79,7 @@ export class BookingFormComponent implements OnInit, OnDestroy {
 
   dateChanged(event: MatDatepickerInputEvent<Date>): void {
     this.bookingDate = event.value;
+    this.dateSelected = !!this.bookingDate;
   }
 
   onRoomTypeChange(roomType: string): void {
@@ -91,7 +106,7 @@ export class BookingFormComponent implements OnInit, OnDestroy {
         break;
       case 'PS5':
         this.numberOfPlayers = 4;
-        this.playerOptions = [2, 3, 4, 5, 6];
+        this.playerOptions = [2, 3, 4, 5];
         break;
       case 'PS5VIP':
         this.numberOfPlayers = 4;
@@ -143,7 +158,6 @@ export class BookingFormComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // לחדרים אחרים
     const closingTimeMinutes = (2 + 24) * 60; // 02:00 למחרת
 
     let minDuration = 0;
@@ -179,7 +193,7 @@ export class BookingFormComponent implements OnInit, OnDestroy {
       const minute = adjustedTime % 60;
       const displayString = `${hour < 10 ? '0' + hour : hour}:${minute < 10 ? '0' + minute : minute}`;
       slots.push(displayString);
-      time += 15; // קפיצות של 15 דקות
+      time += 15;
     }
     return slots;
   }
@@ -189,7 +203,6 @@ export class BookingFormComponent implements OnInit, OnDestroy {
     let hours = parseInt(hoursStr, 10);
     const minutes = parseInt(minutesStr, 10);
     if (hours < 17) {
-      // זמן אחרי חצות
       hours += 24;
     }
     return hours * 60 + minutes;
@@ -206,12 +219,9 @@ export class BookingFormComponent implements OnInit, OnDestroy {
   private calculateDuration(startDateTime: Date, endDateTime: Date): number {
     const durationInMilliseconds = endDateTime.getTime() - startDateTime.getTime();
     const durationInHours = durationInMilliseconds / (1000 * 60 * 60);
-  
-    // עבור חדר VR, מחשבים לפי רבעי שעה
     if (this.roomType === 'VR') {
-      return durationInMilliseconds / (1000 * 60 * 15); // מספר הסשנים של 15 דקות
+      return durationInMilliseconds / (1000 * 60 * 15);
     }
-  
     return durationInHours;
   }
 
@@ -219,14 +229,13 @@ export class BookingFormComponent implements OnInit, OnDestroy {
     const [hours, minutes] = time.split(':').map(Number);
     const dateTime = new Date(date.getFullYear(), date.getMonth(), date.getDate(), hours, minutes, 0);
   
-    // אם השעה קטנה מ-17:00, נניח שזה אחרי חצות ונוסיף יום אחד
+    // אם השעה פחותה מ-17, להוסיף יום (כפי שהיה בקוד המקורי שלך)
     if (hours < 17) {
       dateTime.setDate(dateTime.getDate() + 1);
     }
   
     return dateTime;
   }
-
 
   private getResourceTypeId(roomType: string): number {
     const resourceTypeMap: { [key: string]: number } = {
@@ -253,6 +262,24 @@ export class BookingFormComponent implements OnInit, OnDestroy {
     return numberOfPlayers >= 4 && duration >= 2;
   }
 
+  private formatDateTimeForServer(date: Date): string {
+    const timezoneOffsetInHours = -date.getTimezoneOffset() / 60;
+    const sign = timezoneOffsetInHours >= 0 ? '+' : '-';
+    const absOffsetHours = Math.abs(Math.floor(timezoneOffsetInHours));
+    const absOffsetMinutes = Math.abs(date.getTimezoneOffset() % 60);
+  
+    const offset = sign + ('0' + absOffsetHours).slice(-2) + ':' + ('0' + absOffsetMinutes).slice(-2);
+  
+    const formattedDate = date.getFullYear() + '-' +
+      ('0' + (date.getMonth() + 1)).slice(-2) + '-' +
+      ('0' + date.getDate()).slice(-2) + 'T' +
+      ('0' + date.getHours()).slice(-2) + ':' +
+      ('0' + date.getMinutes()).slice(-2) + ':' +
+      ('0' + date.getSeconds()).slice(-2) + offset;
+  
+    return formattedDate;
+  }
+
   goToNextStep(): void {
     if (!this.bookingDate || !this.startHour || !this.endHour || !this.numberOfPlayers || !this.roomType) {
       alert('אנא ודא שכל פרטי ההזמנה מלאים.');
@@ -262,7 +289,6 @@ export class BookingFormComponent implements OnInit, OnDestroy {
     const startDateTime = this.createDateTime(this.bookingDate, this.startHour);
     const endDateTime = this.createDateTime(this.bookingDate, this.endHour);
   
-    // אם endDateTime קטן או שווה ל-startDateTime, נוסיף יום אחד ל-endDateTime
     if (endDateTime <= startDateTime) {
       endDateTime.setDate(endDateTime.getDate() + 1);
     }
@@ -280,8 +306,8 @@ export class BookingFormComponent implements OnInit, OnDestroy {
     const request: CheckAvailabilityRequest = {
       resourceTypeId: this.getResourceTypeId(this.roomType),
       quantityRequested: this.calculateQuantity(this.roomType),
-      startTime: startDateTime.toISOString(),
-      endTime: endDateTime.toISOString(),
+      startTime: this.formatDateTimeForServer(startDateTime),
+      endTime: this.formatDateTimeForServer(endDateTime),
     };
   
     console.log('Checking room availability with:', request);
@@ -295,13 +321,11 @@ export class BookingFormComponent implements OnInit, OnDestroy {
           const qualifiesForPackage = this.checkIfQualifiesForPackage(bookingDetails);
   
           if (['PS5', 'PS5VIP', 'PC'].includes(this.roomType) && qualifiesForPackage) {
-            // פותחים את PackageSelectionComponent
             this.dialog.open(PackageSelectionComponent, {
               width: '600px',
               data: bookingDetails,
             });
           } else {
-            // עובר ישירות לתשלום
             this.paymentService.storePaymentData(bookingDetails);
             this.router.navigate(['/payment']);
           }

@@ -1,13 +1,27 @@
 <div class="packages-container">
-  <div *ngFor="let package of packages" class="package-item">
-    <img [src]="package.imageUrl" alt="{{ package.name }}" (error)="handleImageError($event)">
-    <div class="package-details">
-      <h2 class="package-title">{{ package.name }}</h2>
-      <p class="package-description">{{ package.description }}</p>
-      <p class="package-info">
-        <span><strong>משך: {{ package.minimumTime }} שעות</strong></span> | 
-        <span><strong>מינימום אנשים: {{ package.minimumPeople }}</strong></span>
-      </p>
-    </div>
+  <h1 class="section-title">החבילות שלנו</h1>
+  <div class="package-grid">
+    <ng-container *ngFor="let package of packages; let i = index">
+      <mat-card
+        class="package-card"
+        (mouseover)="hoveredPackage = package"
+        (mouseout)="hoveredPackage = null"
+      >
+        <h3 class="package-name" [ngClass]="getRankClass(package)">
+          <span class="rank-badge">{{ getRankLabel(package) }}</span>
+          {{ package.name }}
+        </h3>
+        <img mat-card-image [src]="package.imageUrl" alt="{{ package.name }}" (error)="handleImageError($event)" />
+        <mat-card-content>
+          <p class="package-description">{{ package.description }}</p>
+          <p class="package-info">
+            <span><strong>משך: {{ package.minimumTime }} שעות</strong></span> |
+            <span><strong>מינימום אנשים: {{ package.minimumPeople }}</strong></span>
+          </p>
+        </mat-card-content>
+      </mat-card>
+      <!-- מפריד אופקי בין הכרטיסים, לא יופיע אחרי הכרטיס האחרון -->
+      <div *ngIf="i < packages.length - 1" class="package-divider"></div>
+    </ng-container>
   </div>
 </div>

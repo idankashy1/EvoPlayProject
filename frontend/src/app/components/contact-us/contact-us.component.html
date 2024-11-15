@@ -1,40 +1,67 @@
 <div class="contact-us-container">
-  <mat-card class="contact-info-card">
-    <mat-card-title>
-      <mat-icon>phone</mat-icon> צור קשר
-    </mat-card-title>
-    <mat-card-content>
-      <p>מספר הזמנות: *1234</p>
-      <p>שעות פעילות: א'-ה' 17:00-2:00 | ו' 17:00-2:00</p>
-      <!-- Add more contact details as needed -->
-    </mat-card-content>
-  </mat-card>
-
-  <div class="contact-form-container">
-    <!-- Use only one form tag here -->
-    <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="contact-form">
-      <mat-form-field appearance="fill">
-        <mat-label>שם</mat-label>
-        <input matInput placeholder="הכנס את שמך" formControlName="name">
-      </mat-form-field>
-      
-      <mat-form-field appearance="fill">
-        <mat-label>נייד</mat-label>
-        <input matInput placeholder="הכנס את הנייד שלך" formControlName="phone">
-      </mat-form-field>
-
-      <mat-form-field appearance="fill">
-        <mat-label>אימייל</mat-label>
-        <input matInput placeholder="הכנס את האימייל שלך" type="email" formControlName="email">
-      </mat-form-field>
-
-      <!-- Add more input fields as needed -->
-      <mat-form-field appearance="fill" class="full-width-input">
-        <mat-label>הודעה</mat-label>
-        <textarea matInput placeholder="הכנס את הודעתך" formControlName="message"></textarea>
-      </mat-form-field>
-
-      <button type="submit" mat-raised-button color="primary">שלח</button>
-    </form>
+  <div class="contact-header">
+    <h1>צור קשר</h1>
+    <p>נשמח לשמוע מכם! אנא מלאו את הפרטים ונחזור אליכם בהקדם.</p>
   </div>
+
+  <div class="contact-content">
+    <div class="contact-info">
+      <!-- פרטי יצירת קשר קיימים -->
+      <div class="info-item">
+        <mat-icon>phone</mat-icon>
+        <p>*1234</p>
+      </div>
+      <div class="info-item">
+        <mat-icon>email</mat-icon>
+        <p>info@evoplay.co.il</p>
+      </div>
+      <div class="info-item">
+        <mat-icon>location_on</mat-icon>
+        <p>רחוב הגיימרים 10, ראשון לציון</p>
+      </div>
+      <div class="info-item">
+        <mat-icon>access_time</mat-icon>
+        <p>א'-ה' 17:00-02:00 | ו' 17:00-02:00</p>
+      </div>
+      <div class="map-container">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3384.0524154351465!2d34.77116792685107!3d31.98659453328952!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1502b38672dc6347%3A0xe97926a403904c38!2z15bXkNeRINep15zXoNeSIDUsINeo15DXqdeV158g15zXpteZ15XXnw!5e0!3m2!1siw!2sil!4v1731276425805!5m2!1siw!2sil"
+          width="100%"
+          height="350"
+          style="border:0;"
+          allowfullscreen=""
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+      </div>
+    </div>
+
+    <div class="contact-form-container">
+      <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="contact-form">
+        <mat-form-field appearance="fill">
+          <mat-label>שם מלא</mat-label>
+          <input matInput placeholder="הכנס את שמך" formControlName="name">
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>נייד</mat-label>
+          <input matInput placeholder="הכנס את הנייד שלך" formControlName="phone">
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>אימייל</mat-label>
+          <input matInput placeholder="הכנס את האימייל שלך" type="email" formControlName="email">
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="full-width-input">
+          <mat-label>הודעה</mat-label>
+          <textarea matInput placeholder="הכנס את הודעתך" formControlName="message"></textarea>
+        </mat-form-field>
+
+        <button type="submit" mat-raised-button color="primary">שלח הודעה</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- הוספת המפה המשובצת -->
 </div>

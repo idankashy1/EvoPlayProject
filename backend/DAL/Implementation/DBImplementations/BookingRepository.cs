@@ -158,6 +158,8 @@ namespace EvoPlay.Repository.Implementation
             return await _context.Bookings
                 .Include(b => b.BookingGroup)
                     .ThenInclude(bg => bg.User)
+                .Include(b => b.BookingGroup)
+                    .ThenInclude(bg => bg.Package)
                 .Include(b => b.Resource)
                 .Where(b => b.StartTime.Date >= from.Date && b.StartTime.Date <= to.Date)
                 .ToListAsync();

@@ -26,6 +26,7 @@ namespace EvoPlay.DAL.Implementation
 
         public IEnumerable<Package> GetAvailablePackages(int numberOfPlayers, int duration)
         {
+            // כאן אנחנו מבצעים רק פנייה של מסנן ראשוני למסד הנתונים
             return _context.Packages
                 .Where(p => p.MinimumPeople <= numberOfPlayers && p.MinimumTime <= duration)
                 .ToList();

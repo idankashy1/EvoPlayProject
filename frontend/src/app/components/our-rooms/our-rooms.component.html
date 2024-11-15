@@ -1,40 +1,17 @@
-<div class="room-display-container">
-  <!-- Room Details for Gaming PCs -->
-  <div class="room-details" (click)="openImagePopup('assets/gamingPcForOurRooms.jpg')">
-    <h1>Gaming PC חדר</h1>
-    <p [innerHTML]="gamingPcText"></p>
-    <div class="image-container">
-      <img src="assets/gamingPcForOurRooms.jpg" alt="Gaming PC Room" class="room-image">
-    </div>
-  </div>
-  <hr class="package-divider"/> 
-
-  <!-- Room Details for PS5VIP -->
-  <div class="room-details" (click)="openImagePopup('assets/ps5VIPForOurRooms.jpg')">
-    <h1>PS5VIP חדר</h1>
-    <p [innerHTML]="ps5VIPText"></p>
-    <div class="image-container">
-      <img src="assets/ps5VIPForOurRooms.jpg" alt="PS5VIP Room" class="room-image">
-    </div>
-  </div>
-  <hr class="package-divider"/> 
-
-  <!-- Room Details for VR -->
-  <div class="room-details" (click)="openImagePopup('assets/VRForOurRooms.png')">
-    <h1>VR חדר </h1>
-    <p [innerHTML]="vrText"></p>
-    <div class="image-container">
-      <img src="assets/VRForOurRooms.png" alt="VR Room" class="room-image">
-    </div>
-  </div>
-  <hr class="package-divider"/> 
-
-  <!-- Room Details for PS5 -->
-  <div class="room-details" (click)="openImagePopup('assets/ps5ForOurRooms.jpg')">
-    <h1>PS5 מתחם </h1>
-    <p [innerHTML]="ps5Text"></p>
-    <div class="image-container">
-      <img src="assets/ps5ForOurRooms.jpg" alt="PS5 Room" class="room-image">
+<div class="rooms-container">
+  <h1 class="section-title">החדרים שלנו</h1>
+  <div class="rooms-grid">
+    <div class="room-card" *ngFor="let room of rooms" (click)="openImagePopup(room.image)">
+      <div class="image-container">
+        <img [src]="room.image" alt="{{ room.title }}" />
+        <div class="image-overlay">
+          <mat-icon>zoom_in</mat-icon>
+        </div>
+      </div>
+      <div class="room-content">
+        <h2 class="room-title">{{ room.title }}</h2>
+        <p class="room-description">{{ room.description }}</p>
+      </div>
     </div>
   </div>
 </div>
@@ -42,6 +19,9 @@
 <!-- Image Popup Overlay -->
 <div class="image-popup" *ngIf="showImagePopup" (click)="closeImagePopup()">
   <div class="popup-content" (click)="$event.stopPropagation()">
-    <img [src]="popupImageUrl" class="popup-image">
+    <img [src]="popupImageUrl" class="popup-image" />
+    <button class="close-button" (click)="closeImagePopup()">
+      <mat-icon>close</mat-icon>
+    </button>
   </div>
 </div>

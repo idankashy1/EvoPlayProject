@@ -1,5 +1,3 @@
-// payment.component.ts
-
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PaymentService } from '../../services/payment.service';
@@ -8,13 +6,13 @@ import { BookingRequestDto } from '../../models/booking-request.dto';
 import { take } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
-import { UserService } from '../../services/user.service'; // הוספת UserService
+import { UserService } from '../../services/user.service';
 
 type RoomType = 'PS5' | 'PS5VIP' | 'PC' | 'VR';
 
 interface BookingDetails {
-  startDateTime: Date;  
-  endDateTime: Date;    
+  startDateTime: Date;
+  endDateTime: Date;
   numberOfPlayers: number;
   roomType: RoomType;
   duration: number;
@@ -25,17 +23,18 @@ interface BookingDetails {
 @Component({
   selector: 'app-payment',
   templateUrl: './payment.component.html',
-  styleUrls: ['./payment.component.scss']
+  styleUrls: ['./payment.component.scss'],
 })
 export class PaymentComponent implements OnInit {
   bookingDetails!: BookingDetails;
   userDetailsForm!: FormGroup;
+  orderSummary: any[] = [];
 
   private pricePerHour: { [key in RoomType]: number } = {
-    'PS5': 30,
-    'PS5VIP': 35,
-    'PC': 30,
-    'VR': 40
+    PS5: 30,
+    PS5VIP: 35,
+    PC: 30,
+    VR: 40,
   };
 
   constructor(
@@ -44,18 +43,18 @@ export class PaymentComponent implements OnInit {
     private fb: FormBuilder,
     private snackBar: MatSnackBar,
     private router: Router,
-    private userService: UserService // הוספת UserService לקונסטרקטור
+    private userService: UserService
   ) {}
 
   ngOnInit(): void {
-    this.paymentService.getPaymentData().pipe(take(1)).subscribe(data => {
-      this.bookingDetails = data;
-      console.log('Booking and Package Data:', this.bookingDetails);
-
-      // חישוב העלות הכוללת והגדרתה ב-bookingDetails
-      this.bookingDetails.totalCost = this.calculateTotalCost();
-      console.log('Total cost calculated in ngOnInit:', this.bookingDetails.totalCost);
-    });
+    this.paymentService
+      .getPaymentData()
+      .pipe(take(1))
+      .subscribe((data) => {
+        this.bookingDetails = data;
+        this.bookingDetails.totalCost = this.calculateTotalCost();
+        this.populateOrderSummary();
+      });
 
     // אתחול הטופס
     this.userDetailsForm = this.fb.group({
@@ -83,7 +82,7 @@ export class PaymentComponent implements OnInit {
         },
         error: (error) => {
           console.error('Failed to fetch user details', error);
-        }
+        },
       });
     }
   }
@@ -91,7 +90,7 @@ export class PaymentComponent implements OnInit {
   calculateTotalCost(): number {
     const { roomType, duration, numberOfPlayers } = this.bookingDetails;
     let totalCost = 0;
-  
+
     if (roomType === 'VR') {
       const sessions = duration; // duration הוא כבר מספר הסשנים של 15 דקות
       totalCost = sessions * 40 * numberOfPlayers;
@@ -99,8 +98,7 @@ export class PaymentComponent implements OnInit {
       const ratePerHour = this.pricePerHour[roomType];
       totalCost = ratePerHour * duration * numberOfPlayers;
     }
-  
-    console.log('Total cost:', totalCost);
+
     return totalCost;
   }
 
@@ -116,30 +114,29 @@ export class PaymentComponent implements OnInit {
       const bookingDetails = this.prepareBookingDetails(userDetails);
       this.createBooking(bookingDetails);
     } else {
-      alert('אנא מלא את כל השדות הנדרשים.');
+      this.snackBar.open('אנא מלא את כל השדות הנדרשים.', '', { duration: 3000 });
     }
   }
 
   private extractUserDetails(): any {
     return this.userDetailsForm.value;
   }
-  
+
   private prepareBookingDetails(userDetails: any): BookingRequestDto {
-    const startTime = `${this.bookingDetails.startDateTime.getFullYear()}-${(this.bookingDetails.startDateTime.getMonth() + 1).toString().padStart(2, '0')}-${this.bookingDetails.startDateTime.getDate().toString().padStart(2, '0')}T${this.bookingDetails.startDateTime.getHours().toString().padStart(2, '0')}:${this.bookingDetails.startDateTime.getMinutes().toString().padStart(2, '0')}:00`;
-    
-    const endTime = `${this.bookingDetails.endDateTime.getFullYear()}-${(this.bookingDetails.endDateTime.getMonth() + 1).toString().padStart(2, '0')}-${this.bookingDetails.endDateTime.getDate().toString().padStart(2, '0')}T${this.bookingDetails.endDateTime.getHours().toString().padStart(2, '0')}:${this.bookingDetails.endDateTime.getMinutes().toString().padStart(2, '0')}:00`;
+    const startTime = this.formatDateTime(this.bookingDetails.startDateTime);
+    const endTime = this.formatDateTime(this.bookingDetails.endDateTime);
 
     return {
       ...userDetails,
       resourceTypeId: this.getResourceTypeId(this.bookingDetails.roomType),
       quantity: this.calculateQuantity(this.bookingDetails.roomType),
-      startTime: startTime, // שמירה על זמן ישראל
-      endTime: endTime,     // שמירה על זמן ישראל
+      startTime: startTime,
+      endTime: endTime,
       numberOfPlayers: this.bookingDetails.numberOfPlayers,
       packageId: this.bookingDetails.selectedPackage?.id || null,
-      totalCost: this.bookingDetails.totalCost || 0
+      totalCost: this.bookingDetails.totalCost || 0,
     };
-}
+  }
 
   private createBooking(bookingDetails: BookingRequestDto): void {
     this.bookingService.createBooking(bookingDetails).subscribe({
@@ -150,17 +147,17 @@ export class PaymentComponent implements OnInit {
       },
       error: (error: any) => {
         console.error('שגיאה ביצירת ההזמנה:', error);
-        alert('אירעה שגיאה ביצירת ההזמנה. אנא נסה שוב.');
-      }
+        this.snackBar.open('אירעה שגיאה ביצירת ההזמנה. אנא נסה שוב.', '', { duration: 3000 });
+      },
     });
   }
 
   private getResourceTypeId(roomType: string): number {
     const resourceTypeMap: { [key: string]: number } = {
-      'PS5': 1,
-      'PS5VIP': 2,
-      'PC': 3,
-      'VR': 4
+      PS5: 1,
+      PS5VIP: 2,
+      PC: 3,
+      VR: 4,
     };
     return resourceTypeMap[roomType] || 0;
   }
@@ -173,5 +170,59 @@ export class PaymentComponent implements OnInit {
     } else {
       return 0;
     }
+  }
+
+  private formatDateTime(date: Date): string {
+    return `${date.getFullYear()}-${(date.getMonth() + 1)
+      .toString()
+      .padStart(2, '0')}-${date
+      .getDate()
+      .toString()
+      .padStart(2, '0')}T${date.getHours().toString().padStart(2, '0')}:${date
+      .getMinutes()
+      .toString()
+      .padStart(2, '0')}:00`;
+  }
+
+  private populateOrderSummary(): void {
+    const { roomType, startDateTime, endDateTime, numberOfPlayers, selectedPackage, totalCost } = this.bookingDetails;
+
+    this.orderSummary = [
+      {
+        icon: 'room_preferences',
+        label: 'סוג חדר',
+        value: roomType,
+      },
+      {
+        icon: 'event',
+        label: 'בתאריך',
+        value: startDateTime.toLocaleDateString('he-IL'),
+      },
+      {
+        icon: 'schedule',
+        label: 'משעה',
+        value: startDateTime.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' }),
+      },
+      {
+        icon: 'schedule',
+        label: 'עד שעה',
+        value: endDateTime.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' }),
+      },
+      {
+        icon: 'groups',
+        label: 'כמות משתתפים',
+        value: numberOfPlayers,
+      },
+      {
+        icon: 'card_giftcard',
+        label: 'שם החבילה',
+        value: selectedPackage?.name || 'ללא',
+      },
+      {
+        icon: 'attach_money',
+        label: 'עלות כוללת',
+        value: `${totalCost} ₪`,
+      },
+    ];
   }
 }

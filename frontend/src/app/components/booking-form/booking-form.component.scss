@@ -1,4 +1,3 @@
-
 .booking-form-container {
   display: flex;
   justify-content: center;
@@ -67,53 +66,23 @@
       }
 
       mat-form-field {
-        direction: rtl;
+        direction: ltr;
 
         input[matInput][readonly] {
           cursor: pointer; // הוספת סמן מצביע כשמרחפים מעל שדה התאריך
         }
-        
-        .mat-form-field-flex {
-          background: #fff;
-          flex-direction: row-reverse; // להפוך את הסדר ב-RTL
-        }
-
-        .mat-form-field-infix {
-          text-align: right;
-        }
-
-        .mat-select-trigger {
-          display: flex;
-          align-items: center;
-          margin-left: 75px; // הוספת מרווח כדי להזיז את הערך הנבחר
-
-          .mat-select-value {
-            margin-left: 0; // איפוס מרווח פנימי
-          }
-        }
-
-        .mat-form-field-label {
-          right: 0;
-          left: auto;
-        }
 
         .mat-icon {
+          color: #7c8a9b;
           margin-right: 0;
           margin-left: 8px;
-        }
-
-        .mat-form-field-prefix {
-          margin-right: 0;
-          margin-left: 8px;
-        }
-
-        .mat-select-arrow {
-          transform: rotate(180deg); // לסובב את החץ כדי להתאים ל-RTL
         }
       }
 
+      /* Centering the submit button */
       .submit-button {
-        align-self: center;
+        align-self: center; /* This centers the button */
+        justify-content: center; /* Additional centering for the content inside */
         padding: 0.75rem 2rem;
         font-size: 1.1rem;
         font-weight: bold;

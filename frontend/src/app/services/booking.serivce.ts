@@ -1,6 +1,7 @@
 ﻿// src/app/services/booking.service.ts
+
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http'; 
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Booking } from '../models/booking.model';
 import { CheckAvailabilityRequest, CheckAvailabilityResponse } from '../models/check-availability.model';
@@ -21,11 +22,11 @@ export class BookingService {
   createBooking(bookingDetails: BookingRequestDto): Observable<any> {
     const token = localStorage.getItem('token');
     let headers = new HttpHeaders();
-  
+
     if (token) {
       headers = headers.set('Authorization', `Bearer ${token}`);
     }
-  
+
     return this.http.post<any>(`${this.bookingsUrl}`, bookingDetails, { headers });
   }
 
@@ -37,10 +38,8 @@ export class BookingService {
     return this.http.get<Booking[]>(`${this.bookingsUrl}/today`, { params: { date }, headers });
   }
 
-  // פונקציה לחיפוש הזמנות לפי טקסט חופשי
   searchBookings(searchTerm: string): Observable<Booking[]> {
     if (!searchTerm.trim()) {
-      // אם אין חיפוש, מחזיר את ההזמנות של היום
       const today = new Date().toISOString().split('T')[0];
       return this.getTodaysBookings(today);
     }
@@ -53,7 +52,6 @@ export class BookingService {
     return this.http.get<Booking[]>(`${this.bookingsUrl}/search`, { params, headers });
   }
 
-  // פונקציה לקבלת הזמנות בטווח תאריכים
   getBookingsByDateRange(from: Date, to: Date): Observable<Booking[]> {
     const params = new HttpParams()
       .set('from', from.toISOString())
@@ -62,6 +60,7 @@ export class BookingService {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
+
     return this.http.get<Booking[]>(`${this.bookingsUrl}/daterange`, { params, headers });
   }
 }

@@ -5,93 +5,96 @@
     <form class="booking-form">
       <!-- שורה ראשונה: תאריך -->
       <div class="form-row full-width">
-        <mat-form-field appearance="fill" floatLabel="always">
+        <mat-form-field appearance="outline" floatLabel="always">
           <mat-icon matPrefix>event</mat-icon>
           <mat-label>תאריך</mat-label>
           <input
-            matInput
-            [matDatepicker]="picker"
-            [(ngModel)]="bookingDate"
-            name="bookingDate"
-            required
-            readonly
-            (click)="picker.open()"
-          />
+          matInput
+          [matDatepicker]="picker"
+          [(ngModel)]="bookingDate"
+          name="bookingDate"
+          required
+          readonly
+          (click)="picker.open()"
+          (dateChange)="dateChanged($event)" /> <!-- סגירת התג כראוי -->
           <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
           <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
       </div>
 
-      <!-- שורה שנייה: משעה, עד שעה -->
-      <div class="form-row">
-        <mat-form-field appearance="fill" floatLabel="always">
-          <mat-icon matPrefix>schedule</mat-icon>
-          <mat-label>משעה</mat-label>
-          <mat-select
-            [(ngModel)]="startHour"
-            name="startHour"
-            (selectionChange)="onStartTimeChange($event.value)"
-            required
-            [disabled]="!bookingDate"
-          >
-            <mat-option *ngFor="let time of startHoursOptions" [value]="time">{{ time }}</mat-option>
-          </mat-select>
-        </mat-form-field>
+      <!-- עטיפת שאר שדות הטופס עם אנימציה -->
+      <div [@expandCollapse]="dateSelected ? 'expanded' : 'collapsed'">
+        <!-- שורה שנייה: משעה, עד שעה -->
+        <div class="form-row">
+          <mat-form-field appearance="outline" floatLabel="always">
+            <mat-icon matPrefix>schedule</mat-icon>
+            <mat-label>משעה</mat-label>
+            <mat-select
+              [(ngModel)]="startHour"
+              name="startHour"
+              (selectionChange)="onStartTimeChange($event.value)"
+              required
+              [disabled]="!bookingDate"
+            >
+              <mat-option *ngFor="let time of startHoursOptions" [value]="time">{{ time }}</mat-option>
+            </mat-select>
+          </mat-form-field>
 
-        <mat-form-field appearance="fill" floatLabel="always">
-          <mat-icon matPrefix>schedule</mat-icon>
-          <mat-label>עד שעה</mat-label>
-          <mat-select
-            [(ngModel)]="endHour"
-            name="endHour"
-            required
-            [disabled]="!bookingDate || !startHour"
-          >
-            <mat-option *ngFor="let time of endHoursOptions" [value]="time">{{ time }}</mat-option>
-          </mat-select>
-        </mat-form-field>
+          <mat-form-field appearance="outline" floatLabel="always">
+            <mat-icon matPrefix>schedule</mat-icon>
+            <mat-label>עד שעה</mat-label>
+            <mat-select
+              [(ngModel)]="endHour"
+              name="endHour"
+              required
+              [disabled]="!bookingDate || !startHour"
+            >
+              <mat-option *ngFor="let time of endHoursOptions" [value]="time">{{ time }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <!-- שורה שלישית: סוג חדר, מספר משתתפים -->
+        <div class="form-row">
+          <mat-form-field appearance="outline" floatLabel="always">
+            <mat-icon matPrefix>videogame_asset</mat-icon>
+            <mat-label>סוג חדר</mat-label>
+            <mat-select
+              [(ngModel)]="roomType"
+              name="roomType"
+              (selectionChange)="onRoomTypeChange($event.value)"
+              required
+              [disabled]="!bookingDate"
+            >
+              <mat-option *ngFor="let type of roomTypes" [value]="type.code">{{ type.label }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" floatLabel="always">
+            <mat-icon matPrefix>people</mat-icon>
+            <mat-label>משתתפים</mat-label>
+            <mat-select
+              [(ngModel)]="numberOfPlayers"
+              name="numberOfPlayers"
+              required
+              [disabled]="!bookingDate"
+            >
+              <mat-option *ngFor="let number of playerOptions" [value]="number">{{ number }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <hr class="fields-divider" />
+
+        <button
+          mat-raised-button
+          color="accent"
+          class="submit-button"
+          (click)="goToNextStep()"
+        >
+          הבא
+        </button>
       </div>
-
-      <!-- שורה שלישית: סוג חדר, מספר משתתפים -->
-      <div class="form-row">
-        <mat-form-field appearance="fill" floatLabel="always">
-          <mat-icon matPrefix>videogame_asset</mat-icon>
-          <mat-label>סוג חדר</mat-label>
-          <mat-select
-            [(ngModel)]="roomType"
-            name="roomType"
-            (selectionChange)="onRoomTypeChange($event.value)"
-            required
-            [disabled]="!bookingDate"
-          >
-            <mat-option *ngFor="let type of roomTypes" [value]="type.code">{{ type.label }}</mat-option>
-          </mat-select>
-        </mat-form-field>
-
-        <mat-form-field appearance="fill" floatLabel="always">
-          <mat-icon matPrefix>people</mat-icon>
-          <mat-label>משתתפים</mat-label>
-          <mat-select
-            [(ngModel)]="numberOfPlayers"
-            name="numberOfPlayers"
-            required
-            [disabled]="!bookingDate"
-          >
-            <mat-option *ngFor="let number of playerOptions" [value]="number">{{ number }}</mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-
-      <hr class="fields-divider" />
-
-      <button
-        mat-raised-button
-        color="accent"
-        class="submit-button"
-        (click)="goToNextStep()"
-      >
-        הבא
-      </button>
     </form>
   </mat-card>
 </div>

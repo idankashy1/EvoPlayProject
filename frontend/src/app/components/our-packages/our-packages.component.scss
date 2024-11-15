@@ -1,82 +1,126 @@
 .packages-container {
+  padding: 4rem 2rem 15rem 2rem;
+  background-color: #f5f5f5;
+  text-align: center;
+  direction: rtl;
+
+  .section-title {
+    font-size: 2.5rem;
+    color: #1e88e5;
+    margin-bottom: 5rem;
+    font-family: 'M PLUS Rounded 1c', sans-serif;
+  }
+
+  .package-grid {
+    display: flex;
+    justify-content: center; /* מרכז את הכרטיסים במרכז המסך */
+    align-items: stretch; /* כל הכרטיסים יימתחו לגובה שווה */
+    gap: 1rem; /* רווח בין הכרטיסים */
+    flex-wrap: wrap; /* מאפשר גלישה לשורה נוספת במסכים קטנים */
+  }
+
+  .package-card {
+    flex: 0 1 280px; /* הגדר את רוחב הכרטיסים למינימום של 280px */
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 2rem;
-    padding: 4rem;
-    background-image: url('../../../assets/background2.jpg');
-    background-size: cover;
-    background-repeat: no-repeat;
-  
-    .package-item:hover {
-      transform: scale(1.05); /* Increase scale for more noticeable effect */
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Larger shadow for more depth */
-      background-color: rgba(255, 250, 250, 1); /* More noticeable background color change */
+    justify-content: space-between; /* מבטיח שכל תוכן הכרטיס יתפזר לגובה */
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    min-height: 400px; /* גובה מינימלי אחיד לכל הכרטיסים */
+
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
     }
-    
-    .package-item {
-      display: flex;
-      flex-direction: row-reverse; 
-      align-items: center;
-      justify-content: flex-start;
+
+    .package-name {
+      position: relative;
+      font-size: 1.2rem; /* הקטן את גודל הפונט */
+      margin: 1rem 0;
+      color: #333;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+
+
+      .rank-badge {
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        padding: 0.3rem 0.6rem;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        color: #fff;
+        font-weight: bold;
+      }
+
+      &.basic .rank-badge {
+        background-color: #9e9e9e; // אפור
+      }
+
+      &.advanced .rank-badge {
+        background-color: #2196f3; // כחול
+      }
+
+      &.premium .rank-badge {
+        background-color: #4caf50; // ירוק
+      }
+
+      &.luxury .rank-badge {
+        background-color: #ff9800; // כתום
+      }
+    }
+
+    mat-card-image {
       width: 100%;
-      max-width: 900px;
-      background-color: rgba(252, 237, 237, 0.9);
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+      height: 120px; /* הקטן את הגובה */
+      object-fit: cover;
+      flex-shrink: 0;
+    }
 
-  
-      &:hover {
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    mat-card-content {
+      flex-grow: 1;
+      padding: 1rem;
+
+      .package-description {
+        font-size: 0.9rem; /* הקטן את גודל הפונט */
+        color: #555;
+        margin-bottom: 0.5rem;
+        font-family: 'Montserrat', sans-serif;
+
       }
-  
-      .package-image {
-        width: 40%;
-        object-fit: cover;
-        border-radius: 8px 0 0 8px;
-      }
-  
-      .package-details {
-        padding: 1rem;
-        text-align: right;
-  
-        .package-title {
-          font-size: 1.5rem;
-          margin-bottom: 0.5rem;
-        }
-  
-        .package-description {
-          font-size: 1rem;
-          margin-bottom: 1rem;
-          color: black;
 
-        }
-  
-        .package-info {
-          font-size: 0.9rem;
-          span {
-            margin-right: 1rem;
-          }
-        }
+      .package-info {
+        font-size: 0.8rem; /* הקטן את גודל הפונט */
+        color: #777;
+        font-family: 'Montserrat', sans-serif;
 
+
+        span {
+          margin: 0 0.5rem;
+        }
       }
     }
   }
 
-  @media (max-width: 768px) {
-    .packages-container {
-      margin-top: 2rem; /* Add space above the button */
-      margin-bottom: 1rem;
-      padding: 0.1rem; /* Adjust padding as needed */
-    }
-  
-    .package-item {
-      flex-direction: column-reverse; /* Stack details above image */
-      align-items: center; /* Center the items */
-      text-align: center; /* Center the text */
-    }
-  
+  .package-divider {
+    width: 1px; /* קו מפריד אנכי */
+    height: 100px; /* גובה הקו */
+    background-color: #cccccc; /* צבע המפריד */
+    align-self: center; /* מרכז את המפריד לגובה הכרטיסים */
   }
-  
+}
+
+/* התאמות למסכים קטנים */
+@media (max-width: 768px) {
+  .package-card {
+    flex: 0 1 100%; /* הכרטיסים יתפסו את כל הרוחב במסכים קטנים */
+  }
+
+  .package-divider {
+    display: none; /* הסתר את המפרידים במסכים קטנים */
+  }
+}

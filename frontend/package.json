@@ -21,8 +21,10 @@
     "@angular/platform-browser-dynamic": "^16.1.0",
     "@angular/router": "^16.1.0",
     "@mdi/font": "^7.4.47",
+    "ng-image-slider": "^8.0.0",
+    "ngx-countup": "^13.2.0",
     "rxjs": "~7.8.0",
-    "tslib": "^2.3.0",
+    "tslib": "^2.8.1",
     "zone.js": "~0.13.0"
   },
   "devDependencies": {

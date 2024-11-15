@@ -24,6 +24,7 @@ import { RegisterComponent } from './components/register/register.component';
 import { RewardsInfoDialogComponent } from './components/rewards-info-dialog/rewards-info-dialog.component';
 import { AdminDashboardComponent } from './components/admin-dashboard/admin-dashboard.component';
 
+
 // מודולים של Angular Material
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './material.module'; // ודא שהנתיב נכון
@@ -38,6 +39,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { InfoDialogComponent } from './components/info-dialog/info-dialog.component';
+import { CountUpModule } from 'ngx-countup';
+import { NgImageSliderModule } from 'ng-image-slider';
+
 
 @NgModule({
   declarations: [
@@ -70,7 +74,9 @@ import { InfoDialogComponent } from './components/info-dialog/info-dialog.compon
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    CommonModule
+    CommonModule,
+    CountUpModule,
+    NgImageSliderModule
   ],
   providers: [
     AdminGuard,

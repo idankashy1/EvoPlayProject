@@ -1,4 +1,5 @@
 // src/app/components/admin-dashboard/admin-dashboard.component.ts
+
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { BookingService } from '../../services/booking.serivce';
 import { Booking } from '../../models/booking.model';
@@ -7,7 +8,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { DateAdapter } from '@angular/material/core'; // ייבוא DateAdapter
+import { DateAdapter } from '@angular/material/core';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -37,9 +38,9 @@ export class AdminDashboardComponent implements OnInit {
 
   constructor(
     private bookingService: BookingService,
-    private dateAdapter: DateAdapter<Date> // הוספת DateAdapter לקונסטרקטור
+    private dateAdapter: DateAdapter<Date>
   ) {
-    this.dateAdapter.setLocale('en-GB'); // הגדרת הלוקאל לפורמט dd/MM/yyyy
+    this.dateAdapter.setLocale('en-GB');
   }
 
   ngOnInit(): void {
@@ -53,8 +54,8 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   loadTodaysBookings(): void {
-    const today = new Date().toISOString().split('T')[0];
-    this.bookingService.getBookingsByDateRange(new Date(today), new Date(today)).subscribe({
+    const today = new Date().toISOString().split('T')[0]; // פורמט YYYY-MM-DD
+    this.bookingService.getTodaysBookings(today).subscribe({
       next: (bookings: Booking[]) => {
         this.dataSource.data = bookings;
         this.dataSource.paginator = this.paginator;

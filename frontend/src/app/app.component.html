@@ -1,8 +1,3 @@
 <app-header></app-header>
-
-<!-- נשתמש ב-[@routeAnimations] כדי להפעיל את האנימציה במעבר ראוטינג -->
-<div [@routeAnimations]="prepareRoute(outlet)">
-  <router-outlet #outlet="outlet"></router-outlet>
-</div>
-
+<router-outlet></router-outlet>
 <app-footer></app-footer>
