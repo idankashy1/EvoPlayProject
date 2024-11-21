@@ -41,10 +41,10 @@ interface BookingDetails {
 export class BookingFormComponent implements OnInit, OnDestroy {
   bookingDate: Date | null = null;
   dateSelected: boolean = false;
-  startHour: string = '17:00';
-  endHour: string = '19:00';
-  numberOfPlayers: number = 4;
-  roomType: string = 'PS5';
+  startHour: string = '';
+  endHour: string = '';
+  numberOfPlayers: number | null = null;
+  roomType: string = '';
   startHoursOptions: string[] = [];
   endHoursOptions: string[] = [];
   playerOptions: number[] = [];
@@ -68,9 +68,7 @@ export class BookingFormComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.today.setHours(0, 0, 0, 0);
-    this.dateAdapter.setLocale('he-IL'); 
-    this.updateTimeSlotsBasedOnRoomType(this.roomType);
-    this.updatePlayerOptions(this.roomType);
+    this.dateAdapter.setLocale('he-IL');
   }
 
   ngOnDestroy(): void {
@@ -80,36 +78,62 @@ export class BookingFormComponent implements OnInit, OnDestroy {
   dateChanged(event: MatDatepickerInputEvent<Date>): void {
     this.bookingDate = event.value;
     this.dateSelected = !!this.bookingDate;
+    this.resetFields();
   }
-
+  
   onRoomTypeChange(roomType: string): void {
     this.roomType = roomType;
-    this.updateTimeSlotsBasedOnRoomType(roomType);
+    this.numberOfPlayers = null;
+    this.startHour = '';
+    this.endHour = '';
+    this.playerOptions = [];
+    this.startHoursOptions = [];
+    this.endHoursOptions = [];
     this.updatePlayerOptions(roomType);
-    this.updateEndHoursOptions();
+  }
+
+  onNumberOfPlayersChange(): void {
+    this.startHour = '';
+    this.endHour = '';
+    this.startHoursOptions = [];
+    this.endHoursOptions = [];
+    if (this.roomType) {
+      this.updateTimeSlotsBasedOnRoomType(this.roomType);
+    }
   }
 
   onStartTimeChange(startHour: string): void {
     this.startHour = startHour;
+    this.endHour = '';
     this.updateEndHoursOptions();
   }
 
+  private resetFields(): void {
+    this.roomType = '';
+    this.numberOfPlayers = null;
+    this.startHour = '';
+    this.endHour = '';
+    this.playerOptions = [];
+    this.startHoursOptions = [];
+    this.endHoursOptions = [];
+  }
+
   private updatePlayerOptions(roomType: string): void {
+    if (!roomType) {
+      this.playerOptions = [];
+      return;
+    }
     switch (roomType) {
       case 'VR':
-        this.numberOfPlayers = 1;
         this.playerOptions = [1, 2, 3, 4];
         break;
       case 'PC':
-        this.numberOfPlayers = 1;
         this.playerOptions = [1, 2, 3, 4, 5];
         break;
       case 'PS5':
-        this.numberOfPlayers = 4;
         this.playerOptions = [2, 3, 4, 5];
         break;
       case 'PS5VIP':
-        this.numberOfPlayers = 4;
         this.playerOptions = [2, 3, 4, 5, 6, 7, 8];
         break;
       default:
@@ -119,6 +143,7 @@ export class BookingFormComponent implements OnInit, OnDestroy {
   }
 
   private updateTimeSlotsBasedOnRoomType(roomType: string): void {
+    if (!roomType) return;
     if (['PS5', 'PS5VIP'].includes(roomType)) {
       this.startHoursOptions = [
         '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00'
@@ -130,8 +155,6 @@ export class BookingFormComponent implements OnInit, OnDestroy {
     } else if (roomType === 'VR') {
       this.startHoursOptions = this.generateQuarterHourlyTimeSlots(17 * 60, (2 + 24) * 60 - 15);
     }
-    this.startHour = this.startHoursOptions[0];
-    this.updateEndHoursOptions();
   }
 
   private updateEndHoursOptions(): void {
@@ -152,8 +175,6 @@ export class BookingFormComponent implements OnInit, OnDestroy {
       if (this.endHoursOptions.length === 0) {
         alert('אין זמני סיום זמינים לתחילת זמן זה. אנא בחר זמן התחלה אחר.');
         this.endHour = '';
-      } else {
-        this.endHour = this.endHoursOptions[0];
       }
       return;
     }
@@ -178,8 +199,6 @@ export class BookingFormComponent implements OnInit, OnDestroy {
     if (this.endHoursOptions.length === 0) {
       alert('אין זמני סיום זמינים לתחילת זמן זה. אנא בחר זמן התחלה אחר.');
       this.endHour = '';
-    } else {
-      this.endHour = this.endHoursOptions[0];
     }
   }
 
@@ -249,13 +268,14 @@ export class BookingFormComponent implements OnInit, OnDestroy {
 
   private calculateQuantity(roomType: string): number {
     if (['PS5', 'PS5VIP'].includes(roomType)) {
-      return 1;
+        return 1;
     } else if (['VR', 'PC'].includes(roomType)) {
-      return this.numberOfPlayers;
+        // שימוש באופרטור nullish coalescing (??) כדי להחזיר 0 אם numberOfPlayers הוא null
+        return this.numberOfPlayers ?? 0;
     } else {
-      return 0;
+        return 0;
     }
-  }
+}
 
   private checkIfQualifiesForPackage(bookingDetails: BookingDetails): boolean {
     const { numberOfPlayers, duration } = bookingDetails;

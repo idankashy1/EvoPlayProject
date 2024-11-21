@@ -5,15 +5,41 @@
       <!-- כותרת ראשית -->
       <h1 class="main-title">סיכום הזמנה</h1>
 
-      <!-- Order Summary -->
-      <section class="order-summary">
-        <h2 class="section-title">פרטי ההזמנה</h2>
-        <div class="summary-item" *ngFor="let item of orderSummary">
-          <mat-icon>{{ item.icon }}</mat-icon>
-          <span class="item-label">{{ item.label }}:</span>
-          <span class="item-value">{{ item.value }}</span>
+      <div class="order-summary-with-images">
+        <!-- תמונות החדר והחבילה -->
+        <div class="images-container">
+          <!-- תמונת החדר -->
+          <img
+            *ngIf="bookingDetails.roomImageUrl"
+            [src]="bookingDetails.roomImageUrl"
+            alt="Room Image"
+            class="room-image"
+            (click)="openImageModal(bookingDetails.roomImageUrl)"
+          />
+
+          <!-- סימן '+' אם יש גם חבילה -->
+          <div *ngIf="bookingDetails.packageImageUrl" class="plus-sign">+</div>
+
+          <!-- תמונת החבילה -->
+          <img
+            *ngIf="bookingDetails.packageImageUrl"
+            [src]="bookingDetails.packageImageUrl"
+            alt="Package Image"
+            class="package-image"
+            (click)="openImageModal(bookingDetails.packageImageUrl)"
+          />
         </div>
-      </section>
+
+        <!-- Order Summary -->
+        <section class="order-summary">
+          <h2 class="section-title">פרטי ההזמנה</h2>
+          <div class="summary-item" *ngFor="let item of orderSummary">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            <span class="item-label">{{ item.label }}:</span>
+            <span class="item-value">{{ item.value }}</span>
+          </div>
+        </section>
+      </div>
 
       <mat-divider></mat-divider>
 
@@ -62,5 +88,8 @@
       </div>
 
     </mat-card>
+    <div class="image-modal" *ngIf="selectedImage" (click)="closeImageModal()">
+      <img [src]="selectedImage" alt="Full Size Image" (click)="$event.stopPropagation()" />
+    </div>
   </div>
 </main>

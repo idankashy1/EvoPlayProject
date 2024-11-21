@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PaymentService } from '../../services/payment.service';
 import { BookingService } from '../../services/booking.serivce';
@@ -18,6 +18,8 @@ interface BookingDetails {
   duration: number;
   selectedPackage?: any;
   totalCost?: number;
+  roomImageUrl?: string; // הוספנו את השדה לתמונת החדר
+  packageImageUrl?: string; // הוספנו את השדה לתמונת החבילה
 }
 
 @Component({
@@ -29,6 +31,7 @@ export class PaymentComponent implements OnInit {
   bookingDetails!: BookingDetails;
   userDetailsForm!: FormGroup;
   orderSummary: any[] = [];
+  selectedImage: string | null = null; // משתנה לשמירת התמונה הנבחרת
 
   private pricePerHour: { [key in RoomType]: number } = {
     PS5: 30,
@@ -36,6 +39,14 @@ export class PaymentComponent implements OnInit {
     PC: 30,
     VR: 40,
   };
+
+    // מיפוי בין סוג החדר לתמונת החדר
+    private roomImages: { [key in RoomType]: string } = {
+      PS5: 'assets/ps5ForOurRooms.jpg',
+      PS5VIP: 'assets/ps5VIPForOurRooms.jpg',
+      PC: 'assets/gamingPcForOurRooms.jpg',
+      VR: 'assets/VRForOurRooms.png',
+    };
 
   constructor(
     private paymentService: PaymentService,
@@ -54,6 +65,13 @@ export class PaymentComponent implements OnInit {
         this.bookingDetails = data;
         this.bookingDetails.totalCost = this.calculateTotalCost();
         this.populateOrderSummary();
+                // הוספת כתובת תמונת החדר
+                this.bookingDetails.roomImageUrl = this.roomImages[this.bookingDetails.roomType];
+
+                // הוספת כתובת תמונת החבילה אם קיימת
+                this.bookingDetails.packageImageUrl = this.bookingDetails.selectedPackage?.imageUrl || null;
+                this.populateOrderSummary();
+
       });
 
     // אתחול הטופס
@@ -161,6 +179,22 @@ export class PaymentComponent implements OnInit {
     };
     return resourceTypeMap[roomType] || 0;
   }
+
+  openImageModal(imageUrl: string): void {
+    this.selectedImage = imageUrl;
+  }
+
+  closeImageModal(): void {
+    this.selectedImage = null;
+  }
+
+    // אופציונלי: סגירת המודל בלחיצה על מקש Escape
+    @HostListener('document:keydown.escape', ['$event'])
+    onKeydownHandler(event: KeyboardEvent) {
+      if (this.selectedImage) {
+        this.closeImageModal();
+      }
+    }
 
   private calculateQuantity(roomType: string): number {
     if (['PS5', 'PS5VIP'].includes(roomType)) {

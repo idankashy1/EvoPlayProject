@@ -5,10 +5,10 @@ import {
   HostListener,
   ViewChild,
   ElementRef,
+  Renderer2,
 } from '@angular/core';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { NgImageSliderComponent } from 'ng-image-slider';
-import { Renderer2 } from '@angular/core';
 
 
 
@@ -28,6 +28,12 @@ export class HomeComponent implements OnInit, AfterViewInit {
   @ViewChild('myVideo') myVideo!: ElementRef<HTMLVideoElement>;
   @ViewChild(NgImageSliderComponent) ngImageSlider!: NgImageSliderComponent;
 
+  // הוספנו הפניה לקונטיינר של הביקורות
+  @ViewChild('reviewsContainer', { static: false })
+  reviewsContainer!: ElementRef;
+
+  // הוספנו משתנה לשליטה באנימציה
+  isAnimationPaused = false;
 
   counters = [
     { value: 150, label: 'משחקים' },
@@ -164,17 +170,17 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   displayedReviews: any[] = [];
   reviewsToShow = 6; // מספר הביקורות הראשונות שמוצגות בהתחלה
-  selectedReview: any = null;
   isExpanded = false;
+  selectedReview: any = null;
   selectedSlide: any = null;
+  repeatedReviews: any[] = [];
 
 
   constructor(private renderer: Renderer2) {}
 
   ngOnInit() {
-    // מציגים את השורה הראשונה של הביקורות
-    this.displayedReviews = this.reviews.slice(0, this.reviewsToShow);
-  }
+    this.repeatedReviews = [...this.reviews, ...this.reviews]; // שוכפל את הביקורות פעמיים
+   }
 
   ngAfterViewInit() {
     const video = this.myVideo.nativeElement;
@@ -198,23 +204,32 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.ngImageSlider.lightboxClose.subscribe(() => {
       this.renderer.removeStyle(document.body, 'overflow');
     });
-  }
 
-  loadMoreReviews() {
-    this.isExpanded = !this.isExpanded;
-    if (this.isExpanded) {
-      // מציגים את כל הביקורות
-      this.displayedReviews = this.reviews;
-    } else {
-      // חוזרים להצגת השורה הראשונה בלבד
-      this.displayedReviews = this.reviews.slice(0, this.reviewsToShow);
-    }
+    this.renderer.listen(
+      this.reviewsContainer.nativeElement,
+      'mouseenter',
+      () => {
+        this.isAnimationPaused = true;
+        this.renderer.setStyle(
+          this.reviewsContainer.nativeElement,
+          'animation-play-state',
+          'paused'
+        );
+      }
+    );
 
-    // גלילה חלקה אל הקונטיינר של הביקורות
-    const reviewsSection = document.getElementById('reviews');
-    if (reviewsSection) {
-      reviewsSection.scrollIntoView({ behavior: 'smooth' });
-    }
+    this.renderer.listen(
+      this.reviewsContainer.nativeElement,
+      'mouseleave',
+      () => {
+        this.isAnimationPaused = false;
+        this.renderer.setStyle(
+          this.reviewsContainer.nativeElement,
+          'animation-play-state',
+          'running'
+        );
+      }
+    );
   }
 
   openReviewPopup(review: any) {

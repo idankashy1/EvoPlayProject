@@ -1,14 +1,18 @@
 <div class="events-container">
   <h1 class="section-title">האירועים שלנו</h1>
   <div class="events-grid">
-    <div *ngFor="let event of events; let i = index" class="event-card" [ngClass]="{'reverse': i % 2 !== 0}">
-      <div class="event-image">
-        <img [src]="event.imageSrc" alt="{{ event.title }}" />
-        <div class="image-overlay"></div>
-      </div>
-      <div class="event-content">
-        <h2 class="event-title">{{ event.title }}</h2>
-        <p class="event-description">{{ event.description }}</p>
+    <div
+      *ngFor="let event of events; let i = index"
+      class="event-card"
+    >
+      <div class="event-inner" [ngClass]="{ reverse: i % 2 !== 0 }">
+        <div class="event-image">
+          <img [src]="event.imageSrc" alt="{{ event.title }}" />
+        </div>
+        <div class="event-content">
+          <h2 class="event-title">{{ event.title }}</h2>
+          <p class="event-description">{{ event.description }}</p>
+        </div>
       </div>
     </div>
   </div>

@@ -15,7 +15,7 @@
     display: flex;
     justify-content: center; /* מרכז את הכרטיסים במרכז המסך */
     align-items: stretch; /* כל הכרטיסים יימתחו לגובה שווה */
-    gap: 1rem; /* רווח בין הכרטיסים */
+    gap: 2rem; /* רווח מעט גדול יותר בין הכרטיסים */
     flex-wrap: wrap; /* מאפשר גלישה לשורה נוספת במסכים קטנים */
   }
 
@@ -28,10 +28,10 @@
     cursor: pointer;
     transition: transform 0.3s, box-shadow 0.3s;
     background-color: #fff;
-    border-radius: 8px;
+    border-radius: 12px; /* פינות מעוגלות יותר */
     overflow: hidden;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    min-height: 400px; /* גובה מינימלי אחיד לכל הכרטיסים */
+    min-height: 420px; /* גובה מינימלי מעט גדול יותר */
 
     &:hover {
       transform: translateY(-5px);
@@ -40,7 +40,7 @@
 
     .package-name {
       position: relative;
-      font-size: 1.2rem; /* הקטן את גודל הפונט */
+      font-size: 1.3rem; /* הגדלת גודל הפונט */
       margin: 1rem 0;
       color: #333;
       font-family: 'M PLUS Rounded 1c', sans-serif;
@@ -104,13 +104,6 @@
         }
       }
     }
-  }
-
-  .package-divider {
-    width: 1px; /* קו מפריד אנכי */
-    height: 100px; /* גובה הקו */
-    background-color: #cccccc; /* צבע המפריד */
-    align-self: center; /* מרכז את המפריד לגובה הכרטיסים */
   }
 }
 
